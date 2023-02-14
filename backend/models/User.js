@@ -21,6 +21,10 @@ const userModel = sequelize.define(
       allowNull: false,
       unique: true,
     },
+    bio: {
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
     email: {
       type: DataTypes.STRING(320),
       allowNull: false,
@@ -47,9 +51,6 @@ const userModel = sequelize.define(
         isDate: true,
       },
     },
-  },
-  {
-    tableName: "users",
   }
 );
 
