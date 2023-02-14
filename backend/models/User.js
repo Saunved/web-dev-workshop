@@ -20,6 +20,10 @@ module.exports = sequelize.define(
       allowNull: false,
       unique: true,
     },
+    bio: {
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
     email: {
       type: DataTypes.STRING(320),
       allowNull: false,
@@ -46,8 +50,5 @@ module.exports = sequelize.define(
         isDate: true,
       },
     },
-  },
-  {
-    tableName: "users",
   }
 );

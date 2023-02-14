@@ -11,6 +11,7 @@
   "dependencies": {
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "sequelize": "^6.28.0",
     "sqlite3": "^5.1.4"
