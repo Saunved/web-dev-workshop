@@ -21,28 +21,14 @@ module.exports.createTweet = async (req, res) => {
 
 module.exports.getUserTweets = async (req, res) => {
   try {
-    const user = await User.findOne({ where: { id: req.query.id } });
+    const tweetInfo = await Tweet.findOne({ where: { id: req.query.id } });
 
     return res.status(200).json({
-      date: { tweet: tweet },
+      date: { tweet: tweetInfo },
     });
   } catch (err) {
     return res.status(400).json({
       message: "Error while fetching tweet.",
-    });
-  }
-};
-
-module.exports.getAllUsers = async (req, res) => {
-  try {
-    const users = await User.findAll({});
-
-    return res.status(200).json({
-      date: { users: users },
-    });
-  } catch (err) {
-    return res.status(400).json({
-      message: "Error while creating user.",
     });
   }
 };
