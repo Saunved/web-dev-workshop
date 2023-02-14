@@ -31,7 +31,8 @@ app.use(express.json());
 
 // Importing routes
 const userRouter = require("./routes/user");
+const tweetRouter = require("./routes/tweet");
 
-app.use("/", [userRouter]);
+app.use("/", [userRouter, tweetRouter]);
 
 module.exports = app;
