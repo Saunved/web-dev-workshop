@@ -31,7 +31,8 @@ app.use(express.json());
 
 // Importing routes
 const userRouter = require("./routes/user");
+const hashtagRouter = require("./routes/hashtag");
 
-app.use("/", [userRouter]);
+app.use("/", [userRouter, hashtagRouter]);
 
 module.exports = app;
