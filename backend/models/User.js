@@ -23,7 +23,7 @@ const userModel = sequelize.define(
     },
     bio: {
       type: DataTypes.TEXT,
-      allowNull: false
+      allowNull: false,
     },
     email: {
       type: DataTypes.STRING(320),
@@ -51,9 +51,10 @@ const userModel = sequelize.define(
         isDate: true,
       },
     },
+  },
+  {
+    tableName: "users",
   }
 );
-
-userModel.hasMany(tweetModel); // Set one to many relationship
 
 module.exports = userModel;

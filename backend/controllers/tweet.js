@@ -4,7 +4,7 @@ module.exports.createTweet = async (req, res) => {
   try {
     // Create password hash
     console.log("Logged the request");
-    console.log(req);
+    console.log(req.body);
     const tweet = await Tweet.create(req.body);
     return res.status(200).json({
       data: {
@@ -21,8 +21,8 @@ module.exports.createTweet = async (req, res) => {
 
 module.exports.getUserTweets = async (req, res) => {
   try {
-    const tweetInfo = await Tweet.findOne({ where: { id: req.query.id } });
-
+    console.log("Logged request.");
+    const tweetInfo = await Tweet.find({ where: { userId: req.query.userId } });
     return res.status(200).json({
       date: { tweet: tweetInfo },
     });
