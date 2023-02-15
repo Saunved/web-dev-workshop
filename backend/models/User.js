@@ -1,6 +1,5 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("./../sequelize");
-const tweetModel = require("./Tweet");
 
 const userModel = sequelize.define(
   "User",
@@ -50,10 +49,11 @@ const userModel = sequelize.define(
       validate: {
         isDate: true,
       },
-    },
+    }
+  },
+  {
+    tableName: "users",
   }
 );
-
-userModel.hasMany(tweetModel); // Set one to many relationship
 
 module.exports = userModel;
