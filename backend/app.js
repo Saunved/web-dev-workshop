@@ -14,7 +14,7 @@ app.use(
 );
 
 // CORS
-const whitelist = ["http://localhost:5000", "http://localhost:3000"];
+const whitelist = ["http://localhost:5000", "http://localhost:3000", "http://localhost:5001"];
 
 const corsOptionsDelegate = function (req, callback) {
   let corsOptions;

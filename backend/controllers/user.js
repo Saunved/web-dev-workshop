@@ -48,3 +48,31 @@ module.exports.getAllUsers = async (req, res) => {
     });
   }
 };
+
+module.exports.updatePassword = async (req, res) => {
+  try {
+
+    const user = await User.findOne({ where: { id: req.body.id } });
+
+    if (!user) {
+      return res.status(400).json({
+        message: "Invalid user id sent!",
+      })
+    }
+
+    // Create password hash
+    const passowordHash = await bcrypt.hash(req.body.password, 10);
+
+    user.update({ password: passowordHash });
+
+    return res.status(200).json({
+      message: "Password updated for the user successfully",
+    })
+
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: "Internal server error"
+    })
+  }
+}
