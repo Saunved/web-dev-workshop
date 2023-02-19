@@ -57,5 +57,8 @@ export default {
       joined: "Joined",
       woofs: "Woofs",
     },
+    ERROR: {
+      userNotFound: "User not found",
+    },
   },
 };

@@ -6,12 +6,27 @@ import Head from "next/head";
 import TweetFeed from "@/components/TweetFeed";
 import Link from "next/link";
 import strings from "@/constants/ui/strings";
+import { useRouter } from "next/router";
+import UserNotFound from "@/components/Error/UserNotFound";
 
 export default function ProfilePage() {
   const uiTextFollow = strings.EN.FOLLOW;
   const uiTextProfile = strings.EN.PROFILE;
   const uiTextSite = strings.EN.SITE;
   const title = `${uiTextSite.home} / ${uiTextSite.woofer}`;
+
+  const router = useRouter();
+  const { profile } = router.query;
+
+  const userProfile = tweets.filter((tweet) => {
+    if (tweet.handle === profile) {
+      return tweet;
+    }
+  });
+
+  if (Array.isArray(userProfile) && userProfile.length === 0) {
+    return <UserNotFound />;
+  }
 
   return (
     <>
