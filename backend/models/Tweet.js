@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("./../sequelize");
+const { sequelize } = require("./../sequelize");
 
 const tweetModel = sequelize.define(
   "Tweet",
@@ -15,17 +15,17 @@ const tweetModel = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    likesCount: {
-      type: DataTypes.INTEGER(),
+    hashtagId: {
+      type: DataTypes.INTEGER,
       allowNull: false,
+    },
+    likesCount: {
+      type: DataTypes.BIGINT,
+      defaultValue: 0,
     },
     retweetCount: {
-      type: DataTypes.INTEGER(),
-      allowNull: false,
-    },
-    hashtagId: {
-      type: DataTypes.INTEGER(),
-      allowNull: false,
+      type: DataTypes.BIGINT,
+      defaultValue: 0,
     },
   },
   {

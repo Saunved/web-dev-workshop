@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("./../sequelize");
+const { sequelize } = require("./../sequelize");
 
 module.exports = sequelize.define(
   "Hashtag",
@@ -13,8 +13,8 @@ module.exports = sequelize.define(
     },
     tag: {
       type: DataTypes.STRING(140),
-      allowNull: false
-    }
+      allowNull: false,
+    },
   },
   {
     tableName: "hashtags",
