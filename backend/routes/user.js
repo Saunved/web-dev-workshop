@@ -5,6 +5,6 @@ const { createUser, getUser, getAllUsers, updatePassword } = require("./../contr
 router.get("/user", getUser);
 router.get("/users", getAllUsers);
 router.post("/user", createUser);
-router.post("user/updatePassword", updatePassword);
+router.post("user/change-password", updatePassword);
 
 module.exports = router;
