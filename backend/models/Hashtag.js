@@ -12,7 +12,8 @@ module.exports = sequelize.define(
       unique: true,
     },
     tag: {
-      type: DataTypes.STRING(140),
+      type: DataTypes.STRING,
+      unique: true,
       allowNull: false,
     },
   },

@@ -15,9 +15,13 @@ const tweetModel = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    hashtagId: {
-      type: DataTypes.INTEGER,
+    hashtag: {
+      type: DataTypes.STRING,
       allowNull: false,
+      references: {
+        model: "Tweets",
+        key: "tag",
+      },
     },
     likesCount: {
       type: DataTypes.BIGINT,
