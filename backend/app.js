@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const session = require("express-session");
+const passport = require("passport");
 
 const app = express();
 const { config } = require("./configs/config");
@@ -43,6 +44,11 @@ app.use(
     resave: false,
   })
 );
+
+// Passport
+require("./strategies/localStrategy")
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Importing routes
 const userRouter = require("./routes/user");

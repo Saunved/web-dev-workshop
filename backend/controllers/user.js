@@ -1,5 +1,6 @@
 const User = require("./../models/User");
 const bcrypt = require("bcrypt");
+const passport = require("passport")
 
 const isEmailUnique = async (emailId) => {
   //returns true if email does not exist in our database
@@ -11,6 +12,29 @@ const isHandleUnique = async (handle) => {
   //returns true if handle does not exist in our database
   const handleCount = await User.count({ where: { handle: handle } });
   return handleCount == 0;
+};
+
+module.exports.loginUser = (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) {
+      return res.status(500).json({
+        message: "Error while authenticating user.",
+      });
+    } else if (!user) {
+      return res.status(401).json({
+        message: "Invalid Credentials",
+      });
+    } else {
+      req.login(user, (err) => {
+        if (err) {
+          return res.status(500).json({
+            message: "Error while authenticating user.",
+          });
+        }
+        return res.status(200).json({ message: "Logged in." });
+      });
+    }
+  })(req, res, next);
 };
 
 module.exports.createUser = async (req, res) => {
