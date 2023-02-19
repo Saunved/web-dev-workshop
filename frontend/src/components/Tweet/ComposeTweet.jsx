@@ -1,4 +1,3 @@
-import { PaperPlaneTilt } from "phosphor-react";
 import { useRef, useState } from "react";
 import ReactTextareaAutosize from "react-textarea-autosize";
 import ProfilePicture from "@/components/Tweet/ProfilePicture";

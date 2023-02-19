@@ -2,7 +2,6 @@ import HeaderImage from "@/components/Profile/HeaderImage";
 import HeaderProfilePicture from "@/components/Profile/HeaderProfilePicture";
 import { Calendar } from "phosphor-react";
 import tweets from "@/mock/tweets";
-import Tweet from "@/components/Tweet/SingleTweet";
 import Head from "next/head";
 import TweetFeed from "@/components/TweetFeed";
 import Link from "next/link";

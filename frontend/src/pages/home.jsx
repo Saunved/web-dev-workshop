@@ -1,10 +1,7 @@
 import ComposeTweet from "@/components/Tweet/ComposeTweet";
-import Tweet from "@/components/Tweet/SingleTweet";
 import tweets from "@/mock/tweets";
 import HomeFeedSwitcher from "@/components/HomeFeedSwitcher";
-
 import TweetFeed from "@/components/TweetFeed";
-import Sidebar from "@/components/Sidebar";
 import Head from "next/head";
 import strings from "@/constants/ui/strings";
 

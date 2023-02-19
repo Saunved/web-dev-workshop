@@ -1,11 +1,4 @@
-import LoginFlow from "@/components/LoginFlow";
-import RegisterFlow from "@/components/RegisterFlow";
-import ComposeTweet from "@/components/Tweet/ComposeTweet";
-import Tweet from "@/components/Tweet/SingleTweet";
-import tweets from "@/mock/tweets";
-import Router from "next/router";
 import { useEffect } from "react";
-import AuthFlowLayout from "@/components/Layouts/BlankLayout";
 import Link from "next/link";
 
 const tweet = {

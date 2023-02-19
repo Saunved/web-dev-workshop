@@ -9,7 +9,6 @@ import {
   Gear,
 } from "phosphor-react";
 import Link from "next/link";
-import ProfilePicture from "./Tweet/ProfilePicture";
 
 export default function Sidebar() {
   return (
