@@ -5,13 +5,13 @@ module.exports.createHashtag = async (req, res) => {
     // Add tag to Hashtag model
     const hashtag = await Hashtag.create(req.body);
 
-    return res.status(200).json({
+    return res.status(201).json({
       data: { hashtag: { id: hashtag.id } },
       message: "Hashtag created.",
     });
   } catch (err) {
-    return res.status(400).json({
-      message: "Error while creating Hashtag.",
+    return res.status(500).json({
+      message: "Error while creating hashtag.",
     });
   }
 };
@@ -24,7 +24,7 @@ module.exports.getHashtag = async (req, res) => {
       data: { hashtag: hashtag },
     });
   } catch (err) {
-    return res.status(400).json({
+    return res.status(500).json({
       message: "Error while fetching hashtag.",
     });
   }
@@ -38,7 +38,7 @@ module.exports.getAllHashtags = async (req, res) => {
       date: { hashtags: hashtag },
     });
   } catch (err) {
-    return res.status(400).json({
+    return res.status(500).json({
       message: "Error while fetching hashtags.",
     });
   }

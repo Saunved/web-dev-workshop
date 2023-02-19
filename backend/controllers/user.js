@@ -3,16 +3,15 @@ const bcrypt = require("bcrypt");
 
 const isEmailUnique = async (emailId) => {
   //returns true if email does not exist in our database
-  const emailCount = await User.count({where: {email: emailId}});
+  const emailCount = await User.count({ where: { email: emailId } });
   return emailCount == 0;
 };
 
 const isHandleUnique = async (handle) => {
   //returns true if handle does not exist in our database
-  const handleCount = await User.count({where: {handle: handle}});
-  return  handleCount == 0;
+  const handleCount = await User.count({ where: { handle: handle } });
+  return handleCount == 0;
 };
-
 
 module.exports.createUser = async (req, res) => {
   try {
@@ -23,12 +22,12 @@ module.exports.createUser = async (req, res) => {
     // Add user to User model
     const user = await User.create(req.body);
 
-    return res.status(200).json({
+    return res.status(201).json({
       data: { user: { id: user.id } },
       message: "User created.",
     });
   } catch (err) {
-    return res.status(400).json({
+    return res.status(500).json({
       message: "Error while creating user.",
     });
   }
@@ -42,7 +41,7 @@ module.exports.getUser = async (req, res) => {
       data: { user: user },
     });
   } catch (err) {
-    return res.status(400).json({
+    return res.status(500).json({
       message: "Error while fetching user.",
     });
   }
@@ -56,21 +55,20 @@ module.exports.getAllUsers = async (req, res) => {
       data: { users: users },
     });
   } catch (err) {
-    return res.status(400).json({
+    return res.status(500).json({
       message: "Error while fetching all users.",
     });
   }
 };
 
-module.exports.updatePassword = async (req, res) => {
+module.exports.changePassword = async (req, res) => {
   try {
-
     const user = await User.findOne({ where: { id: req.body.id } });
 
     if (!user) {
       return res.status(400).json({
         message: "Invalid user id sent!",
-      })
+      });
     }
 
     // Create password hash
@@ -80,12 +78,10 @@ module.exports.updatePassword = async (req, res) => {
 
     return res.status(200).json({
       message: "Password updated for the user successfully",
-    })
-
+    });
   } catch (err) {
-    console.error(err);
     return res.status(500).json({
-      message: "Internal server error"
-    })
+      message: "Error while changing passwords.",
+    });
   }
-}
+};
