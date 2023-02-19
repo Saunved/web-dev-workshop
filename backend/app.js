@@ -2,8 +2,11 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const session = require("express-session");
 
 const app = express();
+const { config } = require("./configs/config");
+const { sessionStore } = require("./sequelize");
 
 // Body parser
 app.use(bodyParser.json());
@@ -27,12 +30,24 @@ const corsOptionsDelegate = function (req, callback) {
 };
 
 app.use(cors(corsOptionsDelegate));
-app.use(express.json());
+
+// Session
+const { secret, timeout } = config.session;
+
+app.use(
+  session({
+    secret: secret,
+    store: sessionStore,
+    cookie: { maxAge: timeout },
+    saveUninitialized: false,
+    resave: false,
+  })
+);
 
 // Importing routes
 const userRouter = require("./routes/user");
 const tweetRouter = require("./routes/tweet");
 const hashtagRouter = require("./routes/hashtag");
-const followsRouter = require("./routes/follows")
+const followsRouter = require("./routes/follows");
 app.use("/", [userRouter, tweetRouter, hashtagRouter, followsRouter]);
 module.exports = app;
