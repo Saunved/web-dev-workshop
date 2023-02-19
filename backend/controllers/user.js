@@ -1,6 +1,19 @@
 const User = require("./../models/User");
 const bcrypt = require("bcrypt");
 
+const isEmailUnique = async (emailId) => {
+  //returns true if email does not exist in our database
+  const emailCount = await User.count({where: {email: emailId}});
+  return emailCount == 0;
+};
+
+const isHandleUnique = async (handle) => {
+  //returns true if handle does not exist in our database
+  const handleCount = await User.count({where: {handle: handle}});
+  return  handleCount == 0;
+};
+
+
 module.exports.createUser = async (req, res) => {
   try {
     // Create password hash
