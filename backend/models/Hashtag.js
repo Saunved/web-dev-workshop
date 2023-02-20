@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("./../sequelize");
 
-module.exports = sequelize.define(
+const hashtagModel = sequelize.define(
   "Hashtag",
   {
     id: {
@@ -20,3 +20,5 @@ module.exports = sequelize.define(
     tableName: "hashtags",
   }
 );
+
+module.exports = hashtagModel;

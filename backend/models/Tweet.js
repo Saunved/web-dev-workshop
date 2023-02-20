@@ -1,5 +1,7 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("./../sequelize");
+const { sequelize } = require("./../sequelize");
+const User = require("./User");
+const Hashtag = require("./Hashtag");
 
 const tweetModel = sequelize.define(
   "Tweet",
@@ -11,26 +13,46 @@ const tweetModel = sequelize.define(
       allowNull: false,
       unique: true,
     },
-    body: {
-      type: DataTypes.STRING,
+    userId: {
+      type: DataTypes.INTEGER,
       allowNull: false,
+      onDelete: "CASCADE",
+      references: {
+        model: User,
+        key: "id",
+      },
+    },
+    body: {
+      type: DataTypes.STRING(280),
+      allowNull: false,
+    },
+    hashtag: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      references: {
+        model: Hashtag,
+        key: "tag",
+      },
     },
     likesCount: {
-      type: DataTypes.INTEGER(),
-      allowNull: false,
+      type: DataTypes.BIGINT,
+      defaultValue: 0,
     },
     retweetCount: {
-      type: DataTypes.INTEGER(),
-      allowNull: false,
-    },
-    hashtagId: {
-      type: DataTypes.INTEGER(),
-      allowNull: false,
+      type: DataTypes.BIGINT,
+      defaultValue: 0,
     },
   },
   {
     tableName: "tweets",
   }
 );
+
+tweetModel.belongsTo(hashtagModel, {
+  foreignKey: 'hashtagId'
+});
+tweetModel.belongsTo(userModel, {
+  foreignKey: 'userId'
+});
 
 module.exports = tweetModel;
