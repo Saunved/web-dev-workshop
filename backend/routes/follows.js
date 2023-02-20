@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { getFollows, createFollows } = require("./../controllers/follows");
+const { createFollows } = require("./../controllers/follows");
 
 router.post("/follows", createFollows);
 

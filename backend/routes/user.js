@@ -4,15 +4,17 @@ const router = express.Router();
 const {
   createUser,
   loginUser,
+  logoutUser,
   getUser,
   getAllUsers,
   changePassword,
 } = require("./../controllers/user");
 
 router.post("/login", loginUser);
+router.post("/logout", logoutUser);
 router.get("/user", getUser);
 router.get("/users", getAllUsers);
 router.post("/user", createUser);
-router.post("user/change-password", changePassword);
+router.post("/user/change-password", changePassword);
 
 module.exports = router;

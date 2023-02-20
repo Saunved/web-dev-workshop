@@ -1,6 +1,6 @@
 const User = require("./../models/User");
 const bcrypt = require("bcrypt");
-const passport = require("passport")
+const passport = require("passport");
 
 const isEmailUnique = async (emailId) => {
   //returns true if email does not exist in our database
@@ -14,7 +14,7 @@ const isHandleUnique = async (handle) => {
   return handleCount == 0;
 };
 
-module.exports.loginUser = (req, res, next) => {
+module.exports.loginUser = async (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
     if (err) {
       return res.status(500).json({
@@ -35,6 +35,17 @@ module.exports.loginUser = (req, res, next) => {
       });
     }
   })(req, res, next);
+};
+
+module.exports.logoutUser = async (req, res, next) => {
+  req.logout((err) => {
+    if (err) {
+      return res.status(500).json({
+        message: "Error while logging out.",
+      });
+    }
+    res.status(200).json({ message: "Logged out." });
+  });
 };
 
 module.exports.createUser = async (req, res) => {
