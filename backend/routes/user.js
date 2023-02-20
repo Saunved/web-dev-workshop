@@ -11,7 +11,7 @@ const {
 const { auth } = require("./../middlewares/auth");
 
 router.post("/login", loginUser);
-router.get("/user", getUser);
+router.get("/user/:id", getUser);
 router.get("/users", getAllUsers);
 router.post("/user", createUser);
 router.post("/user/change-password", auth, changePassword);
