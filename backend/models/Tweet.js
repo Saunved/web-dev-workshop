@@ -12,14 +12,22 @@ const tweetModel = sequelize.define(
       unique: true,
     },
     body: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(280),
       allowNull: false,
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: "Users",
+        key: "id",
+      },
     },
     hashtag: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
       references: {
-        model: "Tweets",
+        model: "Hashtags",
         key: "tag",
       },
     },
