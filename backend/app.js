@@ -4,6 +4,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const session = require("express-session");
 const passport = require("passport");
+require("./strategies/localStrategy")
 
 const app = express();
 const { config } = require("./configs/config");
@@ -46,7 +47,6 @@ app.use(
 );
 
 // Passport
-require("./strategies/localStrategy")
 app.use(passport.initialize());
 app.use(passport.session());
 
