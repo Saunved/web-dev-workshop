@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const { getFollows, createFollows } = require("./../controllers/follows");
+const { createFollows } = require("./../controllers/follows");
+const { auth } = require("./../middlewares/auth");
 
-router.get("/follows", getFollows);
-router.post("/follows", createFollows);
+router.post("/follows", auth, createFollows);
 
 module.exports = router;
