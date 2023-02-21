@@ -70,7 +70,7 @@ module.exports.createUser = async (req, res) => {
 
 module.exports.getUser = async (req, res) => {
   try {
-    const user = await User.findOne({ where: { id: req.query.id } });
+    const user = await User.findByPk(req.params.id);
 
     return res.status(200).json({
       data: { user: user },
@@ -98,7 +98,7 @@ module.exports.getAllUsers = async (req, res) => {
 
 module.exports.changePassword = async (req, res) => {
   try {
-    const user = await User.findOne({ where: { id: req.body.id } });
+    const user = await User.findByPk(req.user.id);
 
     if (!user) {
       return res.status(400).json({
