@@ -21,7 +21,9 @@ export default function Tweet({ tweet }) {
             time={tweet.created_at}
           />
         </Link>
-        <TweetContent body={tweet.body} />
+        <Link href={`/${tweet.handle}/status/123`}>
+          <TweetContent body={tweet.body} />
+        </Link>
         {/* <LinkPreview /> -- try at home! */}
         <TweetActions />
       </div>

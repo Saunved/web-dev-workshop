@@ -22,7 +22,7 @@ export default function Sidebar() {
         <Bell size={28} className="text-gray-300"></Bell>
         <EnvelopeSimple size={28} className="text-gray-300"></EnvelopeSimple>
         <BookmarkSimple size={28} className="text-gray-300" />
-        <Link href="/handle">
+        <Link href="/@johndoe1">
           <User size={28}></User>
         </Link>
         <Link href="/settings">
