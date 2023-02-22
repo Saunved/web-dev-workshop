@@ -5,7 +5,6 @@ module.exports.createTweet = async (req, res) => {
     const { body, hashtag } = req.body;
     const userId = req.user.id;
     const tweet = await Tweet.create({ userId, body, hashtag });
-
     return res.status(201).json({
       data: {
         tweet: { id: tweet.id, body: tweet.body, createdAt: tweet.createdAt },
@@ -22,7 +21,6 @@ module.exports.createTweet = async (req, res) => {
 module.exports.getTweet = async (req, res) => {
   try {
     const tweet = await Tweet.findByPk(req.params.id);
-
     return res.status(200).json({
       data: { tweet: tweet },
     });

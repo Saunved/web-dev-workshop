@@ -53,6 +53,7 @@ app.use(passport.session());
 // Importing routes
 const userRouter = require("./routes/user");
 const tweetRouter = require("./routes/tweet");
+const retweetRouter = require("./routes/retweet");
 const hashtagRouter = require("./routes/hashtag");
 const followsRouter = require("./routes/follows");
 app.use("/", [userRouter, tweetRouter, hashtagRouter, followsRouter]);
