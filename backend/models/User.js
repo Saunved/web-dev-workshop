@@ -1,6 +1,5 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("./../sequelize");
-const tweetModel = require("./Tweet");
+const { sequelize } = require("./../sequelize");
 
 const userModel = sequelize.define(
   "User",
@@ -47,9 +46,10 @@ const userModel = sequelize.define(
     followerCount: {
       type: DataTypes.BIGINT,
       defaultValue: 0,
-      validate: {
-        isDate: true,
-      },
+    },
+    followingCount: {
+      type: DataTypes.BIGINT,
+      defaultValue: 0,
     },
   },
   {
