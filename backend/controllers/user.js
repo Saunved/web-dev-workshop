@@ -68,6 +68,25 @@ module.exports.createUser = async (req, res) => {
   }
 };
 
+module.exports.updateUser = async (req, res) => {
+  try {
+    const user = await User.update(req.body, {
+      where: {
+        id: req.user.id
+      }
+    });
+
+    return res.status(200).json({
+      data: { user: { id: user.id } },
+      message: "User UPDATED.",
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: "Error while updating user.",
+    });
+  }
+};
+
 module.exports.getUser = async (req, res) => {
   try {
     const user = await User.findByPk(req.params.id);
