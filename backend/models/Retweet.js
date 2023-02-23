@@ -1,5 +1,7 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("./../sequelize");
+const { sequelize } = require("./../sequelize");
+const User = require("./User");
+const Tweet = require("./Tweet");
 
 const retweetModel = sequelize.define(
   "Retweet",
@@ -15,7 +17,7 @@ const retweetModel = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: "tweet",
+        model: Tweet,
         key: "id",
       },
     },
@@ -23,12 +25,14 @@ const retweetModel = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: "user",
+        model: User,
         key: "id",
       },
     },
   },
-  { tableName: "retweets" }
+  {
+    tableName: "retweets",
+  }
 );
 
 module.exports = retweetModel;
