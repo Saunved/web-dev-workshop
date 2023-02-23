@@ -4,7 +4,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const session = require("express-session");
 const passport = require("passport");
-require("./strategies/localStrategy")
+require("./strategies/localStrategy");
 
 const app = express();
 const { config } = require("./configs/config");
@@ -56,5 +56,11 @@ const tweetRouter = require("./routes/tweet");
 const retweetRouter = require("./routes/retweet");
 const hashtagRouter = require("./routes/hashtag");
 const followsRouter = require("./routes/follows");
-app.use("/", [userRouter, tweetRouter, hashtagRouter, followsRouter]);
+app.use("/", [
+  userRouter,
+  tweetRouter,
+  retweetRouter,
+  hashtagRouter,
+  followsRouter,
+]);
 module.exports = app;
