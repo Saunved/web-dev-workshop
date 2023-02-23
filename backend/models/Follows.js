@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("./../sequelize");
+const User = require("./User");
 
 const followsModel = sequelize.define(
   "Follows",
@@ -15,7 +16,7 @@ const followsModel = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: "Users",
+        model: User,
         key: "id",
       },
     },
@@ -23,10 +24,10 @@ const followsModel = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: "Users",
+        model: User,
         key: "id",
-        },
-      }
+      },
+    },
   },
   {
     tableName: "follows",

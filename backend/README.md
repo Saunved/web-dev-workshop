@@ -2,6 +2,8 @@
 
 ## Setup
 
+### Install Dependencies
+
 Make sure you install [node](https://nodejs.org/en/download/) using [nvm](https://github.com/nvm-sh/nvm/).
 
 Before setting up the server install nodemon:
@@ -10,11 +12,19 @@ Before setting up the server install nodemon:
 
 Nodemon is a utility that will monitor for any changes in your source and automatically restart your server. I recommend setting it up as a global dependency (  **remove flag -g to install it as a local dependency** ).
 
-### Install required packages
+### Install packages
 
 Execute the following command inside the backend project directory to install all packages and dependencies required to run the project.
 
 `npm install`
+
+### Setup .env file
+
+Create a .env file from the provided example.env file and edit the required environment variables.
+
+Note: Environment variables in the example file have been set as placeholders. Please edit these variables to ensure proper functioning.
+
+### Start the server
 
 After completing the aforementioned steps you can now execute the following commands from the backend project directory to start the server:
 

@@ -2,10 +2,8 @@ const Retweet = require("./../models/Retweet");
 
 module.exports.createRetweet = async (req, res) => {
   try {
-    // Create password hash
-    console.log("Logging retweet");
-    console.log(req);
     const retweet = await Retweet.create(req.body);
+
     return res.status(200).json({
       data: {
         retweet: { id: retweet.id },

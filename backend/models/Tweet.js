@@ -1,5 +1,7 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("./../sequelize");
+const User = require("./User");
+const Hashtag = require("./Hashtag");
 
 const tweetModel = sequelize.define(
   "Tweet",
@@ -16,7 +18,7 @@ const tweetModel = sequelize.define(
       allowNull: false,
       onDelete: "CASCADE",
       references: {
-        model: "user",
+        model: User,
         key: "id",
       },
     },
@@ -24,19 +26,11 @@ const tweetModel = sequelize.define(
       type: DataTypes.STRING(280),
       allowNull: false,
     },
-    userId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: "Users",
-        key: "id",
-      },
-    },
     hashtag: {
       type: DataTypes.STRING,
       allowNull: true,
       references: {
-        model: "Hashtags",
+        model: Hashtag,
         key: "tag",
       },
     },
