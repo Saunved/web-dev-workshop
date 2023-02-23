@@ -7,7 +7,7 @@ module.exports.createTweet = async (req, res) => {
     const tweet = await Tweet.create({ userId, body, hashtag });
     return res.status(201).json({
       data: {
-        tweet: { id: tweet.id, body: tweet.body, createdAt: tweet.createdAt },
+        tweet: { id: tweet.id, body: tweet.body },
       },
       message: "Tweet published.",
     });
@@ -33,7 +33,9 @@ module.exports.getTweet = async (req, res) => {
 
 module.exports.getUserTweets = async (req, res) => {
   try {
-    const tweets = await Tweet.findAll({ where: { userId: req.params.userId } });
+    const tweets = await Tweet.findAll({
+      where: { userId: req.params.userId },
+    });
 
     return res.status(200).json({
       data: { tweets: tweets },
