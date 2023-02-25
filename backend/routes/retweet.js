@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const { getUserRetweet, createRetweet } = require("./../controllers/retweet");
+const { createRetweet } = require("./../controllers/retweet");
+const { auth } = require("./../middlewares/auth");
 
-router.get("/retweet", getUserRetweet);
-router.post("/retweet", createRetweet);
+router.post("/retweet/:tweetId", auth, createRetweet);
 
 module.exports = router;

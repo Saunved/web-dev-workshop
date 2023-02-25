@@ -1,4 +1,5 @@
 const Tweet = require("./../models/Tweet");
+const User = require("./../models/User");
 
 module.exports.createTweet = async (req, res) => {
   try {
@@ -20,7 +21,14 @@ module.exports.createTweet = async (req, res) => {
 
 module.exports.getTweet = async (req, res) => {
   try {
-    const tweet = await Tweet.findByPk(req.params.id);
+    const tweet = await Tweet.findByPk(req.params.id, {
+      include: [
+        {
+          model: User,
+          attributes: ["name", "handle"],
+        },
+      ],
+    });
     return res.status(200).json({
       data: { tweet: tweet },
     });
@@ -34,6 +42,12 @@ module.exports.getTweet = async (req, res) => {
 module.exports.getUserTweets = async (req, res) => {
   try {
     const tweets = await Tweet.findAll({
+      include: [
+        {
+          model: User,
+          attributes: ["name", "handle"],
+        },
+      ],
       where: { userId: req.params.userId },
     });
 
@@ -51,6 +65,12 @@ module.exports.getTweets = async (req, res) => {
   try {
     // Fetch tweets sorted by createdAt in desc order
     const tweets = await Tweet.findAll({
+      include: [
+        {
+          model: User,
+          attributes: ["name", "handle"],
+        },
+      ],
       order: [["createdAt", "DESC"]],
     });
 
@@ -69,6 +89,12 @@ module.exports.getTweetsByHashtag = async (req, res) => {
     // Fetch tweets by hashtag sorted in desc order of createdAt
     const hashtag = req.params.hashtag;
     const tweets = await Tweet.findAll({
+      include: [
+        {
+          model: User,
+          attributes: ["name", "handle"],
+        },
+      ],
       where: {
         hashtag: hashtag,
       },
@@ -89,11 +115,15 @@ module.exports.getTweetsByHandle = async (req, res) => {
   try {
     // Fetch tweets by handle, sorted in desc order of createdAt
     const handle = req.params.handle;
-    const user = await User.findOne({ where: { handle: handle } });
     const tweets = await Tweet.findAll({
-      where: {
-        userId: user.id,
-      },
+      include: [
+        {
+          model: User,
+          attributes: ["name", "handle"],
+          where: { handle: handle },
+          required: true,
+        },
+      ],
       order: [["createdAt", "DESC"]],
     });
 

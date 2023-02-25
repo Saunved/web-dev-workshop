@@ -2,7 +2,8 @@ const Hashtag = require("./../models/Hashtag");
 
 module.exports.createHashtag = async (req, res) => {
   try {
-    const hashtag = await Hashtag.create(req.body);
+    const tag = req.body.tag;
+    const hashtag = await Hashtag.create({tag});
 
     return res.status(201).json({
       data: { hashtag: { id: hashtag.id } },

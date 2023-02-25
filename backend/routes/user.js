@@ -15,7 +15,7 @@ router.post("/login", loginUser);
 router.get("/user/:id", getUser);
 router.get("/users", getAllUsers);
 router.post("/user", createUser);
-router.post("/user", updateUser);
+router.post("/user", auth, updateUser);
 router.put("/user/change-password", auth, changePassword);
 router.post("/logout", auth, logoutUser);
 
