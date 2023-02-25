@@ -56,6 +56,7 @@ const tweetRouter = require("./routes/tweet");
 const retweetRouter = require("./routes/retweet");
 const hashtagRouter = require("./routes/hashtag");
 const followsRouter = require("./routes/follows");
+
 app.use("/", [
   userRouter,
   tweetRouter,
@@ -63,4 +64,5 @@ app.use("/", [
   hashtagRouter,
   followsRouter,
 ]);
+
 module.exports = app;

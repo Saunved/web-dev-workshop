@@ -22,7 +22,7 @@ const userModel = sequelize.define(
     },
     bio: {
       type: DataTypes.TEXT,
-      allowNull: false,
+      defaultValue: "",
     },
     email: {
       type: DataTypes.STRING(320),

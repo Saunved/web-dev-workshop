@@ -1,4 +1,5 @@
 const Tweet = require("./../models/Tweet");
+const User = require("./../models/User")
 
 module.exports.createTweet = async (req, res) => {
   try {
