@@ -2,9 +2,17 @@ const Hashtag = require("./../models/Hashtag");
 
 module.exports.createHashtag = async (req, res) => {
   try {
-    const tag = req.body.tag;
-    const hashtag = await Hashtag.create({tag});
-
+    var tag = req.body.tag;
+    if (tag.charAt(0) != "#") {
+      tag = "#" + tag;
+    }
+    const checkExistingHashtag = await Hashtag.findOne({ where: { tag: tag } });
+    if (checkExistingHashtag) {
+      return res.status(409).json({
+        data: { success: true, message: "Hashtag already exists." },
+      });
+    }
+    const hashtag = await Hashtag.create({ tag });
     return res.status(201).json({
       data: { hashtag: { id: hashtag.id } },
       message: "Hashtag created.",
