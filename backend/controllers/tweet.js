@@ -115,21 +115,33 @@ module.exports.getTweetsByHandle = async (req, res) => {
   try {
     // Fetch tweets by handle, sorted in desc order of createdAt
     const handle = req.params.handle;
-    const tweets = await Tweet.findAll({
-      include: [
-        {
-          model: User,
-          attributes: ["name", "handle"],
-          where: { handle: handle },
-          required: true,
-        },
-      ],
-      order: [["createdAt", "DESC"]],
-    });
-
-    return res.status(200).json({
-      data: { tweets: tweets },
-    });
+    const validHandle = await User.findOne({ where: { handle: handle } });
+    if (validHandle) {
+      const tweets = await Tweet.findAll({
+        include: [
+          {
+            model: User,
+            attributes: ["name", "handle"],
+            where: { handle: handle },
+            required: true,
+          },
+        ],
+        order: [["createdAt", "DESC"]],
+      });
+      if (tweets.length == 0) {
+        return res.status(200).json({
+          data: { success: true, message: "No tweets found" },
+        });
+      } else {
+        return res.status(200).json({
+          data: { tweets: tweets },
+        });
+      }
+    } else {
+      return res.status(400).json({
+        data: { success: false, message: "Invalid handle" },
+      });
+    }
   } catch (err) {
     return res.status(500).json({
       message: "Error while fetching tweets by handle.",
