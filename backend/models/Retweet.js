@@ -1,9 +1,10 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("./../sequelize");
 const User = require("./User");
+const Tweet = require("./Tweet");
 
-const followsModel = sequelize.define(
-  "Follows",
+const retweetModel = sequelize.define(
+  "Retweet",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -11,6 +12,14 @@ const followsModel = sequelize.define(
       primaryKey: true,
       allowNull: false,
       unique: true,
+    },
+    tweetId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: Tweet,
+        key: "id",
+      },
     },
     userId: {
       type: DataTypes.INTEGER,
@@ -20,18 +29,10 @@ const followsModel = sequelize.define(
         key: "id",
       },
     },
-    followingUserId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: User,
-        key: "id",
-      },
-    },
   },
   {
-    tableName: "follows",
+    tableName: "retweets",
   }
 );
 
-module.exports = followsModel;
+module.exports = retweetModel;

@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("./../sequelize");
+const { sequelize } = require("./../sequelize");
 
 const hashtagModel = sequelize.define(
   "Hashtag",
@@ -12,9 +12,10 @@ const hashtagModel = sequelize.define(
       unique: true,
     },
     tag: {
-      type: DataTypes.STRING(140),
-      allowNull: false
-    }
+      type: DataTypes.STRING,
+      unique: true,
+      allowNull: false,
+    },
   },
   {
     tableName: "hashtags",

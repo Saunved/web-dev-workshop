@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("./../sequelize");
+const { sequelize } = require("./../sequelize");
 
 const userModel = sequelize.define(
   "User",
@@ -22,7 +22,7 @@ const userModel = sequelize.define(
     },
     bio: {
       type: DataTypes.TEXT,
-      allowNull: false
+      allowNull: false,
     },
     email: {
       type: DataTypes.STRING(320),
@@ -46,10 +46,11 @@ const userModel = sequelize.define(
     followerCount: {
       type: DataTypes.BIGINT,
       defaultValue: 0,
-      validate: {
-        isDate: true,
-      },
-    }
+    },
+    followingCount: {
+      type: DataTypes.BIGINT,
+      defaultValue: 0,
+    },
   },
   {
     tableName: "users",
