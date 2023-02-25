@@ -48,4 +48,11 @@ const tweetModel = sequelize.define(
   }
 );
 
+tweetModel.belongsTo(Hashtag, {
+  foreignKey: 'hashtagId'
+});
+tweetModel.belongsTo(User, {
+  foreignKey: 'userId'
+});
+
 module.exports = tweetModel;

@@ -42,7 +42,67 @@ module.exports.getUserTweets = async (req, res) => {
     });
   } catch (err) {
     return res.status(500).json({
+      message: "Error while fetching user tweets.",
+    });
+  }
+};
+
+module.exports.getTweets = async (req, res) => {
+  try {
+    // Fetch tweets sorted by createdAt in desc order
+    const tweets = await Tweet.findAll({
+      order: [["createdAt", "DESC"]],
+    });
+
+    return res.status(200).json({
+      data: { tweets: tweets },
+    });
+  } catch (err) {
+    return res.status(500).json({
       message: "Error while fetching tweets.",
+    });
+  }
+};
+
+module.exports.getTweetsByHashtag = async (req, res) => {
+  try {
+    // Fetch tweets by hashtag sorted in desc order of createdAt
+    const hashtag = req.params.hashtag;
+    const tweets = await Tweet.findAll({
+      where: {
+        hashtag: hashtag,
+      },
+      order: [["createdAt", "DESC"]],
+    });
+
+    return res.status(200).json({
+      data: { tweets: tweets },
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: "Error while fetching tweets by hashtag.",
+    });
+  }
+};
+
+module.exports.getTweetsByHandle = async (req, res) => {
+  try {
+    // Fetch tweets by handle, sorted in desc order of createdAt
+    const handle = req.params.handle;
+    const user = await User.findOne({ where: { handle: handle } });
+    const tweets = await Tweet.findAll({
+      where: {
+        userId: user.id,
+      },
+      order: [["createdAt", "DESC"]],
+    });
+
+    return res.status(200).json({
+      data: { tweets: tweets },
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: "Error while fetching tweets by handle.",
     });
   }
 };

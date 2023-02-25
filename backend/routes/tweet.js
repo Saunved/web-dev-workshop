@@ -1,10 +1,21 @@
 const express = require("express");
 const router = express.Router();
-const { getTweet, getUserTweets, createTweet } = require("./../controllers/tweet");
 const { auth } = require("./../middlewares/auth");
+const {
+  createTweet,
+  getTweets,
+  getTweet,
+  getUserTweets,
+  getTweetsByHashtag,
+  getTweetsByHandle
+} = require("./../controllers/tweet");
 
-router.get("/tweets/user/:userId", getUserTweets);
-router.get("/tweet/:id", getTweet);
+router.get("/tweet", getTweet);
 router.post("/tweet", auth, createTweet);
+router.get("/tweet/:id", getTweet);
+router.get("/tweets", getTweets);
+router.get("/tweets/user/:userId", getUserTweets);
+router.get("/tweets/hashtag/:hashtag", getTweetsByHashtag);
+router.get("/tweets/handle/:handle", getTweetsByHandle);
 
 module.exports = router;
