@@ -1,0 +1,13 @@
+{
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es2021": true
+  },
+  // Ref: https://github.com/prettier/eslint-plugin-prettier#recommended-configuration
+  "extends": ["eslint:recommended", "plugin:prettier/recommended"],
+  "overrides": [],
+  "parserOptions": {
+    "ecmaVersion": "latest"
+  }
+}
