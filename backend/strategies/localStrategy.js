@@ -5,7 +5,7 @@ const User = require("../models/User");
 
 const strategy = new LocalStrategy(
   {
-    usernameField: "email",
+    usernameField: "email"
   },
   async (email, password, next) => {
     try {

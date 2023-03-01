@@ -6,7 +6,7 @@ const { config } = require("./configs/config");
 // Connect to database
 const sequelize = new Sequelize({
   dialect: "sqlite",
-  storage: "./woofer.sqlite",
+  storage: "./woofer.sqlite"
 });
 
 (async () => {
@@ -20,7 +20,7 @@ const sequelize = new Sequelize({
 const sessionStore = new SequelizeStore({
   db: sequelize,
   tableName: "sessions",
-  extendDefaultFields: config.session.extendDefaultFields,
+  extendDefaultFields: config.session.extendDefaultFields
 });
 
 (async () => {
@@ -30,6 +30,5 @@ const sessionStore = new SequelizeStore({
     console.error(err);
   }
 })();
-
 
 module.exports = { sequelize, sessionStore };

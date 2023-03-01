@@ -10,27 +10,27 @@ const followsModel = sequelize.define(
       autoIncrement: true,
       primaryKey: true,
       allowNull: false,
-      unique: true,
+      unique: true
     },
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: User,
-        key: "id",
-      },
+        key: "id"
+      }
     },
     followingUserId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: User,
-        key: "id",
-      },
-    },
+        key: "id"
+      }
+    }
   },
   {
-    tableName: "follows",
+    tableName: "follows"
   }
 );
 

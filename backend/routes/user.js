@@ -7,7 +7,7 @@ const {
   logoutUser,
   getUser,
   getAllUsers,
-  changePassword,
+  changePassword
 } = require("./../controllers/user");
 const { auth } = require("./../middlewares/auth");
 
