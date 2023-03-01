@@ -8,13 +8,13 @@ module.exports.createTweet = async (req, res) => {
     const tweet = await Tweet.create({ userId, body, hashtag });
     return res.status(201).json({
       data: {
-        tweet: { id: tweet.id, body: tweet.body },
+        tweet: { id: tweet.id, body: tweet.body }
       },
-      message: "Tweet published.",
+      message: "Tweet published."
     });
   } catch (err) {
     return res.status(500).json({
-      message: "Error while creating tweet.",
+      message: "Error while creating tweet."
     });
   }
 };
@@ -25,16 +25,16 @@ module.exports.getTweet = async (req, res) => {
       include: [
         {
           model: User,
-          attributes: ["name", "handle"],
-        },
-      ],
+          attributes: ["name", "handle"]
+        }
+      ]
     });
     return res.status(200).json({
-      data: { tweet: tweet },
+      data: { tweet: tweet }
     });
   } catch (err) {
     return res.status(500).json({
-      message: "Error while fetching tweet.",
+      message: "Error while fetching tweet."
     });
   }
 };
@@ -45,18 +45,18 @@ module.exports.getUserTweets = async (req, res) => {
       include: [
         {
           model: User,
-          attributes: ["name", "handle"],
-        },
+          attributes: ["name", "handle"]
+        }
       ],
-      where: { userId: req.params.userId },
+      where: { userId: req.params.userId }
     });
 
     return res.status(200).json({
-      data: { tweets: tweets },
+      data: { tweets: tweets }
     });
   } catch (err) {
     return res.status(500).json({
-      message: "Error while fetching user tweets.",
+      message: "Error while fetching user tweets."
     });
   }
 };
@@ -68,18 +68,18 @@ module.exports.getTweets = async (req, res) => {
       include: [
         {
           model: User,
-          attributes: ["name", "handle"],
-        },
+          attributes: ["name", "handle"]
+        }
       ],
-      order: [["createdAt", "DESC"]],
+      order: [["createdAt", "DESC"]]
     });
 
     return res.status(200).json({
-      data: { tweets: tweets },
+      data: { tweets: tweets }
     });
   } catch (err) {
     return res.status(500).json({
-      message: "Error while fetching tweets.",
+      message: "Error while fetching tweets."
     });
   }
 };
@@ -92,21 +92,21 @@ module.exports.getTweetsByHashtag = async (req, res) => {
       include: [
         {
           model: User,
-          attributes: ["name", "handle"],
-        },
+          attributes: ["name", "handle"]
+        }
       ],
       where: {
-        hashtag: hashtag,
+        hashtag: hashtag
       },
-      order: [["createdAt", "DESC"]],
+      order: [["createdAt", "DESC"]]
     });
 
     return res.status(200).json({
-      data: { tweets: tweets },
+      data: { tweets: tweets }
     });
   } catch (err) {
     return res.status(500).json({
-      message: "Error while fetching tweets by hashtag.",
+      message: "Error while fetching tweets by hashtag."
     });
   }
 };
@@ -121,18 +121,18 @@ module.exports.getTweetsByHandle = async (req, res) => {
           model: User,
           attributes: ["name", "handle"],
           where: { handle: handle },
-          required: true,
-        },
+          required: true
+        }
       ],
-      order: [["createdAt", "DESC"]],
+      order: [["createdAt", "DESC"]]
     });
 
     return res.status(200).json({
-      data: { tweets: tweets },
+      data: { tweets: tweets }
     });
   } catch (err) {
     return res.status(500).json({
-      message: "Error while fetching tweets by handle.",
+      message: "Error while fetching tweets by handle."
     });
   }
 };

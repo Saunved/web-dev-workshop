@@ -6,12 +6,12 @@ sequelize.define(
   {
     sid: {
       type: DataTypes.STRING,
-      primaryKey: true,
+      primaryKey: true
     },
     userId: DataTypes.INTEGER,
     expires: DataTypes.DATE
   },
   {
-    tableName: "sessions",
+    tableName: "sessions"
   }
 );

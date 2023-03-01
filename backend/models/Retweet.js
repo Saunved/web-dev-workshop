@@ -11,27 +11,27 @@ const retweetModel = sequelize.define(
       autoIncrement: true,
       primaryKey: true,
       allowNull: false,
-      unique: true,
+      unique: true
     },
     tweetId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: Tweet,
-        key: "id",
-      },
+        key: "id"
+      }
     },
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: User,
-        key: "id",
-      },
-    },
+        key: "id"
+      }
+    }
   },
   {
-    tableName: "retweets",
+    tableName: "retweets"
   }
 );
 

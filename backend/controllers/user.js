@@ -18,17 +18,17 @@ module.exports.loginUser = async (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
     if (err) {
       return res.status(500).json({
-        message: "Error while authenticating user.",
+        message: "Error while authenticating user."
       });
     } else if (!user) {
       return res.status(401).json({
-        message: "Invalid Credentials",
+        message: "Invalid Credentials"
       });
     } else {
       req.login(user, (err) => {
         if (err) {
           return res.status(500).json({
-            message: "Error while authenticating user.",
+            message: "Error while authenticating user."
           });
         }
         return res.status(200).json({ message: "Logged in." });
@@ -41,7 +41,7 @@ module.exports.logoutUser = async (req, res, next) => {
   req.logout((err) => {
     if (err) {
       return res.status(500).json({
-        message: "Error while logging out.",
+        message: "Error while logging out."
       });
     }
     res.status(200).json({ message: "Logged out." });
@@ -59,11 +59,11 @@ module.exports.createUser = async (req, res) => {
 
     return res.status(201).json({
       data: { user: { id: user.id } },
-      message: "User created.",
+      message: "User created."
     });
   } catch (err) {
     return res.status(500).json({
-      message: "Error while creating user.",
+      message: "Error while creating user."
     });
   }
 };
@@ -78,11 +78,11 @@ module.exports.updateUser = async (req, res) => {
 
     return res.status(200).json({
       data: { user: { id: user.id } },
-      message: "User UPDATED.",
+      message: "User UPDATED."
     });
   } catch (err) {
     return res.status(500).json({
-      message: "Error while updating user.",
+      message: "Error while updating user."
     });
   }
 };
@@ -92,11 +92,11 @@ module.exports.getUser = async (req, res) => {
     const user = await User.findByPk(req.params.id);
 
     return res.status(200).json({
-      data: { user: user },
+      data: { user: user }
     });
   } catch (err) {
     return res.status(500).json({
-      message: "Error while fetching user.",
+      message: "Error while fetching user."
     });
   }
 };
@@ -106,11 +106,11 @@ module.exports.getAllUsers = async (req, res) => {
     const users = await User.findAll({});
 
     return res.status(200).json({
-      data: { users: users },
+      data: { users: users }
     });
   } catch (err) {
     return res.status(500).json({
-      message: "Error while fetching all users.",
+      message: "Error while fetching all users."
     });
   }
 };
@@ -121,7 +121,7 @@ module.exports.changePassword = async (req, res) => {
 
     if (!user) {
       return res.status(400).json({
-        message: "Invalid user id sent!",
+        message: "Invalid user id sent!"
       });
     }
 
@@ -141,7 +141,6 @@ module.exports.changePassword = async (req, res) => {
     return res.status(200).json({
       message: "Password updated for the user successfully"
     });
-
   } catch (err) {
     return res.status(500).json({
       message: err

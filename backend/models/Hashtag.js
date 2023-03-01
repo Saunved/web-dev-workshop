@@ -9,16 +9,16 @@ const hashtagModel = sequelize.define(
       autoIncrement: true,
       primaryKey: true,
       allowNull: false,
-      unique: true,
+      unique: true
     },
     tag: {
       type: DataTypes.STRING,
       unique: true,
-      allowNull: false,
-    },
+      allowNull: false
+    }
   },
   {
-    tableName: "hashtags",
+    tableName: "hashtags"
   }
 );
 

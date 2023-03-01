@@ -11,7 +11,7 @@ const tweetModel = sequelize.define(
       autoIncrement: true,
       primaryKey: true,
       allowNull: false,
-      unique: true,
+      unique: true
     },
     userId: {
       type: DataTypes.INTEGER,
@@ -19,37 +19,37 @@ const tweetModel = sequelize.define(
       onDelete: "CASCADE",
       references: {
         model: User,
-        key: "id",
-      },
+        key: "id"
+      }
     },
     body: {
       type: DataTypes.STRING(280),
-      allowNull: false,
+      allowNull: false
     },
     hashtag: {
       type: DataTypes.STRING,
       allowNull: true,
       references: {
         model: Hashtag,
-        key: "tag",
-      },
+        key: "tag"
+      }
     },
     likesCount: {
       type: DataTypes.BIGINT,
-      defaultValue: 0,
+      defaultValue: 0
     },
     retweetCount: {
       type: DataTypes.BIGINT,
-      defaultValue: 0,
-    },
+      defaultValue: 0
+    }
   },
   {
-    tableName: "tweets",
+    tableName: "tweets"
   }
 );
 
 tweetModel.belongsTo(User, {
-  foreignKey: 'userId'
+  foreignKey: "userId"
 });
 
 module.exports = tweetModel;

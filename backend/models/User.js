@@ -9,51 +9,51 @@ const userModel = sequelize.define(
       autoIncrement: true,
       primaryKey: true,
       allowNull: false,
-      unique: true,
+      unique: true
     },
     name: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: false
     },
     handle: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+      unique: true
     },
     bio: {
       type: DataTypes.TEXT,
-      defaultValue: "",
+      defaultValue: ""
     },
     email: {
       type: DataTypes.STRING(320),
       allowNull: false,
       unique: true,
       validate: {
-        isEmail: true,
-      },
+        isEmail: true
+      }
     },
     password: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: false
     },
     dateOfBirth: {
       type: DataTypes.DATEONLY,
       allowNull: false,
       validate: {
-        isDate: true,
-      },
+        isDate: true
+      }
     },
     followerCount: {
       type: DataTypes.BIGINT,
-      defaultValue: 0,
+      defaultValue: 0
     },
     followingCount: {
       type: DataTypes.BIGINT,
-      defaultValue: 0,
-    },
+      defaultValue: 0
+    }
   },
   {
-    tableName: "users",
+    tableName: "users"
   }
 );
 

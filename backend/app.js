@@ -14,7 +14,7 @@ const { sessionStore } = require("./sequelize");
 app.use(bodyParser.json());
 app.use(
   bodyParser.urlencoded({
-    extended: true,
+    extended: true
   })
 );
 
@@ -42,7 +42,7 @@ app.use(
     store: sessionStore,
     cookie: { maxAge: timeout },
     saveUninitialized: false,
-    resave: false,
+    resave: false
   })
 );
 
@@ -57,12 +57,6 @@ const retweetRouter = require("./routes/retweet");
 const hashtagRouter = require("./routes/hashtag");
 const followsRouter = require("./routes/follows");
 
-app.use("/", [
-  userRouter,
-  tweetRouter,
-  retweetRouter,
-  hashtagRouter,
-  followsRouter,
-]);
+app.use("/", [userRouter, tweetRouter, retweetRouter, hashtagRouter, followsRouter]);
 
 module.exports = app;
