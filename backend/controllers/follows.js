@@ -30,12 +30,6 @@ module.exports.createFollows = async (req, res) => {
     //increment follower count for user
     const followedUser = await User.findByPk(followingUserId);
 
-    if (!user || !followedUser) {
-      return res.status(400).json({
-        message: "Incorrect user ids",
-      });
-    }
-
     await user.increment('followingCount');
     await followedUser.increment('followerCount');
 
