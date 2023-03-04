@@ -48,3 +48,35 @@ module.exports.createFollows = async (req, res) => {
     });
   }
 };
+
+
+module.exports.getFollowerCountUser = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    await User.findByPk(userId).then((user) => {
+      return res.status(200).json({
+        count: user.followerCount
+      });
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error while retrieving follower count"
+    });
+  }
+};
+
+
+module.exports.getFollowingCountUser = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    await User.findByPk(userId).then((user) => {
+      return res.status(200).json({
+        count: user.followingCount
+      });
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error while retrieving following count"
+    });
+  }
+};
