@@ -48,3 +48,47 @@ module.exports.createFollows = async (req, res) => {
     });
   }
 };
+
+
+module.exports.unfollowUser = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const unfollowedUserId = req.params.unfollowedUserId;
+
+    if (userId == unfollowedUserId) {
+      return res.status(400).json({
+        message: "Users cannot unfollow themselves",
+      });
+    }
+
+    const count = await Follows.destroy({
+      where: {
+        userId: userId,
+        followingUserId: unfollowedUserId
+      }
+    });
+
+    if (count == 0) {
+      return res.status(400).json({
+        message: "The users do not follow each other",
+      });
+    }
+
+    //decrement following count for user
+    const user = await User.findByPk(userId);
+    //decrement follower count for user
+    const unfollowedUser = await User.findByPk(unfollowedUserId);
+
+    await user.decrement('followingCount');
+    await unfollowedUser.decrement('followerCount');
+
+    return res.status(200).json({
+      message: "Unfollowed succesfully",
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error while unfollowing",
+    });
+  }
+};
