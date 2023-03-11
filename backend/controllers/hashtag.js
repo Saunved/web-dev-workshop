@@ -1,6 +1,14 @@
 const Hashtag = require("./../models/Hashtag");
+const Joi = require("joi");
 
 module.exports.createHashtag = async (req, res) => {
+  const schema = Joi.object({
+    tag: Joi.string().min(4).max(100).pattern(/^#.*$/).required()
+  });
+  const { error } = schema.validate(req.body);
+  if (error) {
+    return res.status(400).json(error.details);
+  }
   try {
     const tag = req.body.tag;
     const hashtag = await Hashtag.create({ tag });
