@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#compose-tweet:empty:before {
+  content: attr(placeholder);
+  @apply text-gray-600;
+}
+
+html,
+body {
+  @apply overscroll-y-none;
+}
