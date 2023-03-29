@@ -4,6 +4,7 @@ import TweetContent from "@/components/Tweet/TweetContent";
 import TweetActions from "@/components/Tweet/TweetActions";
 import PropTypes from "prop-types";
 import Link from "next/link";
+import { getHumanReadableDate } from "@/utils/date";
 
 export default function Tweet({ tweet }) {
   return (
@@ -18,7 +19,7 @@ export default function Tweet({ tweet }) {
           <TweetHeader
             name={tweet.name}
             handle={tweet.handle}
-            time={tweet.created_at}
+            time={getHumanReadableDate(tweet.createdAt)}
           />
         </Link>
         <Link href={`/${tweet.handle}/status/123`}>
@@ -36,6 +37,6 @@ Tweet.propTypes = {
     name: PropTypes.string.isRequired,
     body: PropTypes.string.isRequired,
     handle: PropTypes.string.isRequired,
-    created_at: PropTypes.string.isRequired,
+    createdAt: PropTypes.string.isRequired,
   }),
 };

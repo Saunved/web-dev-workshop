@@ -1,7 +1,6 @@
 import HeaderImage from "@/components/Profile/HeaderImage";
 import HeaderProfilePicture from "@/components/Profile/HeaderProfilePicture";
 import { Calendar } from "phosphor-react";
-import tweets from "@/mock/tweets";
 import Head from "next/head";
 import TweetFeed from "@/components/TweetFeed";
 import Link from "next/link";
@@ -10,8 +9,9 @@ import { useRouter } from "next/router";
 import UserNotFound from "@/components/Error/UserNotFound";
 import { BASE_URL } from "@/constants/routes";
 import { useState, useEffect } from "react";
+import { getHumanReadableDate } from "@/utils/date";
 
-export default function ProfilePage({ user }) {
+export default function ProfilePage({ user, tweets }) {
   const uiTextFollow = strings.EN.FOLLOW;
   const uiTextProfile = strings.EN.PROFILE;
   const uiTextSite = strings.EN.SITE;
@@ -52,7 +52,7 @@ export default function ProfilePage({ user }) {
           <div className="flex justify-start items-center gap-2 mt-4 text-gray-500">
             <Calendar size={24} className="text-gray-500" />
             <p className="text-sm">
-              {uiTextProfile.joined} {user.createdAt}
+              {uiTextProfile.joined} {getHumanReadableDate(user.createdAt)}
             </p>
           </div>
 
@@ -78,11 +78,17 @@ export default function ProfilePage({ user }) {
 
 export async function getServerSideProps({ params }) {
   if (params.profile) {
-    const response = await fetch(`${BASE_URL}/user/from/${params.profile}`);
-    const body = await response.json();
+    const [profileRes, tweetsRes] = await Promise.all([
+      fetch(`${BASE_URL}/user/from/${params.profile}`),
+      fetch(`${BASE_URL}/tweets/handle/${params.profile}`),
+    ]);
+    const profileResBody = await profileRes.json();
+    const tweetsResBody = await tweetsRes.json();
+    console.log(tweetsResBody);
     return {
       props: {
-        user: body.data.user,
+        user: profileResBody.data.user,
+        tweets: tweetsResBody.data.tweets,
       },
     };
   }
