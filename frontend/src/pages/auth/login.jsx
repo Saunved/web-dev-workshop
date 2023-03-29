@@ -56,6 +56,7 @@ export default function LoginFlow() {
 
     fetch(loginRoute, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
