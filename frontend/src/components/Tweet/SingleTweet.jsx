@@ -22,7 +22,7 @@ export default function Tweet({ tweet }) {
             time={getHumanReadableDate(tweet.createdAt)}
           />
         </Link>
-        <Link href={`/${tweet.handle}/status/123`}>
+        <Link href={`/${tweet.handle}/status/${tweet.id}`}>
           <TweetContent body={tweet.body} />
         </Link>
         {/* <LinkPreview /> -- try at home! */}
