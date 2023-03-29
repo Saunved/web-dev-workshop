@@ -8,25 +8,23 @@ import Link from "next/link";
 import strings from "@/constants/ui/strings";
 import { useRouter } from "next/router";
 import UserNotFound from "@/components/Error/UserNotFound";
+import { BASE_URL } from "@/constants/routes";
+import { useState, useEffect } from "react";
 
-export default function ProfilePage() {
+export default function ProfilePage({ user }) {
   const uiTextFollow = strings.EN.FOLLOW;
   const uiTextProfile = strings.EN.PROFILE;
   const uiTextSite = strings.EN.SITE;
   const title = `${uiTextSite.home} / ${uiTextSite.woofer}`;
+  const [userIsSelf, setUserIsSelf] = useState(false);
 
   const router = useRouter();
-  const { profile } = router.query;
-
-  const userProfile = tweets.filter((tweet) => {
-    if (tweet.handle === profile) {
-      return tweet;
+  useEffect(() => {
+    const handle = localStorage.getItem("userHandle");
+    if (handle === router.query.profile) {
+      setUserIsSelf(true);
     }
-  });
-
-  if (Array.isArray(userProfile) && userProfile.length === 0) {
-    return <UserNotFound />;
-  }
+  }, []);
 
   return (
     <>
@@ -40,22 +38,22 @@ export default function ProfilePage() {
             <HeaderProfilePicture />
           </div>
           <div className="mt-6 text-right mr-6">
-            <button className="border border-gray-600 rounded-full px-8 py-1">
-              {uiTextFollow.follow}
-            </button>
+            {userIsSelf ? null : (
+              <button className="border border-gray-600 rounded-full px-8 py-1">
+                {uiTextFollow.follow}
+              </button>
+            )}
           </div>
         </div>
         <div className="px-4 mt-8">
-          <p className="font-bold">John Doe</p>
-          <p className="text-gray-500">@johndoe</p>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab numquam
-            labore veniam temporibus commodi. Mollitia eum commodi praesentium
-            expedita ab.
-          </p>
+          <p className="font-bold">{user.name}</p>
+          <p className="text-gray-500">@{user.handle}</p>
+          <p>{user.bio}</p>
           <div className="flex justify-start items-center gap-2 mt-4 text-gray-500">
             <Calendar size={24} className="text-gray-500" />
-            <p className="text-sm">{uiTextProfile.joined} 12 May, 2016</p>
+            <p className="text-sm">
+              {uiTextProfile.joined} {user.createdAt}
+            </p>
           </div>
 
           <div className="mt-4 flex justify-start gap-6">
@@ -76,4 +74,16 @@ export default function ProfilePage() {
       </main>
     </>
   );
+}
+
+export async function getServerSideProps({ params }) {
+  if (params.profile) {
+    const response = await fetch(`${BASE_URL}/user/from/${params.profile}`);
+    const body = await response.json();
+    return {
+      props: {
+        user: body.data.user,
+      },
+    };
+  }
 }
