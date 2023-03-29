@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import PasswordLabel from "@/components/Form/PasswordLabel";
 import Input from "@/components/Form/Input";
+import { loginRoute } from "@/constants/routes";
 
 export default function LoginFlow() {
   const [uiText, setUiText] = useState(strings.EN.LOGIN_FLOW);
@@ -48,6 +49,35 @@ export default function LoginFlow() {
     // Detect and set the correct language here
   }, []);
 
+  const onSubmitForm = (e) => {
+    e.preventDefault();
+
+    fetch(loginRoute, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: loginForm.email.value,
+        password: loginForm.password.value,
+      }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          // Login successful
+          console.log("User logged in successfully");
+        } else {
+          // Login failed
+          response.json().then((data) => {
+            console.error(data.message);
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Error logging in", error);
+      });
+  };
+
   return (
     <div className="max-w-3xl py-16 bg-white rounded-md w-full mx-auto border mt-20 shadow">
       <div className="flex justify-center mb-4">
@@ -61,7 +91,11 @@ export default function LoginFlow() {
             <Input {...loginForm.password} />
 
             <div className="mt-6">
-              <button className="px-4 w-full border rounded-full py-2 bg-blue-600 text-white">
+              <button
+                type="submit"
+                onClick={onSubmitForm}
+                className="px-4 w-full border rounded-full py-2 bg-blue-600 text-white"
+              >
                 {uiText.signIn}
               </button>
             </div>
