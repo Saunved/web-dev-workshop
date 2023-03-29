@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import ReactTextareaAutosize from "react-textarea-autosize";
 import ProfilePicture from "@/components/Tweet/ProfilePicture";
+import { tweetRoute } from "@/constants/routes";
 
 export default function ComposeTweet({ handle }) {
   const TEXT_CHAR_LIMIT = 240;
@@ -27,6 +28,37 @@ export default function ComposeTweet({ handle }) {
     }
   };
 
+  const onTweetSubmit = (e) => {
+    e.preventDefault();
+
+    fetch(tweetRoute, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        body: textArea,
+      }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          response.json().then((data) => {
+            // @TODO: Redirect the user to the single tweet view
+            // router.push(`/${data.handle}`);
+          });
+        } else {
+          // If create tweet fails
+          response.json().then((data) => {
+            console.error(data.message);
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Error creating tweet", error);
+      });
+  };
+
   return (
     <>
       <div className="flex justify-start w-full gap-2">
@@ -49,7 +81,11 @@ export default function ComposeTweet({ handle }) {
               </span>{" "}
               / 240
             </div>
-            <button className="px-8 border rounded-full py-2 bg-blue-600 text-white flex justify-center items-center gap-2">
+            <button
+              type="button"
+              onClick={onTweetSubmit}
+              className="px-8 border rounded-full py-2 bg-blue-600 text-white flex justify-center items-center gap-2"
+            >
               Woof
             </button>
           </div>
