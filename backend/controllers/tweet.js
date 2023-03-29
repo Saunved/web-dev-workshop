@@ -29,8 +29,11 @@ module.exports.getTweet = async (req, res) => {
         }
       ]
     });
+
+    const tweetWithUser = { ...tweet.dataValues, name: tweet.User.name, handle: tweet.User.handle };
+
     return res.status(200).json({
-      data: { tweet: tweet }
+      data: { tweet: tweetWithUser }
     });
   } catch (err) {
     return res.status(500).json({
