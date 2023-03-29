@@ -31,7 +31,7 @@ module.exports.loginUser = async (req, res, next) => {
             message: "Error while authenticating user."
           });
         }
-        return res.status(200).json({ message: "Logged in." });
+        return res.status(200).json({ message: "Logged in.", handle: user.handle, id: user.id });
       });
     }
   })(req, res, next);
@@ -93,6 +93,20 @@ module.exports.getUser = async (req, res) => {
 
     return res.status(200).json({
       data: { user: user }
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: "Error while fetching user."
+    });
+  }
+};
+
+module.exports.getUserByHandle = async (req, res) => {
+  try {
+    const user = await User.findOne({ where: { handle: req.params.handle } });
+
+    return res.status(200).json({
+      data: { user }
     });
   } catch (err) {
     return res.status(500).json({
