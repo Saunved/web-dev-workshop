@@ -127,8 +127,17 @@ module.exports.getTweetsByHandle = async (req, res) => {
       order: [["createdAt", "DESC"]]
     });
 
+    const tweetsWithUser = tweets.map((tweet) => {
+      const { name, handle } = tweet.User;
+      return {
+        ...tweet.dataValues,
+        name,
+        handle
+      };
+    });
+
     return res.status(200).json({
-      data: { tweets: tweets }
+      data: { tweets: tweetsWithUser }
     });
   } catch (err) {
     return res.status(500).json({
