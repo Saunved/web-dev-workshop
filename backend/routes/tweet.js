@@ -10,7 +10,6 @@ const {
   getTweetsByHandle
 } = require("./../controllers/tweet");
 
-router.get("/tweet", getTweet);
 router.post("/tweet", auth, createTweet);
 router.get("/tweet/:id", getTweet);
 router.get("/tweets", getTweets);
