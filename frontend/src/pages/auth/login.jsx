@@ -5,9 +5,11 @@ import Link from "next/link";
 import PasswordLabel from "@/components/Form/PasswordLabel";
 import Input from "@/components/Form/Input";
 import { loginRoute } from "@/constants/routes";
+import { useRouter } from "next/router";
 
 export default function LoginFlow() {
   const [uiText, setUiText] = useState(strings.EN.LOGIN_FLOW);
+  const router = useRouter();
 
   const onInputChange = (e) => {
     const name = e.target.name;
@@ -64,8 +66,12 @@ export default function LoginFlow() {
     })
       .then((response) => {
         if (response.ok) {
-          // Login successful
-          console.log("User logged in successfully");
+          // Redirect the user to their profile page
+          response.json().then((data) => {
+            localStorage.setItem("userId", data.id);
+            localStorage.setItem("userHandle", data.handle);
+            router.push(`/${data.handle}`);
+          });
         } else {
           // Login failed
           response.json().then((data) => {

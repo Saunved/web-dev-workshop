@@ -5,9 +5,11 @@ import Link from "next/link";
 import Input from "@/components/Form/Input";
 import PasswordLabel from "@/components/Form/PasswordLabel";
 import { registerRoute } from "@/constants/routes";
+import { useRouter } from "next/router";
 
 export default function RegisterFlow() {
   const [uiText, setUiText] = useState(strings.EN.REGISTER_FLOW);
+  const router = useRouter();
 
   const onInputChange = (e) => {
     const name = e.target.name;
@@ -98,7 +100,7 @@ export default function RegisterFlow() {
       .then((response) => {
         if (response.ok) {
           // Registration successful
-          console.log("User created successfully");
+          router.push("/auth/login");
         } else {
           // Registration failed
           response.json().then((data) => {
