@@ -60,5 +60,8 @@ export default {
     ERROR: {
       userNotFound: "User not found",
     },
+    TWEET: {
+      tweetNotFound: "Tweet not found",
+    },
   },
 };
