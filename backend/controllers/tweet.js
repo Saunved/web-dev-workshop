@@ -1,6 +1,17 @@
 const Tweet = require("./../models/Tweet");
 const User = require("./../models/User");
 
+const getTweetsWithUserData = (tweets) => {
+  return tweets.map((tweet) => {
+    const { name, handle } = tweet.User;
+    return {
+      ...tweet.dataValues,
+      name,
+      handle
+    };
+  });
+};
+
 module.exports.createTweet = async (req, res) => {
   try {
     const { body, hashtag } = req.body;
@@ -13,6 +24,7 @@ module.exports.createTweet = async (req, res) => {
       message: "Tweet published."
     });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({
       message: "Error while creating tweet."
     });
@@ -55,7 +67,7 @@ module.exports.getUserTweets = async (req, res) => {
     });
 
     return res.status(200).json({
-      data: { tweets: tweets }
+      data: { tweets: getTweetsWithUserData(tweets) }
     });
   } catch (err) {
     return res.status(500).json({
@@ -78,7 +90,7 @@ module.exports.getTweets = async (req, res) => {
     });
 
     return res.status(200).json({
-      data: { tweets: tweets }
+      data: { tweets: getTweetsWithUserData(tweets) }
     });
   } catch (err) {
     return res.status(500).json({
