@@ -5,18 +5,22 @@ import Head from "next/head";
 import strings from "@/constants/ui/strings";
 import { useState, useEffect } from "react";
 import { BASE_URL } from "@/constants/routes";
+import session from "@/utils/session";
 
 export default function HomeFeed({ tweets }) {
   const uiText = strings.EN.SITE;
   const title = `${uiText.home} / ${uiText.woofer}`;
   const [user, setUser] = useState({});
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    setUser({
-      id: localStorage.getItem("userId"),
-      handle: localStorage.getItem("userHandle"),
-    });
+    setUser(session.getUser());
+    setIsLoggedIn(session.isLoggedIn());
   }, []);
+
+  if (!isLoggedIn) {
+    return null;
+  }
 
   return (
     <>

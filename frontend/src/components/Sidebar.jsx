@@ -10,16 +10,20 @@ import {
 } from "phosphor-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import session from "@/utils/session";
 
 export default function Sidebar() {
   const [user, setUser] = useState({});
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    setUser({
-      id: localStorage.getItem("userId"),
-      handle: localStorage.getItem("userHandle"),
-    });
+    setUser(session.getUser());
+    setIsLoggedIn(session.isLoggedIn());
   }, []);
+
+  if (!isLoggedIn) {
+    return null;
+  }
 
   return (
     <div className="fixed top-0 w-20">
