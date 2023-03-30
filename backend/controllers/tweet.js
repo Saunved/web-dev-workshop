@@ -1,5 +1,7 @@
 const Tweet = require("./../models/Tweet");
 const User = require("./../models/User");
+const Follows = require("./../models/Follows");
+const { Op } = require("sequelize");
 
 const getTweetsWithUserData = (tweets) => {
   return tweets.map((tweet) => {
@@ -159,6 +161,35 @@ module.exports.getTweetsByHandle = async (req, res) => {
   } catch (err) {
     return res.status(500).json({
       message: "Error while fetching tweets by handle."
+    });
+  }
+};
+
+module.exports.getFollowingTweets = async (req, res) => {
+  try {
+    const followingUsers = await Follows.findAll({
+      where: { userId: req.user.id },
+      attributes: ["followingUserId"]
+    });
+
+    const followingUserIds = followingUsers.map((user) => user.followingUserId);
+
+    const tweets = await Tweet.findAll({
+      where: {
+        userId: {
+          [Op.in]: followingUserIds
+        }
+      },
+      order: [["createdAt", "ASC"]]
+    });
+
+    return res.status(200).json({
+      data: { tweets }
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Error while liking tweet"
     });
   }
 };
