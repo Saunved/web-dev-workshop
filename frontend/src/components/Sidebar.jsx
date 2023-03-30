@@ -41,7 +41,7 @@ export default function Sidebar() {
       </div>
       <div className="fixed bottom-8 ml-3 w-20 text-center">
         <img
-          src="https://source.unsplash.com/random/80x80"
+          src={`https://api.dicebear.com/5.x/thumbs/svg?seed=${user.handle}`}
           className="rounded-full w-12 h-12"
           alt=""
         />
