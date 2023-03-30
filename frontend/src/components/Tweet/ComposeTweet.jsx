@@ -2,11 +2,16 @@ import { useRef, useState } from "react";
 import ReactTextareaAutosize from "react-textarea-autosize";
 import ProfilePicture from "@/components/Tweet/ProfilePicture";
 import { tweetRoute } from "@/constants/routes";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import session from "@/utils/session";
 
 export default function ComposeTweet({ handle }) {
   const TEXT_CHAR_LIMIT = 240;
   const [textArea, setTextArea] = useState("");
+  const [user, setUser] = useState({});
   const tweetRef = useRef();
+  const router = useRouter();
 
   const onTextAreaChange = (e) => {
     const input = e.target.value;
@@ -17,6 +22,10 @@ export default function ComposeTweet({ handle }) {
 
     setTextArea(input);
   };
+
+  useEffect(() => {
+    setUser(session.getUser());
+  }, []);
 
   const getCharLimitIndicatorColor = () => {
     if (textArea.length > 200 && textArea.length < TEXT_CHAR_LIMIT) {
@@ -43,9 +52,9 @@ export default function ComposeTweet({ handle }) {
     })
       .then((response) => {
         if (response.ok) {
-          response.json().then((data) => {
+          response.json().then((body) => {
             // @TODO: Redirect the user to the single tweet view
-            // router.push(`/${data.handle}`);
+            router.push(`/${user.handle}/status/${body.data.tweet.id}`);
           });
         } else {
           // If create tweet fails
