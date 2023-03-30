@@ -42,14 +42,6 @@ const userModel = sequelize.define(
       validate: {
         isDate: true
       }
-    },
-    followerCount: {
-      type: DataTypes.BIGINT,
-      defaultValue: 0
-    },
-    followingCount: {
-      type: DataTypes.BIGINT,
-      defaultValue: 0
     }
   },
   {

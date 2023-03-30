@@ -1,4 +1,5 @@
 const User = require("../models/User");
+
 module.exports.auth = async (req, res, next) => {
   // DO NOT do this in production. This is for educational purposes, to make workshop setup easier for us
   // Having such backdoors is a terrible idea. You would ideally write a proper authentication system around this
