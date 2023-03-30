@@ -8,7 +8,8 @@ const {
   getUserTweets,
   getTweetsByHashtag,
   getTweetsByHandle,
-  likeTweet
+  likeTweet,
+  unlikeTweet
 } = require("./../controllers/tweet");
 
 router.post("/tweet", auth, createTweet);
@@ -17,6 +18,7 @@ router.get("/tweets", getTweets);
 router.get("/tweets/user/:userId", getUserTweets);
 router.get("/tweets/hashtag/:hashtag", getTweetsByHashtag);
 router.get("/tweets/handle/:handle", getTweetsByHandle);
-router.post("/tweets/like/:id", auth, likeTweet);
+router.post("/tweet/like/:id", auth, likeTweet);
+router.post("/tweet/unlike/:id", auth, unlikeTweet);
 
 module.exports = router;

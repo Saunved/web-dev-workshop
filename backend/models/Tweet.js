@@ -33,14 +33,6 @@ const tweetModel = sequelize.define(
         model: Hashtag,
         key: "tag"
       }
-    },
-    likesCount: {
-      type: DataTypes.BIGINT,
-      defaultValue: 0
-    },
-    retweetCount: {
-      type: DataTypes.BIGINT,
-      defaultValue: 0
     }
   },
   {

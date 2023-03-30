@@ -4,6 +4,7 @@ const User = require("./../models/User");
 const getTweetsWithUserData = (tweets) => {
   return tweets.map((tweet) => {
     const { name, handle } = tweet.User;
+
     return {
       ...tweet.dataValues,
       name,
@@ -17,6 +18,7 @@ module.exports.createTweet = async (req, res) => {
     const { body, hashtag } = req.body;
     const userId = req.user.id;
     const tweet = await Tweet.create({ userId, body, hashtag });
+
     return res.status(201).json({
       data: {
         tweet: { id: tweet.id, body: tweet.body }
@@ -173,6 +175,22 @@ module.exports.likeTweet = async (req, res) => {
     console.log(error);
     return res.status(500).json({
       message: "Error while liking tweet"
+    });
+  }
+};
+
+module.exports.unlikeTweet = async (req, res) => {
+  try {
+    const tweet = await Tweet.findOne({ where: { id: req.params.id } });
+    await tweet.removeLikedBy(req.user.id);
+
+    return res.status(200).json({
+      data: { message: "Unliked tweet" }
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Error while unliking tweet"
     });
   }
 };
