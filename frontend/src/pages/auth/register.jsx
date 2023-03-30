@@ -55,16 +55,6 @@ export default function RegisterFlow() {
       onChange: onInputChange,
       validate: () => {},
     },
-    dateOfBirth: {
-      label: uiText.birthday,
-      htmlFor: "dateOfBirth",
-      type: "date",
-      required: true,
-      errorText: "",
-      value: "",
-      onChange: onInputChange,
-      validate: () => {},
-    },
     handle: {
       label: uiText.handle,
       htmlFor: "handle",
@@ -92,7 +82,6 @@ export default function RegisterFlow() {
       body: JSON.stringify({
         name: registrationForm.name.value,
         handle: registrationForm.handle.value,
-        dateOfBirth: registrationForm.dateOfBirth.value,
         email: registrationForm.email.value,
         password: registrationForm.password.value,
       }),
@@ -131,7 +120,6 @@ export default function RegisterFlow() {
             <Input {...registrationForm.name} />
             <Input {...registrationForm.email} />
             <Input {...registrationForm.password} />
-            <Input {...registrationForm.dateOfBirth} />
             <Input {...registrationForm.handle} />
 
             <div className="mt-6">
