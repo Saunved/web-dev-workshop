@@ -75,8 +75,8 @@ export default function LoginFlow() {
           });
         } else {
           // Login failed
-          response.json().then((data) => {
-            console.error(data.message);
+          response.json().then((body) => {
+            console.error(body.data.message);
           });
         }
       })
