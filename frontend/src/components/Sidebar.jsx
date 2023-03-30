@@ -9,8 +9,18 @@ import {
   Gear,
 } from "phosphor-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function Sidebar() {
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    setUser({
+      id: localStorage.getItem("userId"),
+      handle: localStorage.getItem("userHandle"),
+    });
+  }, []);
+
   return (
     <div className="fixed top-0 w-20">
       <div className="grid justify-center items-start mt-4 gap-8 bg-white">
@@ -22,7 +32,7 @@ export default function Sidebar() {
         <Bell size={28} className="text-gray-300"></Bell>
         <EnvelopeSimple size={28} className="text-gray-300"></EnvelopeSimple>
         <BookmarkSimple size={28} className="text-gray-300" />
-        <Link href="/@johndoe1">
+        <Link href={`/${user.handle}`}>
           <User size={28}></User>
         </Link>
         <Link href="/settings">
