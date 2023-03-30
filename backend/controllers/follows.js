@@ -16,3 +16,24 @@ module.exports.createFollows = async (req, res) => {
     });
   }
 };
+
+module.exports.removeFollows = async (req, res) => {
+  try {
+    const followingUserId = req.params.followingUserId;
+    const userId = req.user.id;
+    const follows = await Follows.destroy({
+      where: {
+        userId: userId,
+        followingUserId: followingUserId
+      }
+    });
+
+    return res.status(200).json({
+      message: "Ok."
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: "Error while unfollowing."
+    });
+  }
+};
