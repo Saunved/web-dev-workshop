@@ -69,3 +69,29 @@ module.exports.getFollowers = async (req, res) => {
     });
   }
 };
+
+module.exports.getFollowing = async (req, res) => {
+  try {
+    const user = await User.findOne({ where: { handle: req.params.handle } });
+    const followingById = await Follows.findAll({
+      where: { userId: user.id },
+      attributes: ["followingUserId"]
+    });
+
+    const followerIds = followingById.map((follower) => follower.dataValues.followingUserId);
+    console.log(followerIds);
+
+    const users = await User.findAll({ where: { id: followerIds } });
+
+    return res.status(200).json({
+      data: {
+        users
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Error while getting followers"
+    });
+  }
+};
