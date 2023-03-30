@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import SettingsLayout from "@/components/Layouts/SettingsLayout";
 import session from "@/utils/session";
 import { useEffect } from "react";
+import { Toaster } from "react-hot-toast";
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
@@ -27,6 +28,7 @@ export default function App({ Component, pageProps }) {
       return (
         <Layout>
           <SettingsLayout children={page} />
+          <Toaster position="bottom-center" reverseOrder={false} />
         </Layout>
       );
     }
