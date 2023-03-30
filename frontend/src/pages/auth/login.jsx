@@ -68,10 +68,10 @@ export default function LoginFlow() {
       .then((response) => {
         if (response.ok) {
           // Redirect the user to their profile page
-          response.json().then((data) => {
-            localStorage.setItem("userId", data.id);
-            localStorage.setItem("userHandle", data.handle);
-            router.push(`/${data.handle}`);
+          response.json().then((body) => {
+            localStorage.setItem("userId", body.data.id);
+            localStorage.setItem("userHandle", body.data.handle);
+            router.push(`/${body.data.handle}`);
           });
         } else {
           // Login failed
