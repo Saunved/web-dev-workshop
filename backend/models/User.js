@@ -24,6 +24,10 @@ const userModel = sequelize.define(
       type: DataTypes.TEXT,
       defaultValue: ""
     },
+    website: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
     email: {
       type: DataTypes.STRING(320),
       allowNull: false,
