@@ -11,7 +11,7 @@ import { BASE_URL } from "@/constants/routes";
 import { useState, useEffect } from "react";
 import { getHumanReadableDate } from "@/utils/date";
 
-export default function ProfilePage({ user, tweets }) {
+export default function ProfilePage({ user, tweets, followCounts }) {
   const uiTextFollow = strings.EN.FOLLOW;
   const uiTextProfile = strings.EN.PROFILE;
   const uiTextSite = strings.EN.SITE;
@@ -85,12 +85,12 @@ export default function ProfilePage({ user, tweets }) {
           </div>
 
           <div className="mt-4 flex justify-start gap-6">
-            <Link href="/following">
-              <b>0</b> {uiTextFollow.following}
+            <Link href={`/${user.handle}/following`}>
+              <b>{followCounts.following}</b> {uiTextFollow.following}
             </Link>
 
-            <Link href="/followers">
-              <b>0</b> {uiTextFollow.followers}
+            <Link href={`/${user.handle}/followers`}>
+              <b>{followCounts.followers}</b> {uiTextFollow.followers}
             </Link>
           </div>
         </div>
@@ -104,20 +104,32 @@ export default function ProfilePage({ user, tweets }) {
   );
 }
 
-export async function getServerSideProps({ params }) {
-  if (params.profile) {
-    const [profileRes, tweetsRes] = await Promise.all([
-      fetch(`${BASE_URL}/user/from/${params.profile}`),
-      fetch(`${BASE_URL}/tweets/handle/${params.profile}`),
-    ]);
-    const profileResBody = await profileRes.json();
-    const tweetsResBody = await tweetsRes.json();
-    console.log(tweetsResBody);
-    return {
-      props: {
-        user: profileResBody.data.user,
-        tweets: tweetsResBody.data.tweets,
-      },
-    };
+export async function getServerSideProps({ res, params }) {
+  try {
+    if (params.profile) {
+      const [profileRes, tweetsRes, followCountsRes] = await Promise.all([
+        fetch(`${BASE_URL}/user/from/${params.profile}`),
+        fetch(`${BASE_URL}/tweets/handle/${params.profile}`),
+        fetch(`${BASE_URL}/followers/count/${params.profile}`),
+      ]);
+      const profileResBody = await profileRes.json();
+      const tweetsResBody = await tweetsRes.json();
+      const followCountsResBody = await followCountsRes.json();
+
+      if (!profileResBody.data.user) {
+        throw new Error("No such user exists");
+      }
+
+      return {
+        props: {
+          user: profileResBody.data.user,
+          tweets: tweetsResBody.data.tweets,
+          followCounts: followCountsResBody.data,
+        },
+      };
+    }
+  } catch (error) {
+    res.writeHead(302, { Location: "/home" });
+    res.end();
   }
 }
