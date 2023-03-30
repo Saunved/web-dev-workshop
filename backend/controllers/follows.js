@@ -1,4 +1,5 @@
 const Follows = require("./../models/Follows");
+const User = require("./../models/User");
 
 module.exports.addFollower = async (req, res) => {
   try {
@@ -22,6 +23,25 @@ module.exports.addFollower = async (req, res) => {
     console.log(err);
     return res.status(500).json({
       message: "Error while following."
+    });
+  }
+};
+
+module.exports.countFollows = async (req, res) => {
+  try {
+    const user = await User.findOne({ where: { handle: req.params.handle } });
+    const followingCount = await Follows.count({ where: { userId: user.id } });
+    const followersCount = await Follows.count({ where: { followingUserId: user.id } });
+
+    return res.status(200).json({
+      data: {
+        following: followingCount,
+        followers: followersCount
+      }
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error while getting follow counts"
     });
   }
 };
