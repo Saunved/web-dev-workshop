@@ -108,7 +108,7 @@ export async function getServerSideProps({ res, params }) {
   try {
     if (params.profile) {
       const [profileRes, tweetsRes, followCountsRes] = await Promise.all([
-        fetch(`${BASE_URL}/user/from/${params.profile}`),
+        fetch(`${BASE_URL}/user/handle/${params.profile}`),
         fetch(`${BASE_URL}/tweets/handle/${params.profile}`),
         fetch(`${BASE_URL}/followers/count/${params.profile}`),
       ]);
