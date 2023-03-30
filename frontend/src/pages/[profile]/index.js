@@ -26,6 +26,31 @@ export default function ProfilePage({ user, tweets }) {
     }
   }, []);
 
+  const followUser = () => {
+    fetch(`${BASE_URL}/followers/${user.id}`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          response.json().then((data) => {
+            // @TODO: Change "Follow" to "Following"
+            console.log("Follower created", data);
+          });
+        } else {
+          response.json().then((data) => {
+            console.error(data.message);
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Error following user", error);
+      });
+  };
+
   return (
     <>
       <Head>
@@ -35,11 +60,14 @@ export default function ProfilePage({ user, tweets }) {
         <HeaderImage />
         <div className="grid grid-flow-col space-between">
           <div className="-mt-16 pl-8">
-            <HeaderProfilePicture />
+            <HeaderProfilePicture handle={user.handle} />
           </div>
           <div className="mt-6 text-right mr-6">
             {userIsSelf ? null : (
-              <button className="border border-gray-600 rounded-full px-8 py-1">
+              <button
+                onClick={followUser}
+                className="border border-gray-600 rounded-full px-8 py-1"
+              >
                 {uiTextFollow.follow}
               </button>
             )}
