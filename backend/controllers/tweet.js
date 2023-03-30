@@ -148,3 +148,19 @@ module.exports.getTweetsByHandle = async (req, res) => {
     });
   }
 };
+
+module.exports.likeTweet = async (req, res) => {
+  try {
+    const tweet = await Tweet.findOne({ where: { id: req.params.id } });
+    await tweet.addLikedBy(req.user.id);
+
+    return res.status(200).json({
+      data: { message: "Liked tweet" }
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Error while liking tweet"
+    });
+  }
+};

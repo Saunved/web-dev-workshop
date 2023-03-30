@@ -52,4 +52,14 @@ tweetModel.belongsTo(User, {
   foreignKey: "userId"
 });
 
+User.belongsToMany(tweetModel, {
+  as: "Liker",
+  through: "user_tweets_likes"
+});
+
+tweetModel.belongsToMany(User, {
+  as: "LikedBy",
+  through: "user_tweets_likes"
+});
+
 module.exports = tweetModel;
