@@ -26,7 +26,7 @@ export default function Tweet({ tweet }) {
           <TweetContent body={tweet.body} />
         </Link>
         {/* <LinkPreview /> -- try at home! */}
-        <TweetActions />
+        <TweetActions tweet={tweet} />
       </div>
     </article>
   );
