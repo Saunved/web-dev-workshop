@@ -33,14 +33,6 @@ const tweetModel = sequelize.define(
         model: Hashtag,
         key: "tag"
       }
-    },
-    likesCount: {
-      type: DataTypes.BIGINT,
-      defaultValue: 0
-    },
-    retweetCount: {
-      type: DataTypes.BIGINT,
-      defaultValue: 0
     }
   },
   {
@@ -50,6 +42,16 @@ const tweetModel = sequelize.define(
 
 tweetModel.belongsTo(User, {
   foreignKey: "userId"
+});
+
+User.belongsToMany(tweetModel, {
+  as: "Liker",
+  through: "user_tweets_likes"
+});
+
+tweetModel.belongsToMany(User, {
+  as: "LikedBy",
+  through: "user_tweets_likes"
 });
 
 module.exports = tweetModel;
