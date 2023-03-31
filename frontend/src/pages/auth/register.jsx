@@ -11,61 +11,15 @@ export default function RegisterFlow() {
   const [uiText, setUiText] = useState(strings.EN.REGISTER_FLOW);
   const router = useRouter();
 
-  const onInputChange = (e) => {
-    const name = e.target.name;
-    const _registrationForm = { ...registrationForm };
-    _registrationForm[name].value = e.target.value;
-    setRegistrationForm(_registrationForm);
-  };
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [handle, setHandle] = useState("");
 
-  const onShowPasswordToggle = (status) => {
-    const _registrationForm = { ...registrationForm };
-    _registrationForm.password.type = status ? "text" : "password";
-    setRegistrationForm(_registrationForm);
-  };
-
-  const [registrationForm, setRegistrationForm] = useState({
-    name: {
-      label: uiText.name,
-      htmlFor: "name",
-      type: "text",
-      required: true,
-      errorText: "",
-      value: "",
-      onChange: onInputChange,
-      validate: () => {},
-    },
-    email: {
-      label: uiText.email,
-      htmlFor: "email",
-      type: "email",
-      required: true,
-      errorText: "",
-      value: "",
-      onChange: onInputChange,
-      validate: () => {},
-    },
-    password: {
-      label: <PasswordLabel onShowPasswordToggle={onShowPasswordToggle} />,
-      htmlFor: "password",
-      type: "password",
-      required: true,
-      errorText: "",
-      value: "",
-      onChange: onInputChange,
-      validate: () => {},
-    },
-    handle: {
-      label: uiText.handle,
-      htmlFor: "handle",
-      type: "text",
-      required: true,
-      errorText: "",
-      value: "",
-      onChange: onInputChange,
-      validate: () => {},
-    },
-  });
+  // @TODO: Show validation errors for these fields
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [handleError, setHandleError] = useState("");
 
   useEffect(() => {
     // Detect and set the correct language here
@@ -80,10 +34,10 @@ export default function RegisterFlow() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        name: registrationForm.name.value,
-        handle: registrationForm.handle.value,
-        email: registrationForm.email.value,
-        password: registrationForm.password.value,
+        name,
+        handle,
+        email,
+        password,
       }),
     })
       .then((response) => {
@@ -116,16 +70,55 @@ export default function RegisterFlow() {
       </h1>
       <div className="mt-8 flex justify-center">
         <div className="w-64">
-          <form>
-            <Input {...registrationForm.name} />
-            <Input {...registrationForm.email} />
-            <Input {...registrationForm.password} />
-            <Input {...registrationForm.handle} />
+          <form onSubmit={onSubmitForm}>
+            <div>
+              <label htmlFor="name">{uiText.name}</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="email">{uiText.email}</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="password">{uiText.password}</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="handle">{uiText.handle}</label>
+              <input
+                type="text"
+                id="handle"
+                name="handle"
+                value={handle}
+                onChange={(event) => setHandle(event.target.value)}
+                required
+              />
+            </div>
 
             <div className="mt-6">
               <button
-                type="button"
-                onClick={onSubmitForm}
+                type="submit"
                 className="px-4 w-full border rounded-full py-2 bg-blue-600 text-white"
               >
                 {uiText.register}
