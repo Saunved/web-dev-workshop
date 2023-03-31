@@ -1,11 +1,17 @@
 import { useRef, useState } from "react";
 import ReactTextareaAutosize from "react-textarea-autosize";
 import ProfilePicture from "@/components/Tweet/ProfilePicture";
+import { tweetRoute } from "@/constants/routes";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import session from "@/utils/session";
 
 export default function ComposeTweet({ handle }) {
   const TEXT_CHAR_LIMIT = 240;
   const [textArea, setTextArea] = useState("");
+  const [user, setUser] = useState({});
   const tweetRef = useRef();
+  const router = useRouter();
 
   const onTextAreaChange = (e) => {
     const input = e.target.value;
@@ -17,6 +23,10 @@ export default function ComposeTweet({ handle }) {
     setTextArea(input);
   };
 
+  useEffect(() => {
+    setUser(session.getUser());
+  }, []);
+
   const getCharLimitIndicatorColor = () => {
     if (textArea.length > 200 && textArea.length < TEXT_CHAR_LIMIT) {
       return "text-yellow-600";
@@ -25,6 +35,37 @@ export default function ComposeTweet({ handle }) {
     if (textArea.length >= TEXT_CHAR_LIMIT) {
       return "text-red-600";
     }
+  };
+
+  const onTweetSubmit = (e) => {
+    e.preventDefault();
+
+    fetch(tweetRoute, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        body: textArea,
+      }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          response.json().then((body) => {
+            // @TODO: Redirect the user to the single tweet view
+            router.push(`/${user.handle}/status/${body.data.tweet.id}`);
+          });
+        } else {
+          // If create tweet fails
+          response.json().then((data) => {
+            console.error(data.message);
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Error creating tweet", error);
+      });
   };
 
   return (
@@ -49,7 +90,11 @@ export default function ComposeTweet({ handle }) {
               </span>{" "}
               / 240
             </div>
-            <button className="px-8 border rounded-full py-2 bg-blue-600 text-white flex justify-center items-center gap-2">
+            <button
+              type="button"
+              onClick={onTweetSubmit}
+              className="px-8 border rounded-full py-2 bg-blue-600 text-white flex justify-center items-center gap-2"
+            >
               Woof
             </button>
           </div>

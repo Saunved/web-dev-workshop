@@ -4,9 +4,12 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Input from "@/components/Form/Input";
 import PasswordLabel from "@/components/Form/PasswordLabel";
+import { registerRoute } from "@/constants/routes";
+import { useRouter } from "next/router";
 
 export default function RegisterFlow() {
   const [uiText, setUiText] = useState(strings.EN.REGISTER_FLOW);
+  const router = useRouter();
 
   const onInputChange = (e) => {
     const name = e.target.name;
@@ -52,16 +55,6 @@ export default function RegisterFlow() {
       onChange: onInputChange,
       validate: () => {},
     },
-    date: {
-      label: uiText.birthday,
-      htmlFor: "birthday",
-      type: "date",
-      required: true,
-      errorText: "",
-      value: "",
-      onChange: onInputChange,
-      validate: () => {},
-    },
     handle: {
       label: uiText.handle,
       htmlFor: "handle",
@@ -77,6 +70,37 @@ export default function RegisterFlow() {
   useEffect(() => {
     // Detect and set the correct language here
   }, []);
+
+  const onSubmitForm = (e) => {
+    e.preventDefault();
+
+    fetch(registerRoute, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: registrationForm.name.value,
+        handle: registrationForm.handle.value,
+        email: registrationForm.email.value,
+        password: registrationForm.password.value,
+      }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          // Registration successful
+          router.push("/auth/login");
+        } else {
+          // Registration failed
+          response.json().then((data) => {
+            console.error(data.message);
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Error registering in", error);
+      });
+  };
 
   return (
     <div className="max-w-3xl py-8 bg-white rounded-md w-full my-12 mx-auto border shadow">
@@ -96,11 +120,14 @@ export default function RegisterFlow() {
             <Input {...registrationForm.name} />
             <Input {...registrationForm.email} />
             <Input {...registrationForm.password} />
-            <Input {...registrationForm.date} />
             <Input {...registrationForm.handle} />
 
             <div className="mt-6">
-              <button className="px-4 w-full border rounded-full py-2 bg-blue-600 text-white">
+              <button
+                type="button"
+                onClick={onSubmitForm}
+                className="px-4 w-full border rounded-full py-2 bg-blue-600 text-white"
+              >
                 {uiText.register}
               </button>
             </div>

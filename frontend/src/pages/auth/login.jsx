@@ -4,9 +4,13 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import PasswordLabel from "@/components/Form/PasswordLabel";
 import Input from "@/components/Form/Input";
+import { loginRoute } from "@/constants/routes";
+import { useRouter } from "next/router";
+import session from "@/utils/session";
 
 export default function LoginFlow() {
   const [uiText, setUiText] = useState(strings.EN.LOGIN_FLOW);
+  const router = useRouter();
 
   const onInputChange = (e) => {
     const name = e.target.name;
@@ -48,6 +52,39 @@ export default function LoginFlow() {
     // Detect and set the correct language here
   }, []);
 
+  const onSubmitForm = (e) => {
+    e.preventDefault();
+
+    fetch(loginRoute, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: loginForm.email.value,
+        password: loginForm.password.value,
+      }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          // Redirect the user to their profile page
+          response.json().then((body) => {
+            session.setUser(body.data);
+            router.push(`/${body.data.handle}`);
+          });
+        } else {
+          // Login failed
+          response.json().then((body) => {
+            console.error(body.data.message);
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Error logging in", error);
+      });
+  };
+
   return (
     <div className="max-w-3xl py-16 bg-white rounded-md w-full mx-auto border mt-20 shadow">
       <div className="flex justify-center mb-4">
@@ -61,7 +98,11 @@ export default function LoginFlow() {
             <Input {...loginForm.password} />
 
             <div className="mt-6">
-              <button className="px-4 w-full border rounded-full py-2 bg-blue-600 text-white">
+              <button
+                type="submit"
+                onClick={onSubmitForm}
+                className="px-4 w-full border rounded-full py-2 bg-blue-600 text-white"
+              >
                 {uiText.signIn}
               </button>
             </div>

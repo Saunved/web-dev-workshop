@@ -1,13 +1,26 @@
 import ComposeTweet from "@/components/Tweet/ComposeTweet";
-import tweets from "@/mock/tweets";
 import HomeFeedSwitcher from "@/components/HomeFeedSwitcher";
 import TweetFeed from "@/components/TweetFeed";
 import Head from "next/head";
 import strings from "@/constants/ui/strings";
+import { useState, useEffect } from "react";
+import { BASE_URL } from "@/constants/routes";
+import session from "@/utils/session";
 
-export default function HomeFeed() {
+export default function HomeFeed({ tweets }) {
   const uiText = strings.EN.SITE;
   const title = `${uiText.home} / ${uiText.woofer}`;
+  const [user, setUser] = useState({});
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    setUser(session.getUser());
+    setIsLoggedIn(session.isLoggedIn());
+  }, []);
+
+  if (!isLoggedIn) {
+    return null;
+  }
 
   return (
     <>
@@ -21,7 +34,7 @@ export default function HomeFeed() {
         </div>
 
         <div className="mt-4 px-4">
-          <ComposeTweet handle={tweets[0].handle} />
+          <ComposeTweet handle={user.handle} />
         </div>
         <hr className="mt-4" />
 
@@ -29,4 +42,31 @@ export default function HomeFeed() {
       </div>
     </>
   );
+}
+
+export async function getServerSideProps({ params }) {
+  try {
+    const res = await fetch(`${BASE_URL}/tweets`);
+    const body = await res.json();
+
+    if (res.ok) {
+      return {
+        props: {
+          tweets: body.data.tweets,
+        },
+      };
+    } else {
+      return {
+        props: {
+          tweets: [],
+        },
+      };
+    }
+  } catch (error) {
+    return {
+      props: {
+        tweets: [],
+      },
+    };
+  }
 }
