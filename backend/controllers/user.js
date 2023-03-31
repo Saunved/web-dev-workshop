@@ -2,20 +2,8 @@ const User = require("./../models/User");
 const bcrypt = require("bcrypt");
 const passport = require("passport");
 
-const isEmailUnique = async (emailId) => {
-  //returns true if email does not exist in our database
-  const emailCount = await User.count({ where: { email: emailId } });
-  return emailCount == 0;
-};
-
-const isHandleUnique = async (handle) => {
-  //returns true if handle does not exist in our database
-  const handleCount = await User.count({ where: { handle: handle } });
-  return handleCount == 0;
-};
-
 module.exports.loginUser = async (req, res, next) => {
-  passport.authenticate("local", (err, user, info) => {
+  passport.authenticate("local", (err, user) => {
     if (err) {
       return res.status(500).json({
         message: "Error while authenticating user."
@@ -31,13 +19,16 @@ module.exports.loginUser = async (req, res, next) => {
             message: "Error while authenticating user."
           });
         }
-        return res.status(200).json({ message: "Logged in." });
+        return res.status(200).json({
+          message: "Logged in.",
+          data: { handle: user.handle, id: user.id }
+        });
       });
     }
   })(req, res, next);
 };
 
-module.exports.logoutUser = async (req, res, next) => {
+module.exports.logoutUser = async (req, res) => {
   req.logout((err) => {
     if (err) {
       return res.status(500).json({
@@ -70,15 +61,21 @@ module.exports.createUser = async (req, res) => {
 
 module.exports.updateUser = async (req, res) => {
   try {
-    const user = await User.update(req.body, {
+    await User.update(req.body, {
       where: {
         id: req.user.id
       }
     });
 
+    const user = await User.findByPk(req.user.id, {
+      attributes: {
+        exclude: ["password"]
+      }
+    });
+
     return res.status(200).json({
-      data: { user: { id: user.id } },
-      message: "User UPDATED."
+      message: "User Updated.",
+      data: { user }
     });
   } catch (err) {
     return res.status(500).json({
@@ -89,10 +86,34 @@ module.exports.updateUser = async (req, res) => {
 
 module.exports.getUser = async (req, res) => {
   try {
-    const user = await User.findByPk(req.params.id);
+    const userId = req.params.id || req.user.id;
+    const user = await User.findByPk(userId, {
+      attributes: {
+        exclude: ["password"]
+      }
+    });
 
     return res.status(200).json({
-      data: { user: user }
+      data: { user }
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: "Error while fetching user."
+    });
+  }
+};
+
+module.exports.getUserByHandle = async (req, res) => {
+  try {
+    const user = await User.findOne({
+      where: { handle: req.params.handle },
+      attributes: {
+        exclude: ["password"]
+      }
+    });
+
+    return res.status(200).json({
+      data: { user }
     });
   } catch (err) {
     return res.status(500).json({
@@ -103,10 +124,14 @@ module.exports.getUser = async (req, res) => {
 
 module.exports.getAllUsers = async (req, res) => {
   try {
-    const users = await User.findAll({});
+    const users = await User.findAll({
+      attributes: {
+        exclude: ["password"]
+      }
+    });
 
     return res.status(200).json({
-      data: { users: users }
+      data: { users }
     });
   } catch (err) {
     return res.status(500).json({
@@ -117,7 +142,7 @@ module.exports.getAllUsers = async (req, res) => {
 
 module.exports.changePassword = async (req, res) => {
   try {
-    const user = await User.findByPk(req.body.id);
+    const user = await User.findByPk(req.user.id);
 
     if (!user) {
       return res.status(400).json({
@@ -128,8 +153,13 @@ module.exports.changePassword = async (req, res) => {
     // Create password hash
     const oldPassword = req.body.oldPassword;
     const newPassword = req.body.newPassword;
+    const confirmPassword = req.body.confirmPassword;
+
+    if (newPassword !== confirmPassword) {
+      throw "New password and confirm password do not match!";
+    }
     if (!bcrypt.compareSync(oldPassword, user.password)) {
-      throw "Old passwords are not the same!";
+      throw "Old password is invalid!";
     }
     if (bcrypt.compareSync(newPassword, user.password)) {
       throw "New password is the same as old password!";

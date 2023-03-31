@@ -1,6 +1,5 @@
 // Dependencies
 const express = require("express");
-const cors = require("cors");
 const bodyParser = require("body-parser");
 const session = require("express-session");
 const passport = require("passport");
@@ -19,19 +18,23 @@ app.use(
 );
 
 // CORS
-const whitelist = ["http://localhost:5000", "http://localhost:3000"];
+const whitelist = [
+  "http://localhost:5000",
+  "http://localhost:3000",
+  "http://localhost:6000",
+  "http://localhost:4400"
+];
 
-const corsOptionsDelegate = function (req, callback) {
-  let corsOptions;
-  if (whitelist.indexOf(req.header("Origin")) !== -1) {
-    corsOptions = { origin: true }; // reflect (enable) the requested origin in the CORS response
-  } else {
-    corsOptions = { origin: false }; // disable CORS for this request
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (whitelist.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
   }
-  callback(null, corsOptions); // callback expects two parameters: error and options
-};
-
-app.use(cors(corsOptionsDelegate));
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  next();
+});
 
 // Session
 const { secret, timeout } = config.session;

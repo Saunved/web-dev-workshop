@@ -24,6 +24,10 @@ const userModel = sequelize.define(
       type: DataTypes.TEXT,
       defaultValue: ""
     },
+    website: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
     email: {
       type: DataTypes.STRING(320),
       allowNull: false,
@@ -42,14 +46,6 @@ const userModel = sequelize.define(
       validate: {
         isDate: true
       }
-    },
-    followerCount: {
-      type: DataTypes.BIGINT,
-      defaultValue: 0
-    },
-    followingCount: {
-      type: DataTypes.BIGINT,
-      defaultValue: 0
     }
   },
   {

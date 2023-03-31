@@ -6,6 +6,7 @@ import PasswordLabel from "@/components/Form/PasswordLabel";
 import Input from "@/components/Form/Input";
 import { loginRoute } from "@/constants/routes";
 import { useRouter } from "next/router";
+import session from "@/utils/session";
 
 export default function LoginFlow() {
   const [uiText, setUiText] = useState(strings.EN.LOGIN_FLOW);
@@ -69,14 +70,13 @@ export default function LoginFlow() {
         if (response.ok) {
           // Redirect the user to their profile page
           response.json().then((body) => {
-            localStorage.setItem("userId", body.data.id);
-            localStorage.setItem("userHandle", body.data.handle);
+            session.setUser(body.data);
             router.push(`/${body.data.handle}`);
           });
         } else {
           // Login failed
-          response.json().then((data) => {
-            console.error(data.message);
+          response.json().then((body) => {
+            console.error(body.data.message);
           });
         }
       })

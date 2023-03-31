@@ -1,16 +1,26 @@
 const Follows = require("./../models/Follows");
+const User = require("./../models/User");
 
-module.exports.createFollows = async (req, res) => {
+module.exports.addFollows = async (req, res) => {
   try {
     const followingUserId = req.params.followingUserId;
     const userId = req.user.id;
-    const follows = await Follows.create({ userId, followingUserId });
+    // @TODO: Check how likes are implemented to avoid this extra db call
+    const existingFollow = await Follows.findOne({ where: { userId, followingUserId } });
 
-    return res.status(201).json({
-      data: { follows: { id: follows.id } },
-      message: "Follows created."
-    });
+    if (!existingFollow) {
+      const follows = await Follows.create({ userId, followingUserId });
+      return res.status(201).json({
+        data: { follows: { id: follows.id } },
+        message: "Following user."
+      });
+    } else {
+      return res.status(200).json({
+        message: "Already following user"
+      });
+    }
   } catch (err) {
+    console.log(err);
     return res.status(500).json({
       message: "Error while following."
     });
@@ -29,11 +39,79 @@ module.exports.removeFollows = async (req, res) => {
     });
 
     return res.status(200).json({
-      message: "Ok."
+      message: "Unfollowed user"
     });
   } catch (err) {
     return res.status(500).json({
       message: "Error while unfollowing."
+    });
+  }
+};
+
+module.exports.countFollows = async (req, res) => {
+  try {
+    const user = await User.findOne({ where: { handle: req.params.handle } });
+    const followingCount = await Follows.count({ where: { userId: user.id } });
+    const followersCount = await Follows.count({ where: { followingUserId: user.id } });
+
+    return res.status(200).json({
+      data: {
+        following: followingCount,
+        followers: followersCount
+      }
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error while getting follow counts"
+    });
+  }
+};
+
+module.exports.getFollowers = async (req, res) => {
+  try {
+    const user = await User.findOne({ where: { handle: req.params.handle } });
+    const followersById = await Follows.findAll({
+      where: { followingUserId: user.id },
+      attributes: ["userId"]
+    });
+
+    const followerIds = followersById.map((follower) => follower.dataValues.userId);
+
+    const users = await User.findAll({ where: { id: followerIds } });
+    return res.status(200).json({
+      data: {
+        users
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Error while getting followers"
+    });
+  }
+};
+
+module.exports.getFollowing = async (req, res) => {
+  try {
+    const user = await User.findOne({ where: { handle: req.params.handle } });
+    const followingById = await Follows.findAll({
+      where: { userId: user.id },
+      attributes: ["followingUserId"]
+    });
+
+    const followerIds = followingById.map((follower) => follower.dataValues.followingUserId);
+
+    const users = await User.findAll({ where: { id: followerIds } });
+
+    return res.status(200).json({
+      data: {
+        users
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Error while getting followers"
     });
   }
 };

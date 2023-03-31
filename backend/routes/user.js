@@ -7,15 +7,18 @@ const {
   logoutUser,
   getUser,
   getAllUsers,
-  changePassword
+  changePassword,
+  getUserByHandle
 } = require("./../controllers/user");
 const { auth } = require("./../middlewares/auth");
 
 router.post("/login", loginUser);
 router.get("/user/:id", getUser);
+router.get("/user", getUser);
+router.get("/user/handle/:handle", getUserByHandle);
 router.get("/users", getAllUsers);
 router.post("/user", createUser);
-router.post("/user", auth, updateUser);
+router.put("/user", auth, updateUser);
 router.put("/user/change-password", auth, changePassword);
 router.post("/logout", auth, logoutUser);
 

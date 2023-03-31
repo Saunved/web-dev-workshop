@@ -10,16 +10,20 @@ import {
 } from "phosphor-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import session from "@/utils/session";
 
 export default function Sidebar() {
   const [user, setUser] = useState({});
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    setUser({
-      id: localStorage.getItem("userId"),
-      handle: localStorage.getItem("userHandle"),
-    });
+    setUser(session.getUser());
+    setIsLoggedIn(session.isLoggedIn());
   }, []);
+
+  if (!isLoggedIn) {
+    return null;
+  }
 
   return (
     <div className="fixed top-0 w-20">
@@ -41,7 +45,7 @@ export default function Sidebar() {
       </div>
       <div className="fixed bottom-8 ml-3 w-20 text-center">
         <img
-          src="https://source.unsplash.com/random/80x80"
+          src={`https://api.dicebear.com/5.x/thumbs/svg?seed=${user.handle}`}
           className="rounded-full w-12 h-12"
           alt=""
         />
