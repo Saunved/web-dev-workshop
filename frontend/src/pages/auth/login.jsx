@@ -12,41 +12,8 @@ export default function LoginFlow() {
   const [uiText, setUiText] = useState(strings.EN.LOGIN_FLOW);
   const router = useRouter();
 
-  const onInputChange = (e) => {
-    const name = e.target.name;
-    const _loginForm = { ...loginForm };
-    _loginForm[name].value = e.target.value;
-    setLoginForm(_loginForm);
-  };
-
-  const onShowPasswordToggle = (status) => {
-    const _loginForm = { ...loginForm };
-    _loginForm.password.type = status ? "text" : "password";
-    setLoginForm(_loginForm);
-  };
-
-  const [loginForm, setLoginForm] = useState({
-    email: {
-      label: uiText.email,
-      htmlFor: "email",
-      type: "email",
-      required: true,
-      errorText: "",
-      value: "",
-      onChange: onInputChange,
-      validate: () => {},
-    },
-    password: {
-      label: <PasswordLabel onShowPasswordToggle={onShowPasswordToggle} />,
-      htmlFor: "password",
-      type: "password",
-      required: true,
-      errorText: "",
-      value: "",
-      onChange: onInputChange,
-      validate: () => {},
-    },
-  });
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   useEffect(() => {
     // Detect and set the correct language here
@@ -62,8 +29,8 @@ export default function LoginFlow() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        email: loginForm.email.value,
-        password: loginForm.password.value,
+        email,
+        password,
       }),
     })
       .then((response) => {
@@ -94,8 +61,28 @@ export default function LoginFlow() {
       <div className="mt-8 flex justify-center">
         <div>
           <form>
-            <Input {...loginForm.email} />
-            <Input {...loginForm.password} />
+            <div>
+              <label htmlFor="email">{uiText.email}</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="password">{uiText.password}</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                required
+              />
+            </div>
 
             <div className="mt-6">
               <button
