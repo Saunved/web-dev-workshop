@@ -7,67 +7,9 @@ import toast from "react-hot-toast";
 
 export default function ChangePassword() {
   const uiText = strings.EN.SETTINGS;
-
-  const onInputChange = (e) => {
-    const name = e.target.name;
-    const _changePasswordForm = { ...changePasswordForm };
-    _changePasswordForm[name].value = e.target.value;
-    setChangePasswordForm(_changePasswordForm);
-  };
-
-  const onShowPasswordToggle = (status, name) => {
-    const _changePasswordForm = { ...changePasswordForm };
-    _changePasswordForm[name].type = status ? "text" : "password";
-    setChangePasswordForm(_changePasswordForm);
-  };
-
-  const INITIAL_FORM_STATE = {
-    currentPassword: {
-      label: (
-        <PasswordLabel
-          onShowPasswordToggle={onShowPasswordToggle}
-          name="currentPassword"
-        />
-      ),
-      htmlFor: "currentPassword",
-      type: "password",
-      required: true,
-      errorText: "",
-      value: "",
-      onChange: onInputChange,
-      validate: () => {},
-    },
-    newPassword: {
-      label: (
-        <PasswordLabel
-          onShowPasswordToggle={onShowPasswordToggle}
-          name="newPassword"
-        />
-      ),
-      htmlFor: "newPassword",
-      type: "password",
-      required: true,
-      errorText: "",
-      value: "",
-      onChange: onInputChange,
-      validate: () => {},
-    },
-    newPasswordAgain: {
-      label: (
-        <PasswordLabel
-          onShowPasswordToggle={onShowPasswordToggle}
-          name="newPasswordAgain"
-        />
-      ),
-      htmlFor: "newPasswordAgain",
-      type: "password",
-      required: true,
-      errorText: "",
-      value: "",
-      onChange: onInputChange,
-      validate: () => {},
-    },
-  };
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const onSubmitChangePassword = (e) => {
     e.preventDefault();
@@ -79,9 +21,9 @@ export default function ChangePassword() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        oldPassword: changePasswordForm.currentPassword.value,
-        newPassword: changePasswordForm.newPassword.value,
-        confirmPassword: changePasswordForm.newPasswordAgain.value,
+        oldPassword,
+        newPassword,
+        confirmPassword,
       }),
     })
       .then((response) => {
@@ -89,8 +31,9 @@ export default function ChangePassword() {
           // Redirect the user to their profile page
           response.json().then((body) => {
             toast.success("Password changed successfully");
-            // @TODO: Fix this, it doesn't work
-            setChangePasswordForm(INITIAL_FORM_STATE);
+            setOldPassword("");
+            setNewPassword("");
+            setConfirmPassword("");
           });
         } else {
           // Login failed
@@ -106,26 +49,50 @@ export default function ChangePassword() {
       });
   };
 
-  const [changePasswordForm, setChangePasswordForm] =
-    useState(INITIAL_FORM_STATE);
-
   return (
     <div>
       <h2 className="font-bold text-2xl">{uiText.changePassword}</h2>
-      <form>
-        <Input {...changePasswordForm.currentPassword} />
-        <Input {...changePasswordForm.newPassword} />
-        <Input {...changePasswordForm.newPasswordAgain} />
+      <form onSubmit={onSubmitChangePassword}>
+        <div>
+          <label htmlFor="oldPassword">{uiText.currentPassword}</label>
+          <input
+            type="password"
+            id="oldPassword"
+            name="oldPassword"
+            value={oldPassword}
+            onChange={(event) => setOldPassword(event.target.value)}
+            required
+          />
+        </div>
+
+        <div>
+          <label htmlFor="newPassword">{uiText.newPassword}</label>
+          <input
+            type="password"
+            id="newPassword"
+            name="newPassword"
+            value={newPassword}
+            onChange={(event) => setNewPassword(event.target.value)}
+            required
+          />
+        </div>
+
+        <div>
+          <label htmlFor="confirmPassword">{uiText.newPasswordAgain}</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            value={confirmPassword}
+            onChange={(event) => setConfirmPassword(event.target.value)}
+            required
+          />
+        </div>
 
         <div className="mt-8">
           <button
             type="submit"
-            onClick={onSubmitChangePassword}
-            disabled={
-              !changePasswordForm.currentPassword.value ||
-              !changePasswordForm.newPassword.value ||
-              !changePasswordForm.newPasswordAgain.value
-            }
+            disabled={!oldPassword || !newPassword || !confirmPassword}
             className="px-4 w-full border rounded-full py-2 bg-blue-600 text-white mt-4 disabled:opacity-60"
           >
             {uiText.changePassword}

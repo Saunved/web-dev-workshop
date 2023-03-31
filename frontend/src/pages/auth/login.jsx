@@ -60,7 +60,7 @@ export default function LoginFlow() {
       <h1 className="text-center text-3xl font-semibold">{uiText.signInCta}</h1>
       <div className="mt-8 flex justify-center">
         <div>
-          <form>
+          <form onSubmit={onSubmitForm}>
             <div>
               <label htmlFor="email">{uiText.email}</label>
               <input
@@ -87,8 +87,8 @@ export default function LoginFlow() {
             <div className="mt-6">
               <button
                 type="submit"
-                onClick={onSubmitForm}
-                className="px-4 w-full border rounded-full py-2 bg-blue-600 text-white"
+                disabled={!email || !password}
+                className="px-4 w-full border rounded-full py-2 bg-blue-600 text-white disabled:opacity-60"
               >
                 {uiText.signIn}
               </button>

@@ -119,7 +119,8 @@ export default function RegisterFlow() {
             <div className="mt-6">
               <button
                 type="submit"
-                className="px-4 w-full border rounded-full py-2 bg-blue-600 text-white"
+                disabled={!email || !name || !password || !handle}
+                className="px-4 w-full border rounded-full py-2 bg-blue-600 text-white disabled:opacity-60"
               >
                 {uiText.register}
               </button>
