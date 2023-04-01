@@ -31,7 +31,9 @@ const retweetModel = sequelize.define(
     }
   },
   {
-    tableName: "retweets"
+    tableName: "retweets",
+    timestamps: true,
+    updatedAt: false
   }
 );
 

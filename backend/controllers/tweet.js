@@ -1,17 +1,27 @@
 const Tweet = require("./../models/Tweet");
 const User = require("./../models/User");
 const Follows = require("./../models/Follows");
-const { Op } = require("sequelize");
+const Sequelize = require("sequelize");
 
-const getTweetsWithUserData = (tweets) => {
-  return tweets.map((tweet) => {
-    const { name, handle } = tweet.User;
+const formatTweet = (tweetObj) => {
+  const { User: user, LikedBy, ...tweet } = tweetObj.dataValues;
 
-    return {
-      ...tweet.dataValues,
-      name,
-      handle
-    };
+  const formattedTweet = {
+    ...tweet,
+    name: user.name,
+    handle: user.handle
+  };
+
+  if ("isLikedByUser" in formattedTweet) {
+    formattedTweet.isLikedByUser = formattedTweet.isLikedByUser === 0 ? false : true;
+  }
+
+  return formattedTweet;
+};
+
+const getFormattedTweets = (tweetObjs) => {
+  return tweetObjs.map((tweetObj) => {
+    return formatTweet(tweetObj);
   });
 };
 
@@ -28,54 +38,9 @@ module.exports.createTweet = async (req, res) => {
       message: "Tweet published."
     });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return res.status(500).json({
       message: "Error while creating tweet."
-    });
-  }
-};
-
-module.exports.getTweet = async (req, res) => {
-  try {
-    const tweet = await Tweet.findByPk(req.params.id, {
-      include: [
-        {
-          model: User,
-          attributes: ["name", "handle"]
-        }
-      ]
-    });
-
-    const tweetWithUser = { ...tweet.dataValues, name: tweet.User.name, handle: tweet.User.handle };
-
-    return res.status(200).json({
-      data: { tweet: tweetWithUser }
-    });
-  } catch (err) {
-    return res.status(500).json({
-      message: "Error while fetching tweet."
-    });
-  }
-};
-
-module.exports.getUserTweets = async (req, res) => {
-  try {
-    const tweets = await Tweet.findAll({
-      include: [
-        {
-          model: User,
-          attributes: ["name", "handle"]
-        }
-      ],
-      where: { userId: req.params.userId }
-    });
-
-    return res.status(200).json({
-      data: { tweets: getTweetsWithUserData(tweets) }
-    });
-  } catch (err) {
-    return res.status(500).json({
-      message: "Error while fetching user tweets."
     });
   }
 };
@@ -87,18 +52,102 @@ module.exports.getTweets = async (req, res) => {
       include: [
         {
           model: User,
-          attributes: ["name", "handle"]
+          attributes: ["id", "name", "handle"]
         }
       ],
       order: [["createdAt", "DESC"]]
     });
 
     return res.status(200).json({
-      data: { tweets: getTweetsWithUserData(tweets) }
+      data: { tweets: getFormattedTweets(tweets) }
     });
   } catch (err) {
+    console.error(err);
     return res.status(500).json({
       message: "Error while fetching tweets."
+    });
+  }
+};
+
+module.exports.getTweet = async (req, res) => {
+  try {
+    const tweetId = req.params.id;
+    const userId = req.user.id;
+    const tweetObj = await Tweet.findByPk(tweetId, {
+      attributes: [
+        "id",
+        "body",
+        [Sequelize.fn("COUNT", Sequelize.col("LikedBy.id")), "likeCount"],
+        [
+          Sequelize.literal(
+            `EXISTS(SELECT * FROM user_tweets_likes WHERE TweetId = ${tweetId} AND UserId = ${userId})`
+          ),
+          "isLikedByUser"
+        ]
+      ],
+      include: [
+        {
+          model: User,
+          attributes: ["id", "name", "handle"]
+        },
+        {
+          model: User,
+          as: "LikedBy",
+          where: { id: userId },
+          attributes: ["id"],
+          through: { attributes: ["userId"] }
+        }
+      ]
+    });
+
+    return res.status(200).json({
+      data: { tweet: formatTweet(tweetObj) }
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: "Error while fetching tweet."
+    });
+  }
+};
+
+module.exports.getUserTweets = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const tweets = await Tweet.findAll({
+      where: { userId: userId },
+      attributes: [
+        "id",
+        "body",
+        [Sequelize.fn("COUNT", Sequelize.col("LikedBy.id")), "likeCount"],
+        [
+          Sequelize.literal(
+            `EXISTS(SELECT * FROM user_tweets_likes WHERE TweetId = Tweet.id AND UserId = ${userId})`
+          ),
+          "isLikedByUser"
+        ]
+      ],
+      include: [
+        {
+          model: User,
+          attributes: ["id", "name", "handle"]
+        },
+        {
+          model: User,
+          as: "LikedBy",
+          attributes: ["id"]
+        }
+      ],
+      group: ["Tweet.id", "User.id"]
+    });
+
+    return res.status(200).json({
+      data: { tweets: getFormattedTweets(tweets) }
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: "Error while fetching user tweets."
     });
   }
 };
@@ -111,7 +160,7 @@ module.exports.getTweetsByHashtag = async (req, res) => {
       include: [
         {
           model: User,
-          attributes: ["name", "handle"]
+          attributes: ["id", "name", "handle"]
         }
       ],
       where: {
@@ -124,51 +173,18 @@ module.exports.getTweetsByHashtag = async (req, res) => {
       data: { tweets: tweets }
     });
   } catch (err) {
+    console.error(err);
     return res.status(500).json({
       message: "Error while fetching tweets by hashtag."
     });
   }
 };
 
-module.exports.getTweetsByHandle = async (req, res) => {
-  try {
-    // Fetch tweets by handle, sorted in desc order of createdAt
-    const handle = req.params.handle;
-    const tweets = await Tweet.findAll({
-      include: [
-        {
-          model: User,
-          attributes: ["name", "handle"],
-          where: { handle: handle },
-          required: true
-        }
-      ],
-      order: [["createdAt", "DESC"]]
-    });
-
-    const tweetsWithUser = tweets.map((tweet) => {
-      const { name, handle } = tweet.User;
-      return {
-        ...tweet.dataValues,
-        name,
-        handle
-      };
-    });
-
-    return res.status(200).json({
-      data: { tweets: tweetsWithUser }
-    });
-  } catch (err) {
-    return res.status(500).json({
-      message: "Error while fetching tweets by handle."
-    });
-  }
-};
-
 module.exports.getFollowingTweets = async (req, res) => {
   try {
+    const userId = req.user.id;
     const followingUsers = await Follows.findAll({
-      where: { userId: req.user.id },
+      where: { userId: userId },
       attributes: ["followingUserId"]
     });
 
@@ -177,17 +193,40 @@ module.exports.getFollowingTweets = async (req, res) => {
     const tweets = await Tweet.findAll({
       where: {
         userId: {
-          [Op.in]: followingUserIds
+          [Sequelize.Op.in]: followingUserIds
         }
       },
-      order: [["createdAt", "ASC"]]
+      attributes: [
+        "id",
+        "body",
+        [Sequelize.fn("COUNT", Sequelize.col("LikedBy.id")), "likeCount"],
+        [
+          Sequelize.literal(
+            `EXISTS(SELECT * FROM user_tweets_likes WHERE TweetId = Tweet.id AND UserId = ${userId})`
+          ),
+          "isLikedByUser"
+        ]
+      ],
+      include: [
+        {
+          model: User,
+          attributes: ["id", "name", "handle"]
+        },
+        {
+          model: User,
+          as: "LikedBy",
+          attributes: ["id"]
+        }
+      ],
+      order: [["createdAt", "ASC"]],
+      group: ["Tweet.id", "User.id"]
     });
 
     return res.status(200).json({
-      data: { tweets }
+      data: { tweets: getFormattedTweets(tweets) }
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.status(500).json({
       message: "Error while liking tweet"
     });
@@ -203,7 +242,7 @@ module.exports.likeTweet = async (req, res) => {
       data: { message: "Liked tweet" }
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.status(500).json({
       message: "Error while liking tweet"
     });
@@ -219,7 +258,7 @@ module.exports.unlikeTweet = async (req, res) => {
       data: { message: "Unliked tweet" }
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.status(500).json({
       message: "Error while unliking tweet"
     });
