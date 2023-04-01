@@ -1,7 +1,7 @@
 const Follows = require("./../models/Follows");
 const User = require("./../models/User");
 
-module.exports.addFollower = async (req, res) => {
+module.exports.addFollows = async (req, res) => {
   try {
     const followingUserId = req.params.followingUserId;
     const userId = req.user.id;
@@ -12,17 +12,38 @@ module.exports.addFollower = async (req, res) => {
       const follows = await Follows.create({ userId, followingUserId });
       return res.status(201).json({
         data: { follows: { id: follows.id } },
-        message: "Follower created."
+        message: "Following user."
       });
     } else {
       return res.status(200).json({
-        message: "Follower already exists"
+        message: "Already following user"
       });
     }
   } catch (err) {
     console.log(err);
     return res.status(500).json({
       message: "Error while following."
+    });
+  }
+};
+
+module.exports.removeFollows = async (req, res) => {
+  try {
+    const followingUserId = req.params.followingUserId;
+    const userId = req.user.id;
+    const follows = await Follows.destroy({
+      where: {
+        userId: userId,
+        followingUserId: followingUserId
+      }
+    });
+
+    return res.status(200).json({
+      message: "Unfollowed user"
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: "Error while unfollowing."
     });
   }
 };
@@ -79,7 +100,6 @@ module.exports.getFollowing = async (req, res) => {
     });
 
     const followerIds = followingById.map((follower) => follower.dataValues.followingUserId);
-    console.log(followerIds);
 
     const users = await User.findAll({ where: { id: followerIds } });
 
