@@ -53,6 +53,7 @@ module.exports.createUser = async (req, res) => {
       message: "User created."
     });
   } catch (err) {
+    console.error(err);
     return res.status(500).json({
       message: "Error while creating user."
     });
@@ -78,6 +79,7 @@ module.exports.updateUser = async (req, res) => {
       data: { user }
     });
   } catch (err) {
+    console.error(err);
     return res.status(500).json({
       message: "Error while updating user."
     });
@@ -97,6 +99,7 @@ module.exports.getUser = async (req, res) => {
       data: { user }
     });
   } catch (err) {
+    console.error(err);
     return res.status(500).json({
       message: "Error while fetching user."
     });
@@ -116,8 +119,9 @@ module.exports.getUserByHandle = async (req, res) => {
       data: { user }
     });
   } catch (err) {
+    console.error(err);
     return res.status(500).json({
-      message: "Error while fetching user."
+      message: "Error while fetching user by handle."
     });
   }
 };
@@ -134,6 +138,7 @@ module.exports.getAllUsers = async (req, res) => {
       data: { users }
     });
   } catch (err) {
+    console.error(err);
     return res.status(500).json({
       message: "Error while fetching all users."
     });
@@ -169,11 +174,12 @@ module.exports.changePassword = async (req, res) => {
     user.update({ password: newPassowordHash });
 
     return res.status(200).json({
-      message: "Password updated for the user successfully"
+      message: "Password successfully updated for the user."
     });
   } catch (err) {
+    console.error(err);
     return res.status(500).json({
-      message: err
+      message: "Error while changing password."
     });
   }
 };
