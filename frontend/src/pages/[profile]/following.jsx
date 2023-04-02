@@ -2,6 +2,7 @@ import UserList from "@/components/UserList";
 import users from "@/mock/users";
 import strings from "@/constants/ui/strings";
 import { BASE_URL } from "@/constants/routes";
+import { attachAuthCookie } from "@/utils/xhr";
 
 export default function FollowingPage({ users }) {
   const uiText = strings.EN.FOLLOW;
@@ -24,18 +25,18 @@ export default function FollowingPage({ users }) {
   );
 }
 
-export async function getServerSideProps({ res, params }) {
+export async function getServerSideProps({ req, res, params }) {
   try {
     if (params.profile) {
       const followersRes = await fetch(
-        `${BASE_URL}/following/${params.profile}`
+        `${BASE_URL}/following/${params.profile}`,
+        attachAuthCookie(req)
       );
       const followersResBody = await followersRes.json();
-      console.log(followersResBody);
 
       return {
         props: {
-          users: followersResBody.data.users,
+          users: followersResBody.data.following,
         },
       };
     }

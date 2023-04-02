@@ -6,6 +6,7 @@ import strings from "@/constants/ui/strings";
 import { useState, useEffect } from "react";
 import { BASE_URL } from "@/constants/routes";
 import session from "@/utils/session";
+import { attachAuthCookie } from "@/utils/xhr";
 
 export default function HomeFeed({ tweets }) {
   const uiText = strings.EN.SITE;
@@ -44,9 +45,9 @@ export default function HomeFeed({ tweets }) {
   );
 }
 
-export async function getServerSideProps({ params }) {
+export async function getServerSideProps({ req, params }) {
   try {
-    const res = await fetch(`${BASE_URL}/tweets`);
+    const res = await fetch(`${BASE_URL}/tweets`, attachAuthCookie(req));
     const body = await res.json();
 
     if (res.ok) {

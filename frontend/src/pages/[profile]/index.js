@@ -10,6 +10,7 @@ import UserNotFound from "@/components/Error/UserNotFound";
 import { BASE_URL } from "@/constants/routes";
 import { useState, useEffect } from "react";
 import { getHumanReadableDate } from "@/utils/date";
+import { attachAuthCookie } from "@/utils/xhr";
 
 export default function ProfilePage({ user, tweets, followCounts }) {
   const uiTextFollow = strings.EN.FOLLOW;
@@ -27,7 +28,7 @@ export default function ProfilePage({ user, tweets, followCounts }) {
   }, []);
 
   const followUser = () => {
-    fetch(`${BASE_URL}/followers/${user.id}`, {
+    fetch(`${BASE_URL}/follow/${user.handle}`, {
       method: "POST",
       credentials: "include",
       headers: {
@@ -104,31 +105,43 @@ export default function ProfilePage({ user, tweets, followCounts }) {
   );
 }
 
-export async function getServerSideProps({ res, params }) {
+export async function getServerSideProps({ req, res, params }) {
   try {
     if (params.profile) {
-      const [profileRes, tweetsRes, followCountsRes] = await Promise.all([
-        fetch(`${BASE_URL}/user/handle/${params.profile}`),
-        fetch(`${BASE_URL}/tweets/handle/${params.profile}`),
-        fetch(`${BASE_URL}/followers/count/${params.profile}`),
+      const [profileRes, tweetsRes] = await Promise.all([
+        fetch(
+          `${BASE_URL}/user/handle/${params.profile}`,
+          attachAuthCookie(req)
+        ),
+        fetch(
+          `${BASE_URL}/tweets/handle/${params.profile}`,
+          attachAuthCookie(req)
+        ),
       ]);
       const profileResBody = await profileRes.json();
       const tweetsResBody = await tweetsRes.json();
-      const followCountsResBody = await followCountsRes.json();
 
       if (!profileResBody.data.user) {
         throw new Error("No such user exists");
       }
 
+      const { followersCount, followingCount, isFollowing } =
+        profileResBody.data.user;
+
       return {
         props: {
           user: profileResBody.data.user,
           tweets: tweetsResBody.data.tweets,
-          followCounts: followCountsResBody.data,
+          followCounts: {
+            followers: followersCount,
+            following: followingCount,
+          },
+          isFollowing,
         },
       };
     }
   } catch (error) {
+    console.log(error);
     res.writeHead(302, { Location: "/home" });
     res.end();
   }
