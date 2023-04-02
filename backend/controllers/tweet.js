@@ -306,3 +306,23 @@ module.exports.getLikedTweets = async (req, res) => {
     });
   }
 };
+
+module.exports.deleteTweet = async (req, res) => {
+  try {
+    await Tweet.destroy({
+      where: {
+        id: req.params.id,
+        userId: req.user.id
+      }
+    });
+
+    return res.status(200).json({
+      data: { message: "Deleted tweet" }
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: "Error while deleting tweet"
+    });
+  }
+};
