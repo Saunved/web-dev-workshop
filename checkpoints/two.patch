@@ -1,0 +1,47 @@
+diff --git a/frontend/src/pages/auth/register.jsx b/frontend/src/pages/auth/register.jsx
+index cb42187..0092a6c 100644
+--- a/frontend/src/pages/auth/register.jsx
++++ b/frontend/src/pages/auth/register.jsx
+@@ -28,27 +28,21 @@ export default function RegisterFlow() {
+   const onSubmitForm = (e) => {
+     e.preventDefault();
+ 
++    // Task 2: Implementing the registration endpoint on the frontend
+     fetch(registerRoute, {
+-      method: "POST",
++      method: "", // Which HTTP method should we use here?
+       headers: {
+         "Content-Type": "application/json",
+       },
+       body: JSON.stringify({
+-        name,
+-        handle,
+-        email,
+-        password,
++        // Task 2A: What data should we send to the server? Hint: we should pass key:value pairs
+       }),
+     })
+       .then((response) => {
+         if (response.ok) {
+-          // Registration successful
+-          router.push("/auth/login");
++          // Task 2B: What to do if the registration is successful? Hint: It would be weird to stay on the same page and do nothing :P
+         } else {
+-          // Registration failed
+-          response.json().then((data) => {
+-            console.error(data.message);
+-          });
++          // Task 2C: What to do if the registration fails? Hint: It would be weird to not give the user any feedback
+         }
+       })
+       .catch((error) => {
+@@ -70,7 +64,8 @@ export default function RegisterFlow() {
+       </h1>
+       <div className="mt-8 flex justify-center">
+         <div className="w-64">
+-          <form onSubmit={onSubmitForm}>
++          {/* Task 1: This form should call the onSubmitForm function when the "Register" button is clicked */}
++          <form>
+             <div>
+               <label htmlFor="name">{uiText.name}</label>
+               <input
