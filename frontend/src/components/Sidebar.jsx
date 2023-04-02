@@ -44,11 +44,13 @@ export default function Sidebar() {
         </Link>
       </div>
       <div className="fixed bottom-8 ml-3 w-20 text-center">
-        <img
-          src={`https://api.dicebear.com/5.x/thumbs/svg?seed=${user.handle}`}
-          className="rounded-full w-12 h-12"
-          alt=""
-        />
+        <Link href={`/${user.handle}`}>
+          <img
+            src={`https://api.dicebear.com/5.x/bottts-neutral/svg?seed=${user.handle}`}
+            className="rounded-full w-12 h-12"
+            alt=""
+          />
+        </Link>
       </div>
     </div>
   );
