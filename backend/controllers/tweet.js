@@ -117,10 +117,14 @@ module.exports.getTweet = async (req, res) => {
 
 module.exports.getUserTweets = async (req, res) => {
   try {
-    const userId = req.params.userId;
+    const requestedUser = await User.findOne({
+      where: { handle: req.params.handle },
+      attributes: ["id"]
+    });
     const currentUserId = req.user.id;
+
     const tweets = await Tweet.findAll({
-      where: { userId: userId },
+      where: { userId: requestedUser.id },
       attributes: [
         "id",
         "body",

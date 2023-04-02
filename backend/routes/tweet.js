@@ -20,7 +20,7 @@ router.get("/tweets", getTweets);
 // Get single tweet:
 router.get("/tweet/:id", auth, getTweet);
 // Get all tweets of given user:
-router.get("/tweets/user/:userId", auth, getUserTweets);
+router.get("/tweets/handle/:handle", auth, getUserTweets);
 // Get liked tweets of given user:
 router.get("/tweets/liked/:userId", auth, getLikedTweets);
 // Get tweets from users that that the current user follows:
