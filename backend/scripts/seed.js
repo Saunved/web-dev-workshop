@@ -1,6 +1,9 @@
 const axios = require("axios");
 const faker = require("faker");
 
+const BASE_URL = "http://localhost:5000";
+
+/* ========= User Generation ========= */
 const USERS_TO_GENERATE = 10;
 
 const users = Array.from({ length: USERS_TO_GENERATE }, () => {
@@ -26,19 +29,6 @@ const uniqueUsers = users.filter((user, index, arr) => {
   return arr.findIndex((u) => u.handle === user.handle || u.email === user.email) === index;
 });
 
-// Uncomment the block below if you want to add a quick test user
-// The script will crash if you run this twice
-
-// uniqueUsers.push({
-//   name: "Test",
-//   handle: "test",
-//   email: "test@gmail.com",
-//   password: "asdfasdfasdf",
-//   dateOfBirth: faker.date.between("1960-01-01", "2003-12-31").toISOString().split("T")[0]
-// });
-
-const BASE_URL = "http://localhost:9800";
-
 const registerUsers = async () => {
   try {
     const userPromises = uniqueUsers.map((user) => {
@@ -52,22 +42,23 @@ const registerUsers = async () => {
   }
 };
 
-/**
- * Creates one tweet for each user.
- * @TODO: Parallelize this if time permits
- */
+/* ========= Tweet Generation ========= */
 const createTweets = async (userRes) => {
-  userRes.forEach(async (res) => {
-    const user = res.data.data;
-    const request = { body: faker.lorem.sentence(), ...user };
+  try {
+    const tweetPromises = userRes.map(async (res) => {
+      const user = res.data.data;
+      const request = { body: faker.lorem.sentence(), ...user };
+      return axios.post(`${BASE_URL}/tweet`, request);
+    });
 
-    try {
-      await axios.post(`${BASE_URL}/tweet`, request);
-    } catch (error) {
-      console.log(error);
-    }
-  });
+    // Generate tweets in parallel
+    return await Promise.all(tweetPromises);
+  } catch (error) {
+    console.log(error);
+  }
 };
+
+// TODO: Generate Multiple tweets, likes and followers
 
 const seed = async () => {
   console.log("Generating users...");
