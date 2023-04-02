@@ -48,11 +48,17 @@ module.exports.getTweets = async (req, res) => {
   try {
     // Fetch tweets sorted by createdAt in desc order
     const tweets = await Tweet.findAll({
-      attributes: [
-        "id",
-        "body",
-        [Sequelize.literal("(SELECT COUNT(*) FROM likes WHERE TweetId = Tweet.id)"), "likeCount"]
-      ],
+      attributes: {
+        include: [
+          [Sequelize.literal("(SELECT COUNT(*) FROM likes WHERE TweetId = Tweet.id)"), "likeCount"],
+          [
+            Sequelize.literal(
+              `EXISTS(SELECT * FROM likes WHERE TweetId = Tweet.id AND UserId = ${req.user.id})`
+            ),
+            "isLikedByUser"
+          ]
+        ]
+      },
       include: [
         {
           model: User,
@@ -84,17 +90,17 @@ module.exports.getTweet = async (req, res) => {
     const tweetId = req.params.id;
     const userId = req.user.id;
     const tweetObj = await Tweet.findByPk(tweetId, {
-      attributes: [
-        "id",
-        "body",
-        [Sequelize.literal("(SELECT COUNT(*) FROM likes WHERE TweetId = Tweet.id)"), "likeCount"],
-        [
-          Sequelize.literal(
-            `EXISTS(SELECT * FROM likes WHERE TweetId = ${tweetId} AND UserId = ${userId})`
-          ),
-          "isLikedByUser"
+      attributes: {
+        include: [
+          [Sequelize.literal("(SELECT COUNT(*) FROM likes WHERE TweetId = Tweet.id)"), "likeCount"],
+          [
+            Sequelize.literal(
+              `EXISTS(SELECT * FROM likes WHERE TweetId = ${tweetId} AND UserId = ${userId})`
+            ),
+            "isLikedByUser"
+          ]
         ]
-      ],
+      },
       include: [
         {
           model: User,
@@ -125,17 +131,17 @@ module.exports.getUserTweets = async (req, res) => {
 
     const tweets = await Tweet.findAll({
       where: { userId: requestedUser.id },
-      attributes: [
-        "id",
-        "body",
-        [Sequelize.literal("(SELECT COUNT(*) FROM likes WHERE TweetId = Tweet.id)"), "likeCount"],
-        [
-          Sequelize.literal(
-            `EXISTS(SELECT * FROM likes WHERE TweetId = Tweet.id AND UserId = ${currentUserId})`
-          ),
-          "isLikedByUser"
+      attributes: {
+        include: [
+          [Sequelize.literal("(SELECT COUNT(*) FROM likes WHERE TweetId = Tweet.id)"), "likeCount"],
+          [
+            Sequelize.literal(
+              `EXISTS(SELECT * FROM likes WHERE TweetId = Tweet.id AND UserId = ${currentUserId})`
+            ),
+            "isLikedByUser"
+          ]
         ]
-      ],
+      },
       include: [
         {
           model: User,
@@ -174,17 +180,17 @@ module.exports.getFollowingTweets = async (req, res) => {
           [Sequelize.Op.in]: followingUserIds
         }
       },
-      attributes: [
-        "id",
-        "body",
-        [Sequelize.literal("(SELECT COUNT(*) FROM likes WHERE TweetId = Tweet.id)"), "likeCount"],
-        [
-          Sequelize.literal(
-            `EXISTS(SELECT * FROM likes WHERE TweetId = Tweet.id AND UserId = ${user.id})`
-          ),
-          "isLikedByUser"
+      attributes: {
+        include: [
+          [Sequelize.literal("(SELECT COUNT(*) FROM likes WHERE TweetId = Tweet.id)"), "likeCount"],
+          [
+            Sequelize.literal(
+              `EXISTS(SELECT * FROM likes WHERE TweetId = Tweet.id AND UserId = ${user.id})`
+            ),
+            "isLikedByUser"
+          ]
         ]
-      ],
+      },
       include: [
         {
           model: User,
@@ -243,17 +249,17 @@ module.exports.getLikedTweets = async (req, res) => {
     const userId = req.params.userId;
     const currentUserId = req.user.id;
     const tweets = await Tweet.findAll({
-      attributes: [
-        "id",
-        "body",
-        [Sequelize.literal("(SELECT COUNT(*) FROM likes WHERE TweetId = Tweet.id)"), "likeCount"],
-        [
-          Sequelize.literal(
-            `EXISTS(SELECT * FROM likes WHERE TweetId = Tweet.id AND UserId = ${currentUserId})`
-          ),
-          "isLikedByUser"
+      attributes: {
+        include: [
+          [Sequelize.literal("(SELECT COUNT(*) FROM likes WHERE TweetId = Tweet.id)"), "likeCount"],
+          [
+            Sequelize.literal(
+              `EXISTS(SELECT * FROM likes WHERE TweetId = Tweet.id AND UserId = ${currentUserId})`
+            ),
+            "isLikedByUser"
+          ]
         ]
-      ],
+      },
       include: [
         {
           model: User,
