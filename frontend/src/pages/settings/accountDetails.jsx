@@ -6,14 +6,8 @@ import { toast } from "react-hot-toast";
 
 export default function AccountDetailsPage() {
   const uiText = strings.EN.SETTINGS;
-  const [userFromServer, setUserFromServer] = useState({});
-
-  const onInputChange = (e) => {
-    const name = e.target.name;
-    const _accountDetailsForm = { ...accountDetailsForm };
-    _accountDetailsForm[name].value = e.target.value;
-    setAccountDetailsForm(_accountDetailsForm);
-  };
+  const [bio, setBio] = useState("");
+  const [website, setWebsite] = useState("");
 
   useEffect(() => {
     const getUserFromServer = async () => {
@@ -23,11 +17,8 @@ export default function AccountDetailsPage() {
         });
         const userResBody = await userRes.json();
         const user = userResBody.data.user;
-        setUserFromServer(user);
-
-        _accountDetailsForm = { ...accountDetailsForm };
-        _accountDetailsForm.bio.value = user.bio;
-        _accountDetailsForm.website.value = user.website;
+        setBio(user.bio);
+        setWebsite(user.website);
       } catch (error) {
         console.log(error);
       }
@@ -35,29 +26,6 @@ export default function AccountDetailsPage() {
 
     getUserFromServer();
   }, []);
-
-  const [accountDetailsForm, setAccountDetailsForm] = useState({
-    bio: {
-      label: uiText.yourBio,
-      htmlFor: "bio",
-      type: "textarea",
-      required: true,
-      errorText: "",
-      value: "",
-      onChange: onInputChange,
-      validate: () => {},
-    },
-    website: {
-      label: uiText.website,
-      htmlFor: "website",
-      type: "url",
-      required: false,
-      errorText: "",
-      value: "",
-      onChange: onInputChange,
-      validate: () => {},
-    },
-  });
 
   const onSubmitUpdateDetails = async (e) => {
     e.preventDefault();
@@ -69,8 +37,8 @@ export default function AccountDetailsPage() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        bio: accountDetailsForm.website.value,
-        website: accountDetailsForm.bio.value,
+        bio,
+        website,
       }),
     })
       .then((response) => {
@@ -94,20 +62,40 @@ export default function AccountDetailsPage() {
   };
 
   return (
-    <div>
+    <div className="pt-2">
       <h2 className="font-bold text-2xl">{uiText.accountDetails}</h2>
       <div className="mt-4">
-        <form>
-          <Input {...accountDetailsForm.bio} />
-          <Input {...accountDetailsForm.website} />
+        <form onSubmit={onSubmitUpdateDetails}>
+          <div>
+            <label htmlFor="bio">{uiText.yourBio}</label>
+            <input
+              type="text"
+              id="bio"
+              name="bio"
+              value={bio}
+              onChange={(event) => setBio(event.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="website">{uiText.website}</label>
+            <input
+              type="url"
+              id="website"
+              name="website"
+              value={website}
+              onChange={(event) => setWebsite(event.target.value)}
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={!bio || !website}
+            className="px-4 w-full border rounded-full py-2 bg-blue-600 text-white mt-4 disabled:opacity-60"
+          >
+            {uiText.update}
+          </button>
         </form>
-
-        <button
-          onClick={onSubmitUpdateDetails}
-          className="px-4 w-full border rounded-full py-2 bg-blue-600 text-white mt-4"
-        >
-          {uiText.update}
-        </button>
       </div>
     </div>
   );

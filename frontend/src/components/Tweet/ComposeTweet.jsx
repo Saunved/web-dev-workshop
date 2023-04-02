@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import session from "@/utils/session";
 
 export default function ComposeTweet({ handle }) {
-  const TEXT_CHAR_LIMIT = 240;
+  const TEXT_CHAR_LIMIT = 280;
   const [textArea, setTextArea] = useState("");
   const [user, setUser] = useState({});
   const tweetRef = useRef();
@@ -74,7 +74,7 @@ export default function ComposeTweet({ handle }) {
         <div className="w-14">
           <ProfilePicture handle={handle} />
         </div>
-        <div className="w-full">
+        <form onSubmit={onTweetSubmit} className="w-full">
           <ReactTextareaAutosize
             minRows={1}
             maxRows={10}
@@ -88,17 +88,17 @@ export default function ComposeTweet({ handle }) {
               <span className={getCharLimitIndicatorColor()}>
                 {textArea.length}
               </span>{" "}
-              / 240
+              / {TEXT_CHAR_LIMIT}
             </div>
             <button
-              type="button"
-              onClick={onTweetSubmit}
-              className="px-8 border rounded-full py-2 bg-blue-600 text-white flex justify-center items-center gap-2"
+              type="submit"
+              disabled={!textArea}
+              className="px-8 border rounded-full py-2 bg-blue-600 text-white flex justify-center items-center gap-2 disabled:opacity-60"
             >
               Woof
             </button>
           </div>
-        </div>
+        </form>
       </div>
     </>
   );

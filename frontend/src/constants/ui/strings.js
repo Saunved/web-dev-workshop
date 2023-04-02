@@ -6,7 +6,7 @@ export default {
     },
     LOGIN_FLOW: {
       signInCta: "Log in to Woofer",
-      email: "Email or username",
+      email: "Your email",
       password: "Enter your password",
       birthday: "Enter your date of birth",
       forgotPassword: "Forgot password?",
