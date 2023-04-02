@@ -56,7 +56,7 @@ module.exports.getFollowers = async (req, res) => {
           Sequelize.literal(
             `EXISTS(SELECT * FROM follows WHERE followerId = ${user.id} AND followingId = User.id)`
           ),
-          "isFollowing"
+          "isFollowedByUser"
         ]
       ],
       order: [["handle", "ASC"]]
@@ -86,8 +86,8 @@ module.exports.getFollowing = async (req, res) => {
       order: [["handle", "ASC"]]
     });
 
-    // Set isFollowing true for all users:
-    following = following.map((obj) => ({ ...obj, isFollowing: true }));
+    // Set isFollowedByUser true for all users:
+    following = following.map((obj) => ({ ...obj, isFollowedByUser: true }));
 
     return res.status(200).json({
       data: {
