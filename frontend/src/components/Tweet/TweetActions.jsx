@@ -14,7 +14,7 @@ export default function TweetActions({ tweet }) {
    * Likes or unlikes a tweet depending on the state
    */
   const heartTweet = async () => {
-    fetch(`${BASE_URL}/tweets/like/${tweet.id}`, {
+    fetch(`${BASE_URL}/tweet/like/${tweet.id}`, {
       method: "POST",
       credentials: "include",
       headers: {
@@ -47,7 +47,7 @@ export default function TweetActions({ tweet }) {
       </div>
       <div onClick={heartTweet} className="flex gap-2 items-center">
         <Heart size={20} className="text-gray-700 hover:cursor-pointer" />
-        <span className="text-sm">{tweet.likesCount || 0}</span>
+        <span className="text-sm">{tweet.likeCount || 0}</span>
       </div>
       <ChartLine size={20} className="text-gray-700 hover:cursor-pointer" />
       <Export size={20} className="text-gray-700 hover:cursor-pointer" />

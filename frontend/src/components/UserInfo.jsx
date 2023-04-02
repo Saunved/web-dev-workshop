@@ -18,9 +18,15 @@ export default function UserInfo({ user }) {
             <div className="font-semibold">{user.name}</div>
             <div className="text-sm text-gray-700">@{user.handle}</div>
           </Link>
-          <button className="border border-gray-600 rounded-full px-8 py-0.5 text-sm">
-            {uiText.follow}
-          </button>
+          {user.isFollowing ? (
+            <button className="border border-gray-600 rounded-full px-8 py-0.5 text-sm">
+              {uiText.unfollow}
+            </button>
+          ) : (
+            <button className="border border-gray-600 rounded-full px-8 py-0.5 text-sm">
+              {uiText.follow}
+            </button>
+          )}
         </div>
         <p>{user.bio}</p>
       </div>

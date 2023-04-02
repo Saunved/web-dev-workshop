@@ -19,7 +19,7 @@ export default function Tweet({ tweet }) {
           <TweetHeader
             name={tweet.name}
             handle={tweet.handle}
-            time={getHumanReadableDate(tweet.createdAt)}
+            time={tweet.createdAt ? getHumanReadableDate(tweet.createdAt) : ""}
           />
         </Link>
         <Link href={`/${tweet.handle}/status/${tweet.id}`}>
