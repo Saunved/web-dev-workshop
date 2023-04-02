@@ -1,6 +1,5 @@
 const Tweet = require("./../models/Tweet");
 const User = require("./../models/User");
-const Follows = require("./../models/Follows");
 const Sequelize = require("sequelize");
 
 const formatTweet = (tweetObj) => {
@@ -182,13 +181,9 @@ module.exports.getTweetsByHashtag = async (req, res) => {
 
 module.exports.getFollowingTweets = async (req, res) => {
   try {
-    const userId = req.user.id;
-    const followingUsers = await Follows.findAll({
-      where: { userId: userId },
-      attributes: ["followingUserId"]
-    });
-
-    const followingUserIds = followingUsers.map((user) => user.followingUserId);
+    const user = req.user;
+    const followingUsers = await user.getFollowing({ attributes: ["id"] });
+    const followingUserIds = followingUsers.map((user) => user.id);
 
     const tweets = await Tweet.findAll({
       where: {
@@ -202,7 +197,7 @@ module.exports.getFollowingTweets = async (req, res) => {
         [Sequelize.fn("COUNT", Sequelize.col("LikedBy.id")), "likeCount"],
         [
           Sequelize.literal(
-            `EXISTS(SELECT * FROM user_tweets_likes WHERE TweetId = Tweet.id AND UserId = ${userId})`
+            `EXISTS(SELECT * FROM user_tweets_likes WHERE TweetId = Tweet.id AND UserId = ${user.id})`
           ),
           "isLikedByUser"
         ]
