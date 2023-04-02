@@ -52,6 +52,10 @@ module.exports.getTweets = async (req, res) => {
         include: [
           [Sequelize.literal("(SELECT COUNT(*) FROM likes WHERE TweetId = Tweet.id)"), "likeCount"],
           [
+            Sequelize.literal("(SELECT COUNT(*) FROM retweets WHERE TweetId = Tweet.id)"),
+            "retweetCount"
+          ],
+          [
             Sequelize.literal(
               `EXISTS(SELECT * FROM likes WHERE TweetId = Tweet.id AND UserId = ${req.user.id})`
             ),
@@ -94,6 +98,10 @@ module.exports.getTweet = async (req, res) => {
         include: [
           [Sequelize.literal("(SELECT COUNT(*) FROM likes WHERE TweetId = Tweet.id)"), "likeCount"],
           [
+            Sequelize.literal("(SELECT COUNT(*) FROM retweets WHERE TweetId = Tweet.id)"),
+            "retweetCount"
+          ],
+          [
             Sequelize.literal(
               `EXISTS(SELECT * FROM likes WHERE TweetId = ${tweetId} AND UserId = ${userId})`
             ),
@@ -134,6 +142,10 @@ module.exports.getUserTweets = async (req, res) => {
       attributes: {
         include: [
           [Sequelize.literal("(SELECT COUNT(*) FROM likes WHERE TweetId = Tweet.id)"), "likeCount"],
+          [
+            Sequelize.literal("(SELECT COUNT(*) FROM retweets WHERE TweetId = Tweet.id)"),
+            "retweetCount"
+          ],
           [
             Sequelize.literal(
               `EXISTS(SELECT * FROM likes WHERE TweetId = Tweet.id AND UserId = ${currentUserId})`
@@ -183,6 +195,10 @@ module.exports.getFollowingTweets = async (req, res) => {
       attributes: {
         include: [
           [Sequelize.literal("(SELECT COUNT(*) FROM likes WHERE TweetId = Tweet.id)"), "likeCount"],
+          [
+            Sequelize.literal("(SELECT COUNT(*) FROM retweets WHERE TweetId = Tweet.id)"),
+            "retweetCount"
+          ],
           [
             Sequelize.literal(
               `EXISTS(SELECT * FROM likes WHERE TweetId = Tweet.id AND UserId = ${user.id})`
@@ -252,6 +268,10 @@ module.exports.getLikedTweets = async (req, res) => {
       attributes: {
         include: [
           [Sequelize.literal("(SELECT COUNT(*) FROM likes WHERE TweetId = Tweet.id)"), "likeCount"],
+          [
+            Sequelize.literal("(SELECT COUNT(*) FROM retweets WHERE TweetId = Tweet.id)"),
+            "retweetCount"
+          ],
           [
             Sequelize.literal(
               `EXISTS(SELECT * FROM likes WHERE TweetId = Tweet.id AND UserId = ${currentUserId})`
