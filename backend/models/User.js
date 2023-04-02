@@ -42,10 +42,7 @@ const userModel = sequelize.define(
     },
     dateOfBirth: {
       type: DataTypes.DATEONLY,
-      allowNull: false,
-      validate: {
-        isDate: true
-      }
+      allowNull: true
     }
   },
   {
