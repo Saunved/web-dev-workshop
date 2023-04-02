@@ -13,11 +13,11 @@ const {
 const { auth } = require("./../middlewares/auth");
 
 router.post("/login", loginUser);
-router.get("/user/:id", getUser);
-router.get("/user", getUser);
-router.get("/user/handle/:handle", getUserByHandle);
-router.get("/users", getAllUsers);
 router.post("/user", createUser);
+router.get("/users", auth, getAllUsers);
+router.get("/user", auth, getUser);
+router.get("/user/:id", auth, getUser);
+router.get("/user/handle/:handle", getUserByHandle);
 router.put("/user", auth, updateUser);
 router.put("/user/change-password", auth, changePassword);
 router.post("/logout", auth, logoutUser);
