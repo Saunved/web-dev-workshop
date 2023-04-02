@@ -1,4 +1,5 @@
 const User = require("./../models/User");
+const Sequelize = require("sequelize");
 
 module.exports.addFollows = async (req, res) => {
   try {
@@ -46,7 +47,18 @@ module.exports.getFollowers = async (req, res) => {
       where: { handle: req.params.handle }
     });
     const followers = await user.getFollower({
-      attributes: ["id", "name", "handle", "bio"],
+      attributes: [
+        "id",
+        "name",
+        "handle",
+        "bio",
+        [
+          Sequelize.literal(
+            `EXISTS(SELECT * FROM follows WHERE followerId = ${user.id} AND followingId = User.id)`
+          ),
+          "isFollowing"
+        ]
+      ],
       order: [["handle", "ASC"]]
     });
 
@@ -68,14 +80,18 @@ module.exports.getFollowing = async (req, res) => {
     const user = await User.findOne({
       where: { handle: req.params.handle }
     });
-    const following = await user.getFollowing({
+
+    let following = await user.getFollowing({
       attributes: ["id", "name", "handle", "bio"],
       order: [["handle", "ASC"]]
     });
 
+    // Set isFollowing true for all users:
+    following = following.map((obj) => ({ ...obj, isFollowing: true }));
+
     return res.status(200).json({
       data: {
-        following
+        following: following
       }
     });
   } catch (error) {
