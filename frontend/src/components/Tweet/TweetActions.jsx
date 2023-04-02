@@ -9,15 +9,64 @@ import {
 import { useState, useEffect } from "react";
 
 export default function TweetActions({ tweet }) {
-  const retweetTweet = async () => {};
-
-  const [isLiked, setIsLiked] = useState(false);
+  const [isLiked, setIsLiked] = useState(tweet.isLikedByUser);
+  const [isRetweeted, setIsRetweeted] = useState(tweet.isRetweetedByUser);
   const [likeCount, setLikeCount] = useState(tweet.likeCount);
+  const [retweetCount, setRetweetCount] = useState(tweet.retweetCount);
   const [disableLikeButton, setDisableLikeButton] = useState(false);
+  const [disableRetweetButton, setDisableRetweetButton] = useState(false);
 
-  useEffect(() => {
-    setIsLiked(tweet.isLikedByUser);
-  }, []);
+  const retweet = async () => {
+    disableRetweetButton(true);
+    fetch(`${BASE_URL}/retweet/${tweet.id}`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          // Reflect the like or toggled like
+          setIsRetweeted(true);
+          setLikeCount(retweetCount + 1);
+        } else {
+          response.json().then((data) => {
+            console.error(data.message);
+          });
+        }
+        setDisableRetweetButton(false);
+      })
+      .catch((error) => {
+        console.error("Error liking tweet", error);
+      });
+  };
+
+  const unRetweet = async () => {
+    disableRetweetButton(true);
+    fetch(`${BASE_URL}/retweet/${tweet.id}`, {
+      method: "DELETE",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          // Reflect the like or toggled like
+          setIsRetweeted(false);
+          setLikeCount(retweetCount - 1);
+        } else {
+          response.json().then((data) => {
+            console.error(data.message);
+          });
+        }
+        setDisableRetweetButton(false);
+      })
+      .catch((error) => {
+        console.error("Error liking tweet", error);
+      });
+  };
 
   /**
    * Likes or unlikes a tweet depending on the state
@@ -80,10 +129,15 @@ export default function TweetActions({ tweet }) {
   return (
     <div className="grid grid-flow-col gap-16 justify-start mt-4">
       <ChatCircle size={20} className="text-gray-700 hover:cursor-pointer" />
-      <div onClick={retweetTweet} className="flex gap-2 items-center">
+      <div
+        onClick={isRetweeted ? unRetweet : retweet}
+        className="flex gap-2 items-center"
+      >
         <ArrowsCounterClockwise
           size={20}
-          className="text-gray-700 hover:cursor-pointer"
+          className={`text-gray-700 hover:cursor-pointer ${
+            isRetweeted ? "text-green-600" : ""
+          }`}
         />
         <span className="text-sm">{tweet.retweetCount || 0}</span>
       </div>
