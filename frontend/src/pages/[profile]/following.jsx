@@ -28,15 +28,15 @@ export default function FollowingPage({ users }) {
 export async function getServerSideProps({ req, res, params }) {
   try {
     if (params.profile) {
-      const followersRes = await fetch(
+      const followingRes = await fetch(
         `${BASE_URL}/following/${params.profile}`,
         attachAuthCookie(req)
       );
-      const followersResBody = await followersRes.json();
+      const followingResBody = await followingRes.json();
 
       return {
         props: {
-          users: followersResBody.data.following,
+          users: followingResBody.data.following,
         },
       };
     }
