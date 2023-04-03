@@ -12,10 +12,14 @@ import DeleteTweetModal from "@/components/DeleteTweetModal";
 import { BASE_URL } from "@/constants/routes";
 
 export default function Tweet({ tweet }) {
-  const [userHandle, setUserHandle] = useState(session.getUser().handle);
+  const [userHandle, setUserHandle] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
+
+  useEffect(() => {
+    setUserHandle(session.getUser().handle);
+  });
 
   const onTweetDelete = () => {
     setIsLoading(true);
