@@ -1,6 +1,13 @@
 const User = require("./../models/User");
 const Sequelize = require("sequelize");
 
+const formatUsers = (users) => {
+  return users.map((user) => {
+    user.isFollowedByUser = user.isFollowedByUser === 1 ? true : false;
+    return user;
+  });
+};
+
 module.exports.addFollows = async (req, res) => {
   try {
     const followingUser = await User.findOne({
@@ -64,7 +71,7 @@ module.exports.getFollowers = async (req, res) => {
 
     return res.status(200).json({
       data: {
-        followers
+        followers: formatUsers(followers)
       }
     });
   } catch (error) {
@@ -82,16 +89,24 @@ module.exports.getFollowing = async (req, res) => {
     });
 
     let following = await user.getFollowing({
-      attributes: ["id", "name", "handle", "bio"],
+      attributes: [
+        "id",
+        "name",
+        "handle",
+        "bio",
+        [
+          Sequelize.literal(
+            `EXISTS(SELECT * FROM follows WHERE followerId = ${user.id} AND followingId = User.id)`
+          ),
+          "isFollowedByUser"
+        ]
+      ],
       order: [["handle", "ASC"]]
     });
 
-    // Set isFollowedByUser true for all users:
-    following = following.map((obj) => ({ ...obj, isFollowedByUser: true }));
-
     return res.status(200).json({
       data: {
-        following: following
+        following: formatUsers(following)
       }
     });
   } catch (error) {
