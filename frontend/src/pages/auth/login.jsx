@@ -7,13 +7,16 @@ import Input from "@/components/Form/Input";
 import { loginRoute } from "@/constants/routes";
 import { useRouter } from "next/router";
 import session from "@/utils/session";
+import ErrorCallout from "@/components/Error/errorCallout";
 
 export default function LoginFlow() {
+  const { loginFailedTitle, loginFailedMessage } = strings.EN.LOGIN_FLOW;
   const [uiText, setUiText] = useState(strings.EN.LOGIN_FLOW);
   const router = useRouter();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loginCredentialIsValid, setLoginCredentialIsValid] = useState(true);
 
   useEffect(() => {
     // Detect and set the correct language here
@@ -43,7 +46,7 @@ export default function LoginFlow() {
         } else {
           // Login failed
           response.json().then((body) => {
-            console.error(body.data.message);
+            setLoginCredentialIsValid(false);
           });
         }
       })
@@ -83,7 +86,12 @@ export default function LoginFlow() {
                 required
               />
             </div>
-
+            {loginCredentialIsValid ? null : (
+              <ErrorCallout
+                title={loginFailedTitle}
+                message={loginFailedMessage}
+              />
+            )}
             <div className="mt-6">
               <button
                 type="submit"

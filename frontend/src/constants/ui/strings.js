@@ -13,6 +13,9 @@ export default {
       signIn: "Log in",
       newUser: "Don't have an account?",
       register: "Register",
+      loginFailedTitle: "Login Failed!",
+      loginFailedMessage:
+        "You have entered the wrong email or password, please try again",
     },
     REGISTER_FLOW: {
       registerCta: "Register for Woofer",
