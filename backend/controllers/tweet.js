@@ -3,7 +3,8 @@ const User = require("./../models/User");
 const Sequelize = require("sequelize");
 
 const formatTweet = (tweetObj) => {
-  const { User: user, LikedBy, ...tweet } = tweetObj.dataValues;
+  const { User: user, LikedBy, retweets, ...tweet } = tweetObj.dataValues;
+  const retweeter = tweetObj.retweeter;
 
   const formattedTweet = {
     ...tweet,
@@ -15,6 +16,9 @@ const formatTweet = (tweetObj) => {
     formattedTweet.isLikedByUser = formattedTweet.isLikedByUser === 0 ? false : true;
   }
 
+  if (retweeter) {
+    formattedTweet.retweeter = retweeter;
+  }
   return formattedTweet;
 };
 
@@ -22,6 +26,55 @@ const getFormattedTweets = (tweetObjs) => {
   return tweetObjs.map((tweetObj) => {
     return formatTweet(tweetObj);
   });
+};
+
+const getUserRetweets = async (userIds, currentUserId) => {
+  const retweetObjs = await User.findAll({
+    where: { id: userIds },
+    attributes: ["handle"],
+    include: [
+      {
+        model: Tweet,
+        as: "Retweets",
+        attributes: {
+          include: [
+            [
+              Sequelize.literal("(SELECT COUNT(*) FROM likes WHERE TweetId = Retweets.id)"),
+              "likeCount"
+            ],
+            [
+              Sequelize.literal("(SELECT COUNT(*) FROM retweets WHERE TweetId = Retweets.id)"),
+              "retweetCount"
+            ],
+            [
+              Sequelize.literal(
+                `EXISTS(SELECT * FROM likes WHERE TweetId = Retweets.id AND UserId = ${currentUserId})`
+              ),
+              "isLikedByUser"
+            ]
+          ]
+        },
+        include: [
+          {
+            model: User,
+            attributes: ["id", "name", "handle"]
+          }
+        ]
+      }
+    ]
+  });
+
+  const collatedRetweets = [];
+  for (let i = 0; i < retweetObjs.length; i++) {
+    const { handle, Retweets } = retweetObjs[i];
+
+    for (let j = 0; j < Retweets.length; j++) {
+      Retweets[j].retweeter = handle;
+      collatedRetweets.push(Retweets[j]);
+    }
+  }
+
+  return collatedRetweets;
 };
 
 module.exports.createTweet = async (req, res) => {
@@ -67,11 +120,6 @@ module.exports.getTweets = async (req, res) => {
         {
           model: User,
           attributes: ["id", "name", "handle"]
-        },
-        {
-          model: User,
-          as: "LikedBy",
-          attributes: []
         }
       ],
       group: ["Tweet.id"],
@@ -133,7 +181,7 @@ module.exports.getUserTweets = async (req, res) => {
   try {
     const requestedUser = await User.findOne({
       where: { handle: req.params.handle },
-      attributes: ["id"]
+      attributes: ["id", "handle"]
     });
     const currentUserId = req.user.id;
 
@@ -158,19 +206,16 @@ module.exports.getUserTweets = async (req, res) => {
         {
           model: User,
           attributes: ["id", "name", "handle"]
-        },
-        {
-          model: User,
-          as: "LikedBy",
-          attributes: ["id"]
         }
       ],
       group: ["Tweet.id", "User.id"],
       order: [["createdAt", "DESC"]]
     });
 
+    const retweets = await getUserRetweets([requestedUser.id], currentUserId);
+    const allTweets = tweets.concat(retweets).sort((tweet) => tweet.createdAt);
     return res.status(200).json({
-      data: { tweets: getFormattedTweets(tweets) }
+      data: { tweets: getFormattedTweets(allTweets) }
     });
   } catch (err) {
     console.error(err);
