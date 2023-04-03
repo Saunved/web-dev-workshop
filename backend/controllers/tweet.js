@@ -3,7 +3,7 @@ const User = require("./../models/User");
 const Sequelize = require("sequelize");
 
 const formatTweet = (tweetObj) => {
-  const { User: user, LikedBy, retweets, ...tweet } = tweetObj.dataValues;
+  const { User: user, LikedBy, retweets, ...tweet } = tweetObj.dataValues; // eslint-disable-line no-unused-vars
   const retweeter = tweetObj.retweeter;
 
   const formattedTweet = {
@@ -14,6 +14,10 @@ const formatTweet = (tweetObj) => {
 
   if ("isLikedByUser" in formattedTweet) {
     formattedTweet.isLikedByUser = formattedTweet.isLikedByUser === 0 ? false : true;
+  }
+
+  if ("isRetweetedByUser" in formattedTweet) {
+    formattedTweet.isRetweetedByUser = formattedTweet.isRetweetedByUser === 0 ? false : true;
   }
 
   if (retweeter) {
@@ -51,6 +55,12 @@ const getUserRetweets = async (userIds, currentUserId) => {
                 `EXISTS(SELECT * FROM likes WHERE TweetId = Retweets.id AND UserId = ${currentUserId})`
               ),
               "isLikedByUser"
+            ],
+            [
+              Sequelize.literal(
+                `EXISTS(SELECT * FROM retweets WHERE TweetId = Retweets.id AND UserId = ${currentUserId})`
+              ),
+              "isRetweetedByUser"
             ]
           ]
         },
@@ -99,7 +109,7 @@ module.exports.createTweet = async (req, res) => {
 
 module.exports.getTweets = async (req, res) => {
   try {
-    // Fetch tweets sorted by createdAt in desc order
+    const userId = req.user.id;
     const tweets = await Tweet.findAll({
       attributes: {
         include: [
@@ -110,9 +120,15 @@ module.exports.getTweets = async (req, res) => {
           ],
           [
             Sequelize.literal(
-              `EXISTS(SELECT * FROM likes WHERE TweetId = Tweet.id AND UserId = ${req.user.id})`
+              `EXISTS(SELECT * FROM likes WHERE TweetId = Tweet.id AND UserId = ${userId})`
             ),
             "isLikedByUser"
+          ],
+          [
+            Sequelize.literal(
+              `EXISTS(SELECT * FROM retweets WHERE TweetId = Tweet.id AND UserId = ${userId})`
+            ),
+            "isRetweetedByUser"
           ]
         ]
       },
@@ -154,6 +170,12 @@ module.exports.getTweet = async (req, res) => {
               `EXISTS(SELECT * FROM likes WHERE TweetId = ${tweetId} AND UserId = ${userId})`
             ),
             "isLikedByUser"
+          ],
+          [
+            Sequelize.literal(
+              `EXISTS(SELECT * FROM retweets WHERE TweetId = ${tweetId} AND UserId = ${userId})`
+            ),
+            "isRetweetedByUser"
           ]
         ]
       },
@@ -199,6 +221,12 @@ module.exports.getUserTweets = async (req, res) => {
               `EXISTS(SELECT * FROM likes WHERE TweetId = Tweet.id AND UserId = ${currentUserId})`
             ),
             "isLikedByUser"
+          ],
+          [
+            Sequelize.literal(
+              `EXISTS(SELECT * FROM retweets WHERE TweetId = Tweet.id AND UserId = ${currentUserId})`
+            ),
+            "isRetweetedByUser"
           ]
         ]
       },
@@ -249,6 +277,12 @@ module.exports.getFollowingTweets = async (req, res) => {
               `EXISTS(SELECT * FROM likes WHERE TweetId = Tweet.id AND UserId = ${user.id})`
             ),
             "isLikedByUser"
+          ],
+          [
+            Sequelize.literal(
+              `EXISTS(SELECT * FROM retweets WHERE TweetId = Tweet.id AND UserId = ${user.id})`
+            ),
+            "isRetweetedByUser"
           ]
         ]
       },
@@ -322,6 +356,12 @@ module.exports.getLikedTweets = async (req, res) => {
               `EXISTS(SELECT * FROM likes WHERE TweetId = Tweet.id AND UserId = ${currentUserId})`
             ),
             "isLikedByUser"
+          ],
+          [
+            Sequelize.literal(
+              `EXISTS(SELECT * FROM retweets WHERE TweetId = Tweet.id AND UserId = ${currentUserId})`
+            ),
+            "isRetweetedByUser"
           ]
         ]
       },
