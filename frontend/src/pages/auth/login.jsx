@@ -7,8 +7,8 @@ import Input from "@/components/Form/Input";
 import { loginRoute } from "@/constants/routes";
 import { useRouter } from "next/router";
 import session from "@/utils/session";
-import ErrorCallout from "@/components/Error/errorCallout";
-import SuccessCallout from "@/components/Utils/successCallout";
+import ErrorCallout from "@/components/Widget/ErrorCallout";
+import SuccessCallout from "@/components/Widget/SuccessCallout";
 
 export default function LoginFlow() {
   const { loginFailedTitle, loginFailedMessage } = strings.EN.LOGIN_FLOW;
