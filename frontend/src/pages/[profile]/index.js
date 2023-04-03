@@ -89,7 +89,7 @@ export default function ProfilePage({ user, tweets, followCounts }) {
         <title>{title}</title>
       </Head>
       <main>
-        <HeaderImage />
+        <HeaderImage handle={user.handle} />
         <div className="grid grid-flow-col space-between">
           <div className="-mt-16 pl-8">
             <HeaderProfilePicture handle={user.handle} />
