@@ -1,17 +1,32 @@
 import strings from "@/constants/ui/strings";
+import { useState } from "react";
 
-export default function HomeFeedSwitcher() {
+export default function HomeFeedSwitcher({
+  feed,
+  onClickFollowingTweets,
+  onClickForYouTweets,
+}) {
   const uiText = strings.EN.FEED;
 
   return (
     <>
       <div className="grid grid-cols-2 justify-center items-center mt-8">
-        <h2 className="text-center font-bold text-lg cursor-pointer">
+        <button
+          onClick={onClickForYouTweets}
+          className={`text-center text-lg cursor-pointer ${
+            feed === "global" ? "font-bold" : "text-gray-600"
+          }`}
+        >
           {uiText.forYou}
-        </h2>
-        <h2 className="text-center font-bold text-lg text-gray-600 cursor-pointer">
+        </button>
+        <button
+          onClick={onClickFollowingTweets}
+          className={`text-center text-lg cursor-pointer ${
+            feed === "following" ? "font-bold" : "text-gray-600"
+          }`}
+        >
           {uiText.following}
-        </h2>
+        </button>
       </div>
       <hr className="mt-4" />
     </>

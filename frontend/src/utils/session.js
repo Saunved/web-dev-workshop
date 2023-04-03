@@ -12,11 +12,13 @@ const isLoggedIn = () => {
 const setUser = (user) => {
   localStorage.setItem("userId", user.id);
   localStorage.setItem("userHandle", user.handle);
+  localStorage.setItem("feed", "global");
 };
 
 const clearUser = () => {
   localStorage.removeItem("userId");
   localStorage.removeItem("userHandle");
+  localStorage.removeItem("feed");
 };
 
 export default {
