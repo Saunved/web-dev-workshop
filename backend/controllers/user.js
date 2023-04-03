@@ -10,8 +10,8 @@ const formatUser = (userObj) => {
     ...user
   };
 
-  if ("isFollowing" in formattedUser) {
-    formattedUser.isFollowing = formattedUser.isFollowing === 0 ? false : true;
+  if ("isFollowedByUser" in formattedUser) {
+    formattedUser.isFollowedByUser = formattedUser.isFollowedByUser === 0 ? false : true;
   }
 
   return formattedUser;
@@ -125,7 +125,7 @@ module.exports.getUser = async (req, res) => {
             Sequelize.literal(
               `EXISTS(SELECT * FROM follows WHERE follows.followerId = ${req.user.id} AND follows.followingId = ${userId})`
             ),
-            "isFollowing"
+            "isFollowedByUser"
           ]
         ],
         exclude: ["password"]
@@ -161,7 +161,7 @@ module.exports.getUserByHandle = async (req, res) => {
             Sequelize.literal(
               `EXISTS(SELECT * FROM follows WHERE follows.followerId = ${req.user.id} AND follows.followingId = User.id)`
             ),
-            "isFollowing"
+            "isFollowedByUser"
           ]
         ],
         exclude: ["password"]
@@ -196,7 +196,7 @@ module.exports.getAllUsers = async (req, res) => {
             Sequelize.literal(
               `EXISTS(SELECT * FROM follows WHERE follows.followerId = ${req.user.id} AND follows.followingId = User.id)`
             ),
-            "isFollowing"
+            "isFollowedByUser"
           ]
         ],
         exclude: ["password"]
@@ -249,6 +249,25 @@ module.exports.changePassword = async (req, res) => {
     console.error(err);
     return res.status(500).json({
       message: "Error while changing password."
+    });
+  }
+};
+
+module.exports.deleteUser = async (req, res) => {
+  try {
+    await User.destroy({
+      where: {
+        id: req.user.id
+      }
+    });
+
+    return res.status(200).json({
+      data: { message: "Deleted user" }
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: "Error while deleting user"
     });
   }
 };

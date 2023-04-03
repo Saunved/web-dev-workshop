@@ -9,7 +9,8 @@ const {
   getLikedTweets,
   getFollowingTweets,
   likeTweet,
-  unlikeTweet
+  unlikeTweet,
+  deleteTweet
 } = require("./../controllers/tweet");
 
 router.post("/tweet", auth, createTweet);
@@ -25,5 +26,6 @@ router.get("/tweets/handle/:handle", auth, getUserTweets);
 router.get("/tweets/liked/:userId", auth, getLikedTweets);
 // Get tweets from users that that the current user follows:
 router.get("/tweets/following", auth, getFollowingTweets);
+router.delete("/tweet/:id", auth, deleteTweet);
 
 module.exports = router;
