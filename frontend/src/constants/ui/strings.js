@@ -31,6 +31,7 @@ export default {
       handle: "Create a handle",
       registrationTitle: "Registration Successful!",
       registrationMessage: "Please login to proceed",
+      invalidEmail: "Please enter a valid email address",
     },
     LOGOUT: {
       loggingYouOut: "Logging you out...",

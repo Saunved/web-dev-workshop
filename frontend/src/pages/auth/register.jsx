@@ -7,8 +7,11 @@ import PasswordLabel from "@/components/Form/PasswordLabel";
 import { registerRoute } from "@/constants/routes";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/router";
+import ErrorText from "@/components/Widget/ErrorText";
+import { isEmailValid } from "@/utils/validation";
 
 export default function RegisterFlow() {
+  const { invalidEmail } = strings.EN.REGISTER_FLOW;
   const [uiText, setUiText] = useState(strings.EN.REGISTER_FLOW);
   const router = useRouter();
 
@@ -28,6 +31,11 @@ export default function RegisterFlow() {
 
   const onSubmitForm = (e) => {
     e.preventDefault();
+
+    if (!isEmailValid(email)) {
+      setEmailError(invalidEmail);
+      return;
+    }
 
     fetch(registerRoute, {
       method: "POST",
@@ -71,7 +79,7 @@ export default function RegisterFlow() {
         {uiText.registerCta}
       </h1>
       <div className="mt-8 flex justify-center">
-        <div className="w-64">
+        <div className="w-128">
           <form onSubmit={onSubmitForm}>
             <div>
               <label htmlFor="name">{uiText.name}</label>
@@ -87,6 +95,7 @@ export default function RegisterFlow() {
             <div>
               <label htmlFor="email">{uiText.email}</label>
               <input
+                className={`${emailError ? "border-2 border-rose-600" : ""}`}
                 type="email"
                 id="email"
                 name="email"
@@ -95,6 +104,7 @@ export default function RegisterFlow() {
                 required
               />
             </div>
+            {emailError ? <ErrorText message={emailError} /> : null}
             <div>
               <label htmlFor="password">{uiText.password}</label>
               <input
