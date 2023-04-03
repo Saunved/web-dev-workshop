@@ -5,6 +5,7 @@ import Link from "next/link";
 import Input from "@/components/Form/Input";
 import PasswordLabel from "@/components/Form/PasswordLabel";
 import { registerRoute } from "@/constants/routes";
+import { toast } from "react-hot-toast";
 import { useRouter } from "next/router";
 
 export default function RegisterFlow() {
@@ -43,6 +44,7 @@ export default function RegisterFlow() {
       .then((response) => {
         if (response.ok) {
           // Registration successful
+          localStorage.setItem("registrationSuccess", true);
           router.push("/auth/login");
         } else {
           // Registration failed

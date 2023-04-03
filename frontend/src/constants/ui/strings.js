@@ -29,6 +29,8 @@ export default {
       date: "Your date of birth",
       name: "Your display name",
       handle: "Create a handle",
+      registrationTitle: "Registration Successful!",
+      registrationMessage: "Please login to proceed",
     },
     LOGOUT: {
       loggingYouOut: "Logging you out...",
