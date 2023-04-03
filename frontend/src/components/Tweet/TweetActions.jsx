@@ -138,7 +138,6 @@ export default function TweetActions({ tweet }) {
 
   return (
     <div className="grid grid-flow-col gap-8 justify-start mt-4">
-      {/* <ChatCircle size={20} className="text-gray-700 hover:cursor-pointer" /> */}
       <button
         disabled={user.handle === tweet.handle}
         onClick={isRetweeted ? unRetweet : retweet}
@@ -164,8 +163,6 @@ export default function TweetActions({ tweet }) {
         />
         <span className="text-sm">{likeCount || 0}</span>
       </button>
-      {/* <ChartLine size={20} className="text-gray-700 hover:cursor-pointer" /> */}
-      {/* <Export size={20} className="text-gray-700 hover:cursor-pointer" /> */}
     </div>
   );
 }

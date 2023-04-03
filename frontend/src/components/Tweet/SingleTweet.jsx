@@ -41,7 +41,7 @@ export default function Tweet({ tweet }) {
         setIsLoading(true);
       })
       .catch((error) => {
-        console.error("Error liking tweet", error);
+        console.error("Error deleting tweet", error);
       });
   };
 
@@ -87,7 +87,11 @@ export default function Tweet({ tweet }) {
             <TweetActions tweet={tweet} />
           </div>
           {userHandle === tweet.handle ? (
-            <button className="self-start" onClick={() => setShowModal(true)}>
+            <button
+              disabled={isLoading}
+              className="self-start"
+              onClick={() => setShowModal(true)}
+            >
               <Trash size={20} />
             </button>
           ) : null}
