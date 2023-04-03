@@ -252,3 +252,22 @@ module.exports.changePassword = async (req, res) => {
     });
   }
 };
+
+module.exports.deleteUser = async (req, res) => {
+  try {
+    await User.destroy({
+      where: {
+        id: req.user.id
+      }
+    });
+
+    return res.status(200).json({
+      data: { message: "Deleted user" }
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: "Error while deleting user"
+    });
+  }
+};

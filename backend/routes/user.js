@@ -8,7 +8,8 @@ const {
   getUser,
   getAllUsers,
   changePassword,
-  getUserByHandle
+  getUserByHandle,
+  deleteUser
 } = require("./../controllers/user");
 const { auth } = require("./../middlewares/auth");
 
@@ -21,5 +22,6 @@ router.get("/user/handle/:handle", getUserByHandle);
 router.put("/user", auth, updateUser);
 router.put("/user/change-password", auth, changePassword);
 router.post("/logout", auth, logoutUser);
+router.delete("/user", auth, deleteUser);
 
 module.exports = router;
