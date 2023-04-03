@@ -18,7 +18,8 @@ export default function ProfilePage({ user, tweets, followCounts }) {
   const uiTextSite = strings.EN.SITE;
   const title = `${uiTextSite.home} / ${uiTextSite.woofer}`;
   const [userIsSelf, setUserIsSelf] = useState(false);
-  const [isFollowing, setIsFollowing] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(user.isFollowedByUser);
+  const [followersCount, setFollowersCount] = useState(user.followersCount);
   const [disableFollowButton, setDisableFollowButton] = useState(false);
 
   const router = useRouter();
@@ -27,8 +28,6 @@ export default function ProfilePage({ user, tweets, followCounts }) {
     if (handle === router.query.profile) {
       setUserIsSelf(true);
     }
-
-    setIsFollowing(user.isFollowing);
   }, []);
 
   const followUser = () => {
@@ -44,6 +43,7 @@ export default function ProfilePage({ user, tweets, followCounts }) {
         if (response.ok) {
           response.json().then((data) => {
             setIsFollowing(true);
+            setFollowersCount(followersCount + 1);
           });
         } else {
           response.json().then((data) => {
@@ -70,6 +70,7 @@ export default function ProfilePage({ user, tweets, followCounts }) {
         if (response.ok) {
           response.json().then((data) => {
             setIsFollowing(false);
+            setFollowersCount(followersCount - 1);
           });
         } else {
           response.json().then((data) => {
@@ -123,7 +124,7 @@ export default function ProfilePage({ user, tweets, followCounts }) {
             </Link>
 
             <Link href={`/${user.handle}/followers`}>
-              <b>{user.followersCount}</b> {uiTextFollow.followers}
+              <b>{followersCount}</b> {uiTextFollow.followers}
             </Link>
           </div>
         </div>
