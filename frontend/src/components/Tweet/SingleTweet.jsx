@@ -53,33 +53,45 @@ export default function Tweet({ tweet }) {
 
   return (
     <>
-      <article className="flex p-4 justify-center gap-3">
-        <div className="w-14 flex justify-between">
-          <Link href={"/" + tweet.handle}>
-            <ProfilePicture handle={tweet.handle} />
-          </Link>
-        </div>
-        <div className="w-full">
-          <Link href={"/" + tweet.handle} className="hover:no-underline">
-            <TweetHeader
-              name={tweet.name}
-              handle={tweet.handle}
-              time={
-                tweet.createdAt ? getHumanReadableDate(tweet.createdAt) : ""
-              }
-            />
-          </Link>
-          <Link href={`/${tweet.handle}/status/${tweet.id}`}>
-            <TweetContent body={tweet.body} />
-          </Link>
-          {/* <LinkPreview /> -- try at home! */}
-          <TweetActions tweet={tweet} />
-        </div>
-        {userHandle === tweet.handle ? (
-          <button className="self-start" onClick={() => setShowModal(true)}>
-            <Trash size={20} />
-          </button>
+      <article className="pt-4">
+        {tweet.retweeter ? (
+          <p className="pl-6 ml-14 font-semibold text-sm pb-1">
+            Retweeted by{" "}
+            <Link href={`/${tweet.retweeter}`} className="text-blue-500">
+              {" "}
+              @{tweet.retweeter}
+            </Link>
+          </p>
         ) : null}
+
+        <div className="flex px-4 pb-4 justify-center gap-3">
+          <div className="w-14 flex justify-between">
+            <Link href={"/" + tweet.handle}>
+              <ProfilePicture handle={tweet.handle} />
+            </Link>
+          </div>
+          <div className="w-full">
+            <Link href={"/" + tweet.handle} className="hover:no-underline">
+              <TweetHeader
+                name={tweet.name}
+                handle={tweet.handle}
+                time={
+                  tweet.createdAt ? getHumanReadableDate(tweet.createdAt) : ""
+                }
+              />
+            </Link>
+            <Link href={`/${tweet.handle}/status/${tweet.id}`}>
+              <TweetContent body={tweet.body} />
+            </Link>
+            {/* <LinkPreview /> -- try at home! */}
+            <TweetActions tweet={tweet} />
+          </div>
+          {userHandle === tweet.handle ? (
+            <button className="self-start" onClick={() => setShowModal(true)}>
+              <Trash size={20} />
+            </button>
+          ) : null}
+        </div>
       </article>
 
       <DeleteTweetModal
