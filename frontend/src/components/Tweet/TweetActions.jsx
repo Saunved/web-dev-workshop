@@ -7,6 +7,7 @@ import {
   ChartLine,
 } from "phosphor-react";
 import { useState, useEffect } from "react";
+import session from "@/utils/session";
 
 export default function TweetActions({ tweet }) {
   const [isLiked, setIsLiked] = useState(tweet.isLikedByUser);
@@ -15,9 +16,18 @@ export default function TweetActions({ tweet }) {
   const [retweetCount, setRetweetCount] = useState(tweet.retweetCount);
   const [disableLikeButton, setDisableLikeButton] = useState(false);
   const [disableRetweetButton, setDisableRetweetButton] = useState(false);
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    const user = session.getUser();
+    if (user.handle === tweet.retweeter) {
+      setIsRetweeted(true);
+    }
+    setUser(user);
+  }, []);
 
   const retweet = async () => {
-    disableRetweetButton(true);
+    setDisableRetweetButton(true);
     fetch(`${BASE_URL}/retweet/${tweet.id}`, {
       method: "POST",
       credentials: "include",
@@ -29,7 +39,7 @@ export default function TweetActions({ tweet }) {
         if (response.ok) {
           // Reflect the like or toggled like
           setIsRetweeted(true);
-          setLikeCount(retweetCount + 1);
+          setRetweetCount(retweetCount + 1);
         } else {
           response.json().then((data) => {
             console.error(data.message);
@@ -43,7 +53,7 @@ export default function TweetActions({ tweet }) {
   };
 
   const unRetweet = async () => {
-    disableRetweetButton(true);
+    setDisableRetweetButton(true);
     fetch(`${BASE_URL}/retweet/${tweet.id}`, {
       method: "DELETE",
       credentials: "include",
@@ -55,7 +65,7 @@ export default function TweetActions({ tweet }) {
         if (response.ok) {
           // Reflect the like or toggled like
           setIsRetweeted(false);
-          setLikeCount(retweetCount - 1);
+          setRetweetCount(retweetCount - 1);
         } else {
           response.json().then((data) => {
             console.error(data.message);
@@ -127,20 +137,19 @@ export default function TweetActions({ tweet }) {
   };
 
   return (
-    <div className="grid grid-flow-col gap-16 justify-start mt-4">
-      <ChatCircle size={20} className="text-gray-700 hover:cursor-pointer" />
-      <div
+    <div className="grid grid-flow-col gap-8 justify-start mt-4">
+      {/* <ChatCircle size={20} className="text-gray-700 hover:cursor-pointer" /> */}
+      <button
+        disabled={user.handle === tweet.handle}
         onClick={isRetweeted ? unRetweet : retweet}
-        className="flex gap-2 items-center"
+        className="flex gap-2 items-center disabled:opacity-60 hover:cursor-pointer disabled:hover:cursor-default"
       >
         <ArrowsCounterClockwise
           size={20}
-          className={`text-gray-700 hover:cursor-pointer ${
-            isRetweeted ? "text-green-600" : ""
-          }`}
+          className={`text-gray-700 ${isRetweeted ? "text-green-600" : ""}`}
         />
-        <span className="text-sm">{tweet.retweetCount || 0}</span>
-      </div>
+        <span className="text-sm">{retweetCount || 0}</span>
+      </button>
       <button
         disabled={disableLikeButton}
         onClick={isLiked ? unlikeTweet : likeTweet}
@@ -155,8 +164,8 @@ export default function TweetActions({ tweet }) {
         />
         <span className="text-sm">{likeCount || 0}</span>
       </button>
-      <ChartLine size={20} className="text-gray-700 hover:cursor-pointer" />
-      <Export size={20} className="text-gray-700 hover:cursor-pointer" />
+      {/* <ChartLine size={20} className="text-gray-700 hover:cursor-pointer" /> */}
+      {/* <Export size={20} className="text-gray-700 hover:cursor-pointer" /> */}
     </div>
   );
 }
