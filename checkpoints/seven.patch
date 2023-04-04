@@ -1,0 +1,86 @@
+diff --git a/frontend/src/components/TweetFeed.jsx b/frontend/src/components/TweetFeed.jsx
+index 5990ffa..02115a7 100644
+--- a/frontend/src/components/TweetFeed.jsx
++++ b/frontend/src/components/TweetFeed.jsx
+@@ -6,31 +6,22 @@ export default function TweetFeed({ tweets, loading }) {
+     return <div className="text-center my-8">No tweets to show right now!</div>;
+   }
+ 
++  // Task 2:
++  // If the tweets are loading, we want to show some kind of a loader.
++  // Sure, we can just type "Loading...", but where's the fun in that?
++  // Can you use something from the "react-loader-spinner" library to show
++  // something here?
+   if (loading) {
+-    return (
+-      <div className="flex justify-center w-full p-8">
+-        <Bars
+-          height="100"
+-          width="120"
+-          color="#0074d9"
+-          ariaLabel="bars-loading"
+-          wrapperStyle={{}}
+-          wrapperClass=""
+-          visible={true}
+-        />
+-      </div>
+-    );
++    return <div className="flex justify-center w-full p-8"></div>;
+   }
+ 
+   return (
+     <>
+-      {tweets.map((tweet, idx) => {
+-        return (
+-          <div key={idx}>
+-            <Tweet tweet={tweet} /> <hr />{" "}
+-          </div>
+-        );
+-      })}
++      {/* Task 1:
++We already have the "Tweet" component ready
++Can we somehow loop over all the tweets that we are receiving
++in this component and render the "Tweet" component inside the loop
++for every tweet? Hint: Look up "map" function     */}
+     </>
+   );
+ }
+diff --git a/frontend/src/pages/home.jsx b/frontend/src/pages/home.jsx
+index ce9c913..6a25068 100644
+--- a/frontend/src/pages/home.jsx
++++ b/frontend/src/pages/home.jsx
+@@ -42,17 +42,21 @@ export default function HomeFeed() {
+     try {
+       preferences.setFeed("global");
+       setIsLoading(true);
+-      const res = await fetch(`${BASE_URL}/tweets`, { credentials: "include" });
+-      const body = await res.json();
++      // Task 3:
++      // We want to fetch the global tweets, extract them from the response
++      // and set them on the "tweetFeed" state variable
++      // This will allow the tweets to show up in the <TweetFeed /> component
++
++      // Get the tweets
+ 
+       if (res.ok) {
+-        setTweetFeed(body.data.tweets);
++        // Set them on the tweetFeed
+       } else {
+-        setTweetFeed([]);
++        // What should we do if the tweets are not there?
+       }
+       setIsLoading(false);
+     } catch (error) {
+-      setTweetFeed([]);
++      // What should we do if there is an error?
+       setIsLoading(false);
+     }
+   };
+@@ -94,6 +98,7 @@ export default function HomeFeed() {
+         </div>
+         <hr className="mt-4" />
+ 
++        {/* This is how we are showing the tweet feed */}
+         <TweetFeed tweets={tweetFeed} loading={isLoading} />
+       </div>
+     </>
