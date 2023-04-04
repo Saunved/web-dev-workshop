@@ -1,0 +1,39 @@
+diff --git a/backend/controllers/tweet.js b/backend/controllers/tweet.js
+index 7636e9a..8543e3c 100644
+--- a/backend/controllers/tweet.js
++++ b/backend/controllers/tweet.js
+@@ -91,19 +91,11 @@ module.exports.createTweet = async (req, res) => {
+   try {
+     const { body, hashtag } = req.body;
+     const userId = req.user.id;
+-    const tweet = await Tweet.create({ userId, body, hashtag });
+ 
+-    return res.status(201).json({
+-      data: {
+-        tweet: { id: tweet.id, body: tweet.body }
+-      },
+-      message: "Tweet published."
+-    });
++    // Task 2A: Insert data and generate response
+   } catch (err) {
+     console.error(err);
+-    return res.status(500).json({
+-      message: "Error while creating tweet."
+-    });
++    // Task 2B: In case of error, catch the error and return response
+   }
+ };
+ 
+diff --git a/backend/routes/tweet.js b/backend/routes/tweet.js
+index d79edff..99d4f22 100644
+--- a/backend/routes/tweet.js
++++ b/backend/routes/tweet.js
+@@ -13,7 +13,7 @@ const {
+   deleteTweet
+ } = require("./../controllers/tweet");
+ 
+-router.post("/tweet", auth, createTweet);
++// Task 1: Create a POST route for creating Tweet
+ router.post("/tweet/like/:id", auth, likeTweet);
+ router.post("/tweet/unlike/:id", auth, unlikeTweet);
+ // Get latest tweets:
