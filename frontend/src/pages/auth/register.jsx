@@ -8,10 +8,15 @@ import { registerRoute } from "@/constants/routes";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/router";
 import ErrorText from "@/components/Widget/ErrorText";
-import { isEmailValid, isPasswordValid } from "@/utils/validation";
+import {
+  isEmailValid,
+  isHandleValid,
+  isPasswordValid,
+} from "@/utils/validation";
 
 export default function RegisterFlow() {
-  const { invalidEmail, invalidPassword } = strings.EN.REGISTER_FLOW;
+  const { invalidEmail, invalidPassword, invalidHandle } =
+    strings.EN.REGISTER_FLOW;
   const [uiText, setUiText] = useState(strings.EN.REGISTER_FLOW);
   const router = useRouter();
 
@@ -44,7 +49,13 @@ export default function RegisterFlow() {
       setPasswordError("");
     }
 
-    if (emailError && passwordError) {
+    if (!isHandleValid(handle)) {
+      setHandleError(invalidHandle);
+    } else {
+      setHandleError("");
+    }
+
+    if (emailError || passwordError || handleError) {
       return;
     }
 
@@ -132,6 +143,7 @@ export default function RegisterFlow() {
             <div>
               <label htmlFor="handle">{uiText.handle}</label>
               <input
+                className={`${handleError ? "border-2 border-rose-600" : ""}`}
                 type="text"
                 id="handle"
                 name="handle"
@@ -140,7 +152,7 @@ export default function RegisterFlow() {
                 required
               />
             </div>
-
+            {handleError ? <ErrorText message={handleError} /> : null}
             <div className="mt-6">
               <button
                 type="submit"

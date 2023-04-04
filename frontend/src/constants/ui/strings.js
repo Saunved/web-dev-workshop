@@ -33,6 +33,8 @@ export default {
       registrationMessage: "Please login to proceed",
       invalidEmail: "Please enter a valid email address",
       invalidPassword: "Password must contain at least 6 characters",
+      invalidHandle:
+        "Your handle should contain only lowercase letters and digits",
     },
     LOGOUT: {
       loggingYouOut: "Logging you out...",
