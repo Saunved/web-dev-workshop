@@ -10,6 +10,7 @@ import UserNotFound from "@/components/Error/UserNotFound";
 import { BASE_URL } from "@/constants/routes";
 import { useState, useEffect } from "react";
 import { getHumanReadableDate } from "@/utils/date";
+import { attachAuthCookie } from "@/utils/xhr";
 
 export default function ProfilePage({ user, tweets, followCounts }) {
   const uiTextFollow = strings.EN.FOLLOW;
@@ -17,6 +18,9 @@ export default function ProfilePage({ user, tweets, followCounts }) {
   const uiTextSite = strings.EN.SITE;
   const title = `${uiTextSite.home} / ${uiTextSite.woofer}`;
   const [userIsSelf, setUserIsSelf] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(user.isFollowedByUser);
+  const [followersCount, setFollowersCount] = useState(user.followersCount);
+  const [disableFollowButton, setDisableFollowButton] = useState(false);
 
   const router = useRouter();
   useEffect(() => {
@@ -27,7 +31,8 @@ export default function ProfilePage({ user, tweets, followCounts }) {
   }, []);
 
   const followUser = () => {
-    fetch(`${BASE_URL}/followers/${user.id}`, {
+    setDisableFollowButton(true);
+    fetch(`${BASE_URL}/follow/${user.handle}`, {
       method: "POST",
       credentials: "include",
       headers: {
@@ -37,14 +42,42 @@ export default function ProfilePage({ user, tweets, followCounts }) {
       .then((response) => {
         if (response.ok) {
           response.json().then((data) => {
-            // @TODO: Change "Follow" to "Following"
-            console.log("Follower created", data);
+            setIsFollowing(true);
+            setFollowersCount(followersCount + 1);
           });
         } else {
           response.json().then((data) => {
             console.error(data.message);
           });
         }
+        setDisableFollowButton(false);
+      })
+      .catch((error) => {
+        console.error("Error following user", error);
+      });
+  };
+
+  const unfollowUser = () => {
+    setDisableFollowButton(true);
+    fetch(`${BASE_URL}/unfollow/${user.handle}`, {
+      method: "DELETE",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          response.json().then((data) => {
+            setIsFollowing(false);
+            setFollowersCount(followersCount - 1);
+          });
+        } else {
+          response.json().then((data) => {
+            console.error(data.message);
+          });
+        }
+        setDisableFollowButton(false);
       })
       .catch((error) => {
         console.error("Error following user", error);
@@ -57,7 +90,7 @@ export default function ProfilePage({ user, tweets, followCounts }) {
         <title>{title}</title>
       </Head>
       <main>
-        <HeaderImage />
+        <HeaderImage handle={user.handle} />
         <div className="grid grid-flow-col space-between">
           <div className="-mt-16 pl-8">
             <HeaderProfilePicture handle={user.handle} />
@@ -65,10 +98,11 @@ export default function ProfilePage({ user, tweets, followCounts }) {
           <div className="mt-6 text-right mr-6">
             {userIsSelf ? null : (
               <button
-                onClick={followUser}
+                disabled={disableFollowButton}
+                onClick={isFollowing ? unfollowUser : followUser}
                 className="border border-gray-600 rounded-full px-8 py-1"
               >
-                {uiTextFollow.follow}
+                {isFollowing ? uiTextFollow.unfollow : uiTextFollow.follow}
               </button>
             )}
           </div>
@@ -86,11 +120,11 @@ export default function ProfilePage({ user, tweets, followCounts }) {
 
           <div className="mt-4 flex justify-start gap-6">
             <Link href={`/${user.handle}/following`}>
-              <b>{followCounts.following}</b> {uiTextFollow.following}
+              <b>{user.followingCount}</b> {uiTextFollow.following}
             </Link>
 
             <Link href={`/${user.handle}/followers`}>
-              <b>{followCounts.followers}</b> {uiTextFollow.followers}
+              <b>{followersCount}</b> {uiTextFollow.followers}
             </Link>
           </div>
         </div>
@@ -104,17 +138,21 @@ export default function ProfilePage({ user, tweets, followCounts }) {
   );
 }
 
-export async function getServerSideProps({ res, params }) {
+export async function getServerSideProps({ req, res, params }) {
   try {
     if (params.profile) {
-      const [profileRes, tweetsRes, followCountsRes] = await Promise.all([
-        fetch(`${BASE_URL}/user/handle/${params.profile}`),
-        fetch(`${BASE_URL}/tweets/handle/${params.profile}`),
-        fetch(`${BASE_URL}/followers/count/${params.profile}`),
+      const [profileRes, tweetsRes] = await Promise.all([
+        fetch(
+          `${BASE_URL}/user/handle/${params.profile}`,
+          attachAuthCookie(req)
+        ),
+        fetch(
+          `${BASE_URL}/tweets/handle/${params.profile}`,
+          attachAuthCookie(req)
+        ),
       ]);
       const profileResBody = await profileRes.json();
       const tweetsResBody = await tweetsRes.json();
-      const followCountsResBody = await followCountsRes.json();
 
       if (!profileResBody.data.user) {
         throw new Error("No such user exists");
@@ -124,11 +162,11 @@ export async function getServerSideProps({ res, params }) {
         props: {
           user: profileResBody.data.user,
           tweets: tweetsResBody.data.tweets,
-          followCounts: followCountsResBody.data,
         },
       };
     }
   } catch (error) {
+    console.log(error);
     res.writeHead(302, { Location: "/home" });
     res.end();
   }

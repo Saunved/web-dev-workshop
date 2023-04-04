@@ -1,6 +1,7 @@
 import UserList from "@/components/UserList";
 import strings from "@/constants/ui/strings";
 import { BASE_URL } from "@/constants/routes";
+import { attachAuthCookie } from "@/utils/xhr";
 
 export default function FollowersPage({ users = [] }) {
   const uiText = strings.EN.FOLLOW;
@@ -22,17 +23,18 @@ export default function FollowersPage({ users = [] }) {
   );
 }
 
-export async function getServerSideProps({ res, params }) {
+export async function getServerSideProps({ req, res, params }) {
   try {
     if (params.profile) {
       const followingRes = await fetch(
-        `${BASE_URL}/followers/${params.profile}`
+        `${BASE_URL}/followers/${params.profile}`,
+        attachAuthCookie(req)
       );
       const followingResBody = await followingRes.json();
 
       return {
         props: {
-          users: followingResBody.data.users,
+          users: followingResBody.data.followers,
         },
       };
     }

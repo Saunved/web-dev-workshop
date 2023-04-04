@@ -42,15 +42,26 @@ const userModel = sequelize.define(
     },
     dateOfBirth: {
       type: DataTypes.DATEONLY,
-      allowNull: false,
-      validate: {
-        isDate: true
-      }
+      allowNull: true
     }
   },
   {
     tableName: "users"
   }
 );
+
+userModel.belongsToMany(userModel, {
+  through: "follows",
+  as: "Follower",
+  foreignKey: "followingId",
+  otherKey: "followerId"
+});
+
+userModel.belongsToMany(userModel, {
+  through: "follows",
+  as: "Following",
+  foreignKey: "followerId",
+  otherKey: "followingId"
+});
 
 module.exports = userModel;

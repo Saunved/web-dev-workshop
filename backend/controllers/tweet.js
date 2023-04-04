@@ -1,10 +1,10 @@
 const Tweet = require("./../models/Tweet");
 const User = require("./../models/User");
-const Follows = require("./../models/Follows");
 const Sequelize = require("sequelize");
 
 const formatTweet = (tweetObj) => {
-  const { User: user, LikedBy, ...tweet } = tweetObj.dataValues;
+  const { User: user, LikedBy, retweets, ...tweet } = tweetObj.dataValues; // eslint-disable-line no-unused-vars
+  const retweeter = tweetObj.retweeter;
 
   const formattedTweet = {
     ...tweet,
@@ -16,6 +16,13 @@ const formatTweet = (tweetObj) => {
     formattedTweet.isLikedByUser = formattedTweet.isLikedByUser === 0 ? false : true;
   }
 
+  if ("isRetweetedByUser" in formattedTweet) {
+    formattedTweet.isRetweetedByUser = formattedTweet.isRetweetedByUser === 0 ? false : true;
+  }
+
+  if (retweeter) {
+    formattedTweet.retweeter = retweeter;
+  }
   return formattedTweet;
 };
 
@@ -23,6 +30,61 @@ const getFormattedTweets = (tweetObjs) => {
   return tweetObjs.map((tweetObj) => {
     return formatTweet(tweetObj);
   });
+};
+
+const getUserRetweets = async (userIds, currentUserId) => {
+  const retweetObjs = await User.findAll({
+    where: { id: userIds },
+    attributes: ["handle"],
+    include: [
+      {
+        model: Tweet,
+        as: "Retweets",
+        attributes: {
+          include: [
+            [
+              Sequelize.literal("(SELECT COUNT(*) FROM likes WHERE TweetId = Retweets.id)"),
+              "likeCount"
+            ],
+            [
+              Sequelize.literal("(SELECT COUNT(*) FROM retweets WHERE TweetId = Retweets.id)"),
+              "retweetCount"
+            ],
+            [
+              Sequelize.literal(
+                `EXISTS(SELECT * FROM likes WHERE TweetId = Retweets.id AND UserId = ${currentUserId})`
+              ),
+              "isLikedByUser"
+            ],
+            [
+              Sequelize.literal(
+                `EXISTS(SELECT * FROM retweets WHERE TweetId = Retweets.id AND UserId = ${currentUserId})`
+              ),
+              "isRetweetedByUser"
+            ]
+          ]
+        },
+        include: [
+          {
+            model: User,
+            attributes: ["id", "name", "handle"]
+          }
+        ]
+      }
+    ]
+  });
+
+  const collatedRetweets = [];
+  for (let i = 0; i < retweetObjs.length; i++) {
+    const { handle, Retweets } = retweetObjs[i];
+
+    for (let j = 0; j < Retweets.length; j++) {
+      Retweets[j].retweeter = handle;
+      collatedRetweets.push(Retweets[j]);
+    }
+  }
+
+  return collatedRetweets;
 };
 
 module.exports.createTweet = async (req, res) => {
@@ -47,14 +109,36 @@ module.exports.createTweet = async (req, res) => {
 
 module.exports.getTweets = async (req, res) => {
   try {
-    // Fetch tweets sorted by createdAt in desc order
+    const userId = req.user.id;
     const tweets = await Tweet.findAll({
+      attributes: {
+        include: [
+          [Sequelize.literal("(SELECT COUNT(*) FROM likes WHERE TweetId = Tweet.id)"), "likeCount"],
+          [
+            Sequelize.literal("(SELECT COUNT(*) FROM retweets WHERE TweetId = Tweet.id)"),
+            "retweetCount"
+          ],
+          [
+            Sequelize.literal(
+              `EXISTS(SELECT * FROM likes WHERE TweetId = Tweet.id AND UserId = ${userId})`
+            ),
+            "isLikedByUser"
+          ],
+          [
+            Sequelize.literal(
+              `EXISTS(SELECT * FROM retweets WHERE TweetId = Tweet.id AND UserId = ${userId})`
+            ),
+            "isRetweetedByUser"
+          ]
+        ]
+      },
       include: [
         {
           model: User,
           attributes: ["id", "name", "handle"]
         }
       ],
+      group: ["Tweet.id"],
       order: [["createdAt", "DESC"]]
     });
 
@@ -74,30 +158,34 @@ module.exports.getTweet = async (req, res) => {
     const tweetId = req.params.id;
     const userId = req.user.id;
     const tweetObj = await Tweet.findByPk(tweetId, {
-      attributes: [
-        "id",
-        "body",
-        [Sequelize.fn("COUNT", Sequelize.col("LikedBy.id")), "likeCount"],
-        [
-          Sequelize.literal(
-            `EXISTS(SELECT * FROM user_tweets_likes WHERE TweetId = ${tweetId} AND UserId = ${userId})`
-          ),
-          "isLikedByUser"
+      attributes: {
+        include: [
+          [Sequelize.literal("(SELECT COUNT(*) FROM likes WHERE TweetId = Tweet.id)"), "likeCount"],
+          [
+            Sequelize.literal("(SELECT COUNT(*) FROM retweets WHERE TweetId = Tweet.id)"),
+            "retweetCount"
+          ],
+          [
+            Sequelize.literal(
+              `EXISTS(SELECT * FROM likes WHERE TweetId = ${tweetId} AND UserId = ${userId})`
+            ),
+            "isLikedByUser"
+          ],
+          [
+            Sequelize.literal(
+              `EXISTS(SELECT * FROM retweets WHERE TweetId = ${tweetId} AND UserId = ${userId})`
+            ),
+            "isRetweetedByUser"
+          ]
         ]
-      ],
+      },
       include: [
         {
           model: User,
           attributes: ["id", "name", "handle"]
-        },
-        {
-          model: User,
-          as: "LikedBy",
-          where: { id: userId },
-          attributes: ["id"],
-          through: { attributes: ["userId"] }
         }
-      ]
+      ],
+      group: ["Tweet.id"]
     });
 
     return res.status(200).json({
@@ -113,36 +201,49 @@ module.exports.getTweet = async (req, res) => {
 
 module.exports.getUserTweets = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const requestedUser = await User.findOne({
+      where: { handle: req.params.handle },
+      attributes: ["id", "handle"]
+    });
+    const currentUserId = req.user.id;
+
     const tweets = await Tweet.findAll({
-      where: { userId: userId },
-      attributes: [
-        "id",
-        "body",
-        [Sequelize.fn("COUNT", Sequelize.col("LikedBy.id")), "likeCount"],
-        [
-          Sequelize.literal(
-            `EXISTS(SELECT * FROM user_tweets_likes WHERE TweetId = Tweet.id AND UserId = ${userId})`
-          ),
-          "isLikedByUser"
+      where: { userId: requestedUser.id },
+      attributes: {
+        include: [
+          [Sequelize.literal("(SELECT COUNT(*) FROM likes WHERE TweetId = Tweet.id)"), "likeCount"],
+          [
+            Sequelize.literal("(SELECT COUNT(*) FROM retweets WHERE TweetId = Tweet.id)"),
+            "retweetCount"
+          ],
+          [
+            Sequelize.literal(
+              `EXISTS(SELECT * FROM likes WHERE TweetId = Tweet.id AND UserId = ${currentUserId})`
+            ),
+            "isLikedByUser"
+          ],
+          [
+            Sequelize.literal(
+              `EXISTS(SELECT * FROM retweets WHERE TweetId = Tweet.id AND UserId = ${currentUserId})`
+            ),
+            "isRetweetedByUser"
+          ]
         ]
-      ],
+      },
       include: [
         {
           model: User,
           attributes: ["id", "name", "handle"]
-        },
-        {
-          model: User,
-          as: "LikedBy",
-          attributes: ["id"]
         }
       ],
-      group: ["Tweet.id", "User.id"]
+      group: ["Tweet.id", "User.id"],
+      order: [["createdAt", "DESC"]]
     });
 
+    const retweets = await getUserRetweets([requestedUser.id], currentUserId);
+    const allTweets = tweets.concat(retweets).sort((tweet) => tweet.createdAt);
     return res.status(200).json({
-      data: { tweets: getFormattedTweets(tweets) }
+      data: { tweets: getFormattedTweets(allTweets) }
     });
   } catch (err) {
     console.error(err);
@@ -152,43 +253,11 @@ module.exports.getUserTweets = async (req, res) => {
   }
 };
 
-module.exports.getTweetsByHashtag = async (req, res) => {
-  try {
-    // Fetch tweets by hashtag sorted in desc order of createdAt
-    const hashtag = req.params.hashtag;
-    const tweets = await Tweet.findAll({
-      include: [
-        {
-          model: User,
-          attributes: ["id", "name", "handle"]
-        }
-      ],
-      where: {
-        hashtag: hashtag
-      },
-      order: [["createdAt", "DESC"]]
-    });
-
-    return res.status(200).json({
-      data: { tweets: tweets }
-    });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      message: "Error while fetching tweets by hashtag."
-    });
-  }
-};
-
 module.exports.getFollowingTweets = async (req, res) => {
   try {
-    const userId = req.user.id;
-    const followingUsers = await Follows.findAll({
-      where: { userId: userId },
-      attributes: ["followingUserId"]
-    });
-
-    const followingUserIds = followingUsers.map((user) => user.followingUserId);
+    const user = req.user;
+    const followingUsers = await user.getFollowing({ attributes: ["id"] });
+    const followingUserIds = followingUsers.map((user) => user.id);
 
     const tweets = await Tweet.findAll({
       where: {
@@ -196,37 +265,42 @@ module.exports.getFollowingTweets = async (req, res) => {
           [Sequelize.Op.in]: followingUserIds
         }
       },
-      attributes: [
-        "id",
-        "body",
-        [Sequelize.fn("COUNT", Sequelize.col("LikedBy.id")), "likeCount"],
-        [
-          Sequelize.literal(
-            `EXISTS(SELECT * FROM user_tweets_likes WHERE TweetId = Tweet.id AND UserId = ${userId})`
-          ),
-          "isLikedByUser"
+      attributes: {
+        include: [
+          [Sequelize.literal("(SELECT COUNT(*) FROM likes WHERE TweetId = Tweet.id)"), "likeCount"],
+          [
+            Sequelize.literal("(SELECT COUNT(*) FROM retweets WHERE TweetId = Tweet.id)"),
+            "retweetCount"
+          ],
+          [
+            Sequelize.literal(
+              `EXISTS(SELECT * FROM likes WHERE TweetId = Tweet.id AND UserId = ${user.id})`
+            ),
+            "isLikedByUser"
+          ],
+          [
+            Sequelize.literal(
+              `EXISTS(SELECT * FROM retweets WHERE TweetId = Tweet.id AND UserId = ${user.id})`
+            ),
+            "isRetweetedByUser"
+          ]
         ]
-      ],
+      },
       include: [
         {
           model: User,
           attributes: ["id", "name", "handle"]
-        },
-        {
-          model: User,
-          as: "LikedBy",
-          attributes: ["id"]
         }
       ],
-      order: [["createdAt", "ASC"]],
-      group: ["Tweet.id", "User.id"]
+      group: ["Tweet.id", "User.id"],
+      order: [["createdAt", "DESC"]]
     });
 
     return res.status(200).json({
       data: { tweets: getFormattedTweets(tweets) }
     });
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
     return res.status(500).json({
       message: "Error while liking tweet"
     });
@@ -235,14 +309,14 @@ module.exports.getFollowingTweets = async (req, res) => {
 
 module.exports.likeTweet = async (req, res) => {
   try {
-    const tweet = await Tweet.findOne({ where: { id: req.params.id } });
-    await tweet.addLikedBy(req.user.id);
+    const user = req.user;
+    await user.addLikes(req.params.id);
 
     return res.status(200).json({
       data: { message: "Liked tweet" }
     });
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
     return res.status(500).json({
       message: "Error while liking tweet"
     });
@@ -251,16 +325,89 @@ module.exports.likeTweet = async (req, res) => {
 
 module.exports.unlikeTweet = async (req, res) => {
   try {
-    const tweet = await Tweet.findOne({ where: { id: req.params.id } });
-    await tweet.removeLikedBy(req.user.id);
+    const user = req.user;
+    await user.removeLikes(req.params.id);
 
     return res.status(200).json({
       data: { message: "Unliked tweet" }
     });
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
     return res.status(500).json({
       message: "Error while unliking tweet"
+    });
+  }
+};
+
+module.exports.getLikedTweets = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const currentUserId = req.user.id;
+    const tweets = await Tweet.findAll({
+      attributes: {
+        include: [
+          [Sequelize.literal("(SELECT COUNT(*) FROM likes WHERE TweetId = Tweet.id)"), "likeCount"],
+          [
+            Sequelize.literal("(SELECT COUNT(*) FROM retweets WHERE TweetId = Tweet.id)"),
+            "retweetCount"
+          ],
+          [
+            Sequelize.literal(
+              `EXISTS(SELECT * FROM likes WHERE TweetId = Tweet.id AND UserId = ${currentUserId})`
+            ),
+            "isLikedByUser"
+          ],
+          [
+            Sequelize.literal(
+              `EXISTS(SELECT * FROM retweets WHERE TweetId = Tweet.id AND UserId = ${currentUserId})`
+            ),
+            "isRetweetedByUser"
+          ]
+        ]
+      },
+      include: [
+        {
+          model: User,
+          attributes: ["id", "name", "handle"]
+        },
+        {
+          model: User,
+          as: "LikedBy",
+          attributes: [],
+          where: { id: userId }
+        }
+      ],
+      group: ["Tweet.id", "User.id"],
+      order: [["createdAt", "DESC"]]
+    });
+
+    return res.status(200).json({
+      data: { tweets: getFormattedTweets(tweets) }
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: "Error while fetching liked tweets"
+    });
+  }
+};
+
+module.exports.deleteTweet = async (req, res) => {
+  try {
+    await Tweet.destroy({
+      where: {
+        id: req.params.id,
+        userId: req.user.id
+      }
+    });
+
+    return res.status(200).json({
+      data: { message: "Deleted tweet" }
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: "Error while deleting tweet"
     });
   }
 };
