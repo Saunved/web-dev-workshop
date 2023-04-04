@@ -79,7 +79,7 @@ export default function RegisterFlow() {
         {uiText.registerCta}
       </h1>
       <div className="mt-8 flex justify-center">
-        <div className="w-128">
+        <div className="w-6/12">
           <form onSubmit={onSubmitForm}>
             <div>
               <label htmlFor="name">{uiText.name}</label>
