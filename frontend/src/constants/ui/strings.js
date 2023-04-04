@@ -32,6 +32,7 @@ export default {
       registrationTitle: "Registration Successful!",
       registrationMessage: "Please login to proceed",
       invalidEmail: "Please enter a valid email address",
+      invalidPassword: "Password must contain at least 6 characters",
     },
     LOGOUT: {
       loggingYouOut: "Logging you out...",
