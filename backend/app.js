@@ -22,7 +22,9 @@ const whitelist = [
   "http://localhost:5000",
   "http://localhost:3000",
   "http://localhost:6000",
-  "http://localhost:4400"
+  "http://localhost:4400",
+  `https://${process.env.CODESPACE_NAME}-4400.preview.app.github.dev`,
+  `https://${process.env.CODESPACE_NAME}-5000.preview.app.github.dev`
 ];
 
 app.use((req, res, next) => {
@@ -43,7 +45,7 @@ app.use(
   session({
     secret: secret,
     store: sessionStore,
-    cookie: { maxAge: timeout },
+    cookie: { maxAge: timeout, httpOnly: true, domain: ".preview.app.github.dev" },
     saveUninitialized: false,
     resave: false
   })
