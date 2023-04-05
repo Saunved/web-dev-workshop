@@ -61,9 +61,9 @@ const getUserRetweets = async (userIds, currentUserId) => {
 
 module.exports.createTweet = async (req, res, next) => {
   try {
-    const { body, hashtag } = req.body;
+    const { body } = req.body;
     const userId = req.user.id;
-    const tweet = await Tweet.create({ userId, body, hashtag });
+    const tweet = await Tweet.create({ userId, body });
 
     return res.status(201).json({
       data: {
