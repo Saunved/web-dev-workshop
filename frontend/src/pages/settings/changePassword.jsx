@@ -4,12 +4,17 @@ import Input from "@/components/Form/Input";
 import PasswordLabel from "@/components/Form/PasswordLabel";
 import { BASE_URL } from "@/constants/routes";
 import toast from "react-hot-toast";
+import session from "@/utils/session";
+import { useRouter } from "next/router";
+import ErrorCallout from "@/components/Widget/ErrorCallout";
 
 export default function ChangePassword() {
   const uiText = strings.EN.SETTINGS;
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [changePasswordHasFailed, setChangePasswordHasFailed] = useState(false);
+  const router = useRouter();
 
   const onSubmitChangePassword = (e) => {
     e.preventDefault();
@@ -28,15 +33,20 @@ export default function ChangePassword() {
     })
       .then((response) => {
         if (response.ok) {
-          // Redirect the user to their profile page
+          // Change password succeeded
           response.json().then((body) => {
             toast.success("Password changed successfully");
-            setOldPassword("");
-            setNewPassword("");
-            setConfirmPassword("");
           });
+          setTimeout(() => {
+            const { handle } = session.getUser();
+            router.push(`/${handle}`);
+          }, 1000);
         } else {
-          // Login failed
+          // Change password failed
+          setChangePasswordHasFailed(true);
+          setOldPassword("");
+          setNewPassword("");
+          setConfirmPassword("");
           response.json().then((body) => {
             toast.error(
               "There was an error changing your password. Check if your data is correct"
@@ -88,6 +98,13 @@ export default function ChangePassword() {
             required
           />
         </div>
+
+        {changePasswordHasFailed ? (
+          <ErrorCallout
+            title={uiText.changedPasswordFailedTitle}
+            message={uiText.changedPasswordFailedMessage}
+          />
+        ) : null}
 
         <div className="mt-8">
           <button

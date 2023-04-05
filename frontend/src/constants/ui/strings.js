@@ -51,6 +51,9 @@ export default {
       yourBio: "Your bio",
       website: "Website",
       update: "Update",
+      changedPasswordFailedTitle: "Failed to update your password.",
+      changedPasswordFailedMessage:
+        "Please make sure your current password is correct and try again",
     },
     FOLLOW: {
       followers: "Followers",
