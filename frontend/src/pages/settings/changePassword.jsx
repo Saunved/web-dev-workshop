@@ -46,9 +46,13 @@ export default function ChangePassword() {
           setNewPassword("");
           setConfirmPassword("");
           response.json().then((body) => {
-            toast.error(
-              "There was an error changing your password. Check if your data is correct"
-            );
+            if (body?.message) {
+              toast.error(body.message);
+            } else {
+              toast.error(
+                "There was an error changing your password. Check if your data is correct"
+              );
+            }
           });
         }
       })
