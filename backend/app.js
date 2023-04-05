@@ -40,12 +40,17 @@ app.use((req, res, next) => {
 
 // Session
 const { secret, timeout } = config.session;
+const cookie = { maxAge: timeout, httpOnly: false };
+if (config.isProdEnv) {
+  cookie.httpOnly = true;
+  cookie.domain = ".preview.app.github.dev";
+}
 
 app.use(
   session({
     secret: secret,
     store: sessionStore,
-    cookie: { maxAge: timeout, httpOnly: true, domain: ".preview.app.github.dev" },
+    cookie: cookie,
     saveUninitialized: false,
     resave: false
   })
