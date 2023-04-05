@@ -61,7 +61,7 @@ export default function ChangePassword() {
 
   return (
     <div>
-      <h2 className="font-bold text-2xl">{uiText.changePassword}</h2>
+      <h2 className="mt-2 font-bold text-2xl">{uiText.changePassword}</h2>
       <form onSubmit={onSubmitChangePassword}>
         <div>
           <label htmlFor="oldPassword">{uiText.currentPassword}</label>
@@ -106,7 +106,7 @@ export default function ChangePassword() {
           />
         ) : null}
 
-        <div className="mt-8">
+        <div className="mt-6">
           <button
             type="submit"
             disabled={!oldPassword || !newPassword || !confirmPassword}
