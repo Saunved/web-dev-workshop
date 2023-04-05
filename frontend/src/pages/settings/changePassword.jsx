@@ -34,13 +34,11 @@ export default function ChangePassword() {
       .then((response) => {
         if (response.ok) {
           // Change password succeeded
-          response.json().then((body) => {
-            toast.success("Password changed successfully");
-          });
-          setTimeout(() => {
-            const { handle } = session.getUser();
-            router.push(`/${handle}`);
-          }, 1000);
+          toast.success("Password changed successfully");
+
+          // Redirect the user to their profile page
+          const { handle } = session.getUser();
+          router.push(`/${handle}`);
         } else {
           // Change password failed
           setChangePasswordHasFailed(true);
