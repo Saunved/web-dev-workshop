@@ -108,8 +108,8 @@ export default function TweetActions({ tweet }) {
           setLikeCount(likeCount + 1);
         } else {
           response.json().then((body) => {
-            if (body?.message) {
-              toast.error(body.message);
+            if (body?.data?.message) {
+              toast.error(body.data.message);
             } else {
               toast.error(uiText.somethingWentWrong);
             }
@@ -141,8 +141,8 @@ export default function TweetActions({ tweet }) {
           setLikeCount(likeCount - 1);
         } else {
           response.json().then((body) => {
-            if (body?.message) {
-              toast.error(body.message);
+            if (body?.data?.message) {
+              toast.error(body.data.message);
             } else {
               toast.error(uiText.somethingWentWrong);
             }

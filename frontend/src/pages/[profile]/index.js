@@ -11,8 +11,10 @@ import { BASE_URL } from "@/constants/routes";
 import { useState, useEffect } from "react";
 import { getHumanReadableDate } from "@/utils/date";
 import { attachAuthCookie } from "@/utils/xhr";
+import toast from "react-hot-toast";
 
 export default function ProfilePage({ user, tweets, followCounts }) {
+  const uiTextError = strings.EN.ERROR;
   const uiTextFollow = strings.EN.FOLLOW;
   const uiTextProfile = strings.EN.PROFILE;
   const uiTextSite = strings.EN.SITE;
@@ -46,8 +48,12 @@ export default function ProfilePage({ user, tweets, followCounts }) {
             setFollowersCount(followersCount + 1);
           });
         } else {
-          response.json().then((data) => {
-            console.error(data.message);
+          response.json().then((body) => {
+            if (body?.message) {
+              toast.error(body.message);
+            } else {
+              toast.error(uiTextError.somethingWentWrong);
+            }
           });
         }
         setDisableFollowButton(false);
@@ -73,8 +79,12 @@ export default function ProfilePage({ user, tweets, followCounts }) {
             setFollowersCount(followersCount - 1);
           });
         } else {
-          response.json().then((data) => {
-            console.error(data.message);
+          response.json().then((body) => {
+            if (body?.message) {
+              toast.error(body.message);
+            } else {
+              toast.error(uiTextError.somethingWentWrong);
+            }
           });
         }
         setDisableFollowButton(false);
