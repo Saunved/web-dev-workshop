@@ -10,8 +10,10 @@ import { useEffect, useState } from "react";
 import session from "@/utils/session";
 import DeleteTweetModal from "@/components/DeleteTweetModal";
 import { BASE_URL } from "@/constants/routes";
-
+import strings from "@/constants/ui/strings";
+import toast from "react-hot-toast";
 export default function Tweet({ tweet }) {
+  const uiText = strings.EN.ERROR;
   const [userHandle, setUserHandle] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -34,8 +36,12 @@ export default function Tweet({ tweet }) {
         if (response.ok) {
           setIsDeleted(true);
         } else {
-          response.json().then((data) => {
-            console.error(data.message);
+          response.json().then((body) => {
+            if (body?.data?.message) {
+              toast.error(body.data.message);
+            } else {
+              toast.error(uiText.somethingWentWrong);
+            }
           });
         }
         setIsLoading(true);
