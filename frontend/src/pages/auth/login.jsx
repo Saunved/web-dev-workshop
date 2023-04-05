@@ -58,6 +58,7 @@ export default function LoginFlow() {
           response.json().then((body) => {
             setLoginCredentialIsValid(false);
           });
+          setRegistrationIsSuccessful(false);
         }
       })
       .catch((error) => {
