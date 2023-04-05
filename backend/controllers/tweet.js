@@ -1,6 +1,7 @@
 const Tweet = require("./../models/Tweet");
 const User = require("./../models/User");
 const Sequelize = require("sequelize");
+const throwException = require("./../utils/error");
 const { formatTweet, getFormattedTweets } = require("./../utils/format");
 
 const getUserRetweets = async (userIds, currentUserId) => {
@@ -58,7 +59,7 @@ const getUserRetweets = async (userIds, currentUserId) => {
   return collatedRetweets;
 };
 
-module.exports.createTweet = async (req, res) => {
+module.exports.createTweet = async (req, res, next) => {
   try {
     const { body, hashtag } = req.body;
     const userId = req.user.id;
@@ -71,14 +72,11 @@ module.exports.createTweet = async (req, res) => {
       message: "Tweet published."
     });
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      message: "Error while creating tweet."
-    });
+    next(err);
   }
 };
 
-module.exports.getTweets = async (req, res) => {
+module.exports.getTweets = async (req, res, next) => {
   try {
     const userId = req.user.id;
     const tweets = await Tweet.findAll({
@@ -117,14 +115,11 @@ module.exports.getTweets = async (req, res) => {
       data: { tweets: getFormattedTweets(tweets) }
     });
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      message: "Error while fetching tweets."
-    });
+    next(err);
   }
 };
 
-module.exports.getTweet = async (req, res) => {
+module.exports.getTweet = async (req, res, next) => {
   try {
     const tweetId = req.params.id;
     const userId = req.user.id;
@@ -159,25 +154,31 @@ module.exports.getTweet = async (req, res) => {
       group: ["Tweet.id"]
     });
 
+    if (!tweetObj) {
+      throwException(`Tweet with id ${tweetId} does not exist!`);
+    }
+
     return res.status(200).json({
       data: { tweet: formatTweet(tweetObj) }
     });
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      message: "Error while fetching tweet."
-    });
+    next(err);
   }
 };
 
-module.exports.getUserTweets = async (req, res) => {
+module.exports.getUserTweets = async (req, res, next) => {
   try {
+    const handle = req.params.handle;
     const requestedUser = await User.findOne({
-      where: { handle: req.params.handle },
+      where: { handle: handle },
       attributes: ["id", "handle"]
     });
-    const currentUserId = req.user.id;
 
+    if (!requestedUser) {
+      throwException(`User with handle ${handle} does not exist!`);
+    }
+
+    const currentUserId = req.user.id;
     const tweets = await Tweet.findAll({
       where: { userId: requestedUser.id },
       attributes: {
@@ -217,14 +218,11 @@ module.exports.getUserTweets = async (req, res) => {
       data: { tweets: getFormattedTweets(allTweets) }
     });
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      message: "Error while fetching user tweets."
-    });
+    next(err);
   }
 };
 
-module.exports.getFollowingTweets = async (req, res) => {
+module.exports.getFollowingTweets = async (req, res, next) => {
   try {
     const user = req.user;
     const followingUsers = await user.getFollowing({ attributes: ["id"] });
@@ -271,49 +269,23 @@ module.exports.getFollowingTweets = async (req, res) => {
       data: { tweets: getFormattedTweets(tweets) }
     });
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      message: "Error while liking tweet"
-    });
+    next(err);
   }
 };
 
-module.exports.likeTweet = async (req, res) => {
+module.exports.getLikedTweets = async (req, res, next) => {
   try {
-    const user = req.user;
-    await user.addLikes(req.params.id);
-
-    return res.status(200).json({
-      data: { message: "Liked tweet" }
-    });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      message: "Error while liking tweet"
-    });
-  }
-};
-
-module.exports.unlikeTweet = async (req, res) => {
-  try {
-    const user = req.user;
-    await user.removeLikes(req.params.id);
-
-    return res.status(200).json({
-      data: { message: "Unliked tweet" }
-    });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      message: "Error while unliking tweet"
-    });
-  }
-};
-
-module.exports.getLikedTweets = async (req, res) => {
-  try {
-    const userId = req.params.userId;
+    const handle = req.params.handle;
     const currentUserId = req.user.id;
+    const requestedUser = await User.findOne({
+      where: { handle: handle },
+      attributes: ["id", "handle"]
+    });
+
+    if (!requestedUser) {
+      throwException(`User with handle ${handle} does not exist!`);
+    }
+
     const tweets = await Tweet.findAll({
       attributes: {
         include: [
@@ -345,7 +317,7 @@ module.exports.getLikedTweets = async (req, res) => {
           model: User,
           as: "LikedBy",
           attributes: [],
-          where: { id: userId }
+          where: { id: requestedUser.id }
         }
       ],
       group: ["Tweet.id", "User.id"],
@@ -356,14 +328,49 @@ module.exports.getLikedTweets = async (req, res) => {
       data: { tweets: getFormattedTweets(tweets) }
     });
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      message: "Error while fetching liked tweets"
-    });
+    next(err);
   }
 };
 
-module.exports.deleteTweet = async (req, res) => {
+module.exports.likeTweet = async (req, res, next) => {
+  try {
+    const tweetId = req.params.id;
+    const tweet = await Tweet.findByPk(tweetId);
+    if (!tweet) {
+      throwException(`Tweet with id ${tweetId} does not exist!`);
+    }
+
+    const user = req.user;
+    await user.addLikes(tweetId);
+
+    return res.status(200).json({
+      data: { message: "Liked tweet" }
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports.unlikeTweet = async (req, res, next) => {
+  try {
+    const tweetId = req.params.id;
+    const tweet = await Tweet.findByPk(tweetId);
+    if (!tweet) {
+      throwException(`Tweet with id ${tweetId} does not exist!`);
+    }
+
+    const user = req.user;
+    await user.removeLikes(tweetId);
+
+    return res.status(200).json({
+      data: { message: "Unliked tweet" }
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports.deleteTweet = async (req, res, next) => {
   try {
     await Tweet.destroy({
       where: {
@@ -376,9 +383,6 @@ module.exports.deleteTweet = async (req, res) => {
       data: { message: "Deleted tweet" }
     });
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      message: "Error while deleting tweet"
-    });
+    next(err);
   }
 };
