@@ -5,7 +5,7 @@ export default function ProfilePicture({ handle }) {
   return (
     <div
       style={{
-        backgroundImage: `url(https://api.dicebear.com/5.x/thumbs/svg?seed=${handle})`,
+        backgroundImage: `url(https://api.dicebear.com/5.x/bottts-neutral/svg?seed=${handle})`,
       }}
       className="w-12 h-12 rounded-full object-cover border"
     ></div>

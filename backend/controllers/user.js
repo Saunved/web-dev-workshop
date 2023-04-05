@@ -1,6 +1,27 @@
 const User = require("./../models/User");
 const bcrypt = require("bcrypt");
 const passport = require("passport");
+const Sequelize = require("sequelize");
+
+const formatUser = (userObj) => {
+  const { ...user } = userObj.dataValues;
+
+  const formattedUser = {
+    ...user
+  };
+
+  if ("isFollowedByUser" in formattedUser) {
+    formattedUser.isFollowedByUser = formattedUser.isFollowedByUser === 0 ? false : true;
+  }
+
+  return formattedUser;
+};
+
+const getFormattedUsers = (userObjs) => {
+  return userObjs.map((userObj) => {
+    return formatUser(userObj);
+  });
+};
 
 module.exports.loginUser = async (req, res, next) => {
   passport.authenticate("local", (err, user) => {
@@ -76,7 +97,7 @@ module.exports.updateUser = async (req, res) => {
 
     return res.status(200).json({
       message: "User Updated.",
-      data: { user }
+      data: { user: formatUser(user) }
     });
   } catch (err) {
     console.error(err);
@@ -91,12 +112,28 @@ module.exports.getUser = async (req, res) => {
     const userId = req.params.id || req.user.id;
     const user = await User.findByPk(userId, {
       attributes: {
+        include: [
+          [
+            Sequelize.literal("(SELECT COUNT(*) FROM follows WHERE follows.followerId = User.id)"),
+            "followingCount"
+          ],
+          [
+            Sequelize.literal("(SELECT COUNT(*) FROM follows WHERE follows.followingId = User.id)"),
+            "followersCount"
+          ],
+          [
+            Sequelize.literal(
+              `EXISTS(SELECT * FROM follows WHERE follows.followerId = ${req.user.id} AND follows.followingId = ${userId})`
+            ),
+            "isFollowedByUser"
+          ]
+        ],
         exclude: ["password"]
       }
     });
 
     return res.status(200).json({
-      data: { user }
+      data: { user: formatUser(user) }
     });
   } catch (err) {
     console.error(err);
@@ -111,12 +148,28 @@ module.exports.getUserByHandle = async (req, res) => {
     const user = await User.findOne({
       where: { handle: req.params.handle },
       attributes: {
+        include: [
+          [
+            Sequelize.literal("(SELECT COUNT(*) FROM follows WHERE follows.followerId = User.id)"),
+            "followingCount"
+          ],
+          [
+            Sequelize.literal("(SELECT COUNT(*) FROM follows WHERE follows.followingId = User.id)"),
+            "followersCount"
+          ],
+          [
+            Sequelize.literal(
+              `EXISTS(SELECT * FROM follows WHERE follows.followerId = ${req.user.id} AND follows.followingId = User.id)`
+            ),
+            "isFollowedByUser"
+          ]
+        ],
         exclude: ["password"]
       }
     });
 
     return res.status(200).json({
-      data: { user }
+      data: { user: formatUser(user) }
     });
   } catch (err) {
     console.error(err);
@@ -130,12 +183,28 @@ module.exports.getAllUsers = async (req, res) => {
   try {
     const users = await User.findAll({
       attributes: {
+        include: [
+          [
+            Sequelize.literal("(SELECT COUNT(*) FROM follows WHERE follows.followerId = User.id)"),
+            "followingCount"
+          ],
+          [
+            Sequelize.literal("(SELECT COUNT(*) FROM follows WHERE follows.followingId = User.id)"),
+            "followersCount"
+          ],
+          [
+            Sequelize.literal(
+              `EXISTS(SELECT * FROM follows WHERE follows.followerId = ${req.user.id} AND follows.followingId = User.id)`
+            ),
+            "isFollowedByUser"
+          ]
+        ],
         exclude: ["password"]
       }
     });
 
     return res.status(200).json({
-      data: { users }
+      data: { users: getFormattedUsers(users) }
     });
   } catch (err) {
     console.error(err);
@@ -180,6 +249,25 @@ module.exports.changePassword = async (req, res) => {
     console.error(err);
     return res.status(500).json({
       message: "Error while changing password."
+    });
+  }
+};
+
+module.exports.deleteUser = async (req, res) => {
+  try {
+    await User.destroy({
+      where: {
+        id: req.user.id
+      }
+    });
+
+    return res.status(200).json({
+      data: { message: "Deleted user" }
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: "Error while deleting user"
     });
   }
 };

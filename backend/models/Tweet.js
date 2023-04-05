@@ -45,13 +45,23 @@ tweetModel.belongsTo(User, {
 });
 
 User.belongsToMany(tweetModel, {
-  as: "Liker",
-  through: "user_tweets_likes"
+  as: "Likes",
+  through: "likes"
 });
 
 tweetModel.belongsToMany(User, {
   as: "LikedBy",
-  through: "user_tweets_likes"
+  through: "likes"
+});
+
+tweetModel.belongsToMany(User, {
+  as: "RetweetedBy",
+  through: "retweets"
+});
+
+User.belongsToMany(tweetModel, {
+  as: "Retweets",
+  through: "retweets"
 });
 
 module.exports = tweetModel;

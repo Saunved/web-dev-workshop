@@ -1,6 +1,7 @@
 import Tweet from "@/components/Tweet/SingleTweet";
 import { BASE_URL } from "@/constants/routes";
 import strings from "@/constants/ui/strings";
+import { attachAuthCookie } from "@/utils/xhr";
 
 export default function SingleUserTweet({ tweet }) {
   const uiText = strings.EN.TWEET;
@@ -12,7 +13,7 @@ export default function SingleUserTweet({ tweet }) {
   return <Tweet tweet={tweet} />;
 }
 
-export async function getServerSideProps({ params }) {
+export async function getServerSideProps({ params, req }) {
   if (!params.id) {
     return {
       props: {
@@ -22,7 +23,10 @@ export async function getServerSideProps({ params }) {
   }
   if (params.id) {
     try {
-      const res = await fetch(`${BASE_URL}/tweet/${params.id}`);
+      const res = await fetch(
+        `${BASE_URL}/tweet/${params.id}`,
+        attachAuthCookie(req)
+      );
       const body = await res.json();
 
       if (res.ok) {
