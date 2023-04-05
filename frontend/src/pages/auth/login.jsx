@@ -7,16 +7,28 @@ import Input from "@/components/Form/Input";
 import { loginRoute } from "@/constants/routes";
 import { useRouter } from "next/router";
 import session from "@/utils/session";
+import ErrorCallout from "@/components/Widget/ErrorCallout";
+import SuccessCallout from "@/components/Widget/SuccessCallout";
 
 export default function LoginFlow() {
+  const { loginFailedTitle, loginFailedMessage } = strings.EN.LOGIN_FLOW;
+  const { registrationTitle, registrationMessage } = strings.EN.REGISTER_FLOW;
   const [uiText, setUiText] = useState(strings.EN.LOGIN_FLOW);
   const router = useRouter();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loginCredentialIsValid, setLoginCredentialIsValid] = useState(true);
+  const [registrationIsSuccessful, setRegistrationIsSuccessful] =
+    useState(false);
 
   useEffect(() => {
     // Detect and set the correct language here
+    if (localStorage.getItem("registrationSuccess")) {
+      setRegistrationIsSuccessful(true);
+    } else {
+      setRegistrationIsSuccessful(false);
+    }
   }, []);
 
   const onSubmitForm = (e) => {
@@ -40,11 +52,13 @@ export default function LoginFlow() {
             session.setUser(body.data);
             router.push(`/${body.data.handle}`);
           });
+          localStorage.removeItem("registrationSuccess");
         } else {
           // Login failed
           response.json().then((body) => {
-            console.error(body.data.message);
+            setLoginCredentialIsValid(false);
           });
+          setRegistrationIsSuccessful(false);
         }
       })
       .catch((error) => {
@@ -60,6 +74,12 @@ export default function LoginFlow() {
       <h1 className="text-center text-3xl font-semibold">{uiText.signInCta}</h1>
       <div className="mt-8 flex justify-center">
         <div>
+          {registrationIsSuccessful ? (
+            <SuccessCallout
+              title={registrationTitle}
+              message={registrationMessage}
+            />
+          ) : null}
           <form onSubmit={onSubmitForm}>
             <div>
               <label htmlFor="email">{uiText.email}</label>
@@ -83,7 +103,12 @@ export default function LoginFlow() {
                 required
               />
             </div>
-
+            {loginCredentialIsValid ? null : (
+              <ErrorCallout
+                title={loginFailedTitle}
+                message={loginFailedMessage}
+              />
+            )}
             <div className="mt-6">
               <button
                 type="submit"

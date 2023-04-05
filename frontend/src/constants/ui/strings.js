@@ -13,6 +13,9 @@ export default {
       signIn: "Log in",
       newUser: "Don't have an account?",
       register: "Register",
+      loginFailedTitle: "Login Failed!",
+      loginFailedMessage:
+        "You have entered the wrong email or password, please try again",
     },
     REGISTER_FLOW: {
       registerCta: "Register for Woofer",
@@ -26,6 +29,12 @@ export default {
       date: "Your date of birth",
       name: "Your display name",
       handle: "Create a handle",
+      registrationTitle: "Registration Successful!",
+      registrationMessage: "Please login to proceed",
+      invalidEmail: "Please enter a valid email address",
+      invalidPassword: "Password must contain at least 6 characters",
+      invalidHandle:
+        "Your handle should contain only lowercase letters and digits",
     },
     LOGOUT: {
       loggingYouOut: "Logging you out...",
@@ -42,6 +51,9 @@ export default {
       yourBio: "Your bio",
       website: "Website",
       update: "Update",
+      changedPasswordFailedTitle: "Failed to update your password.",
+      changedPasswordFailedMessage:
+        "Please make sure your current password is correct and try again",
     },
     FOLLOW: {
       followers: "Followers",

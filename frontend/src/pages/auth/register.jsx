@@ -5,9 +5,18 @@ import Link from "next/link";
 import Input from "@/components/Form/Input";
 import PasswordLabel from "@/components/Form/PasswordLabel";
 import { registerRoute } from "@/constants/routes";
+import { toast } from "react-hot-toast";
 import { useRouter } from "next/router";
+import ErrorText from "@/components/Widget/ErrorText";
+import {
+  isEmailValid,
+  isHandleValid,
+  isPasswordValid,
+} from "@/utils/validation";
 
 export default function RegisterFlow() {
+  const { invalidEmail, invalidPassword, invalidHandle } =
+    strings.EN.REGISTER_FLOW;
   const [uiText, setUiText] = useState(strings.EN.REGISTER_FLOW);
   const router = useRouter();
 
@@ -28,6 +37,28 @@ export default function RegisterFlow() {
   const onSubmitForm = (e) => {
     e.preventDefault();
 
+    if (!isEmailValid(email)) {
+      setEmailError(invalidEmail);
+    } else {
+      setEmailError("");
+    }
+
+    if (!isPasswordValid(password)) {
+      setPasswordError(invalidPassword);
+    } else {
+      setPasswordError("");
+    }
+
+    if (!isHandleValid(handle)) {
+      setHandleError(invalidHandle);
+    } else {
+      setHandleError("");
+    }
+
+    if (emailError || passwordError || handleError) {
+      return;
+    }
+
     fetch(registerRoute, {
       method: "POST",
       headers: {
@@ -43,6 +74,7 @@ export default function RegisterFlow() {
       .then((response) => {
         if (response.ok) {
           // Registration successful
+          localStorage.setItem("registrationSuccess", true);
           router.push("/auth/login");
         } else {
           // Registration failed
@@ -69,7 +101,7 @@ export default function RegisterFlow() {
         {uiText.registerCta}
       </h1>
       <div className="mt-8 flex justify-center">
-        <div className="w-64">
+        <div className="w-6/12">
           <form onSubmit={onSubmitForm}>
             <div>
               <label htmlFor="name">{uiText.name}</label>
@@ -85,6 +117,7 @@ export default function RegisterFlow() {
             <div>
               <label htmlFor="email">{uiText.email}</label>
               <input
+                className={`${emailError ? "border-2 border-rose-600" : ""}`}
                 type="email"
                 id="email"
                 name="email"
@@ -93,9 +126,11 @@ export default function RegisterFlow() {
                 required
               />
             </div>
+            {emailError ? <ErrorText message={emailError} /> : null}
             <div>
               <label htmlFor="password">{uiText.password}</label>
               <input
+                className={`${passwordError ? "border-2 border-rose-600" : ""}`}
                 type="password"
                 id="password"
                 name="password"
@@ -104,9 +139,11 @@ export default function RegisterFlow() {
                 required
               />
             </div>
+            {passwordError ? <ErrorText message={passwordError} /> : null}
             <div>
               <label htmlFor="handle">{uiText.handle}</label>
               <input
+                className={`${handleError ? "border-2 border-rose-600" : ""}`}
                 type="text"
                 id="handle"
                 name="handle"
@@ -115,7 +152,7 @@ export default function RegisterFlow() {
                 required
               />
             </div>
-
+            {handleError ? <ErrorText message={handleError} /> : null}
             <div className="mt-6">
               <button
                 type="submit"
