@@ -19,18 +19,67 @@ The monorepo for the Helpshift web dev workshop
 
 - Step 2 - Go to ports and choose port 4400
 
-https://user-images.githubusercontent.com/22174051/230106994-e47f251b-5e7d-4cf9-802c-4f30a4051a3b.mov
+
+https://user-images.githubusercontent.com/22174051/230129169-e7765a02-2ecb-40cf-9418-99375d9f5403.mov
+
 
 <br/>
 
-- Step 3 - Change port visibility to **public** (right click on the visibility column to see options)
+- Step 3 - Change port visibility to **public** for port 4400 (right click on the visibility column to see options)
 
-https://user-images.githubusercontent.com/22174051/230108040-7ac55e5b-5070-471f-9bec-d243386ecc36.mov
+https://user-images.githubusercontent.com/22174051/230129682-adf010c5-a1f5-44dc-b1af-2ecb2a49aaa7.mov
 
 <br/>
 
 - Step 4 - Copy the frontend local address and paste in a new tab in browser
 
-https://user-images.githubusercontent.com/22174051/230109263-c91977c2-9753-4fd0-b5f4-719a2295d99b.mov
+https://user-images.githubusercontent.com/22174051/230132148-1385d724-269f-4728-931d-2fa879a711d2.mov
 
 <br/>
+
+
+### Setup backend on your codespace
+
+- Step 1 - Setup and start the backend server by executing `make serve-backend` in a new terminal
+
+
+https://user-images.githubusercontent.com/22174051/230135531-fb00f0d1-9ee9-4fa8-a076-5917f511dadb.mov
+
+
+<br />
+
+- Step 2 - Go to ports and choose port 5000
+
+https://user-images.githubusercontent.com/22174051/230135885-cedf906e-cf83-4770-b7ef-7059e1006450.mov
+
+<br />
+
+- Step 3 - Change port visibility to **public** for port 5000 (right click on the visibility column to see options)
+
+
+https://user-images.githubusercontent.com/22174051/230136280-e93fb4a2-25c2-4298-a3a0-46733b96c995.mov
+
+<br />
+
+
+### Verify if setup is completed successfully
+
+Step 1 - Copy the frontend local address and paste in a new tab in browser
+
+https://user-images.githubusercontent.com/22174051/230132148-1385d724-269f-4728-931d-2fa879a711d2.mov
+
+<br />
+
+Step 2 - Click on registration and create a new user
+
+
+
+https://user-images.githubusercontent.com/22174051/230142040-0a41213e-f757-472a-bb0c-b60d74eb2644.mov
+
+
+<br />
+
+And voila, you're setup is complete !!!
+
+
+
