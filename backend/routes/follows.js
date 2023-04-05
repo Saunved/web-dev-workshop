@@ -12,7 +12,7 @@ const { auth } = require("./../middlewares/auth");
 
 router.post("/follow/:handle", auth, addFollows);
 router.delete("/unfollow/:handle", auth, removeFollows);
-router.get("/followers/:handle", getFollowers);
-router.get("/following/:handle", getFollowing);
+router.get("/followers/:handle", auth, getFollowers);
+router.get("/following/:handle", auth, getFollowing);
 
 module.exports = router;

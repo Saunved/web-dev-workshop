@@ -17,7 +17,7 @@ router.post("/tweet", auth, createTweet);
 router.post("/tweet/like/:id", auth, likeTweet);
 router.post("/tweet/unlike/:id", auth, unlikeTweet);
 // Get latest tweets:
-router.get("/tweets", getTweets);
+router.get("/tweets", auth, getTweets);
 // Get single tweet:
 router.get("/tweet/:id", auth, getTweet);
 // Get all tweets of given user:
