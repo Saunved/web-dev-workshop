@@ -71,6 +71,7 @@ export default {
     },
     ERROR: {
       userNotFound: "User not found",
+      somethingWentWrong: "Oops, Something went wrong. Please try again later",
     },
     TWEET: {
       tweetNotFound: "Tweet not found",
