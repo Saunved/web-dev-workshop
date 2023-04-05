@@ -1,7 +1,7 @@
 module.exports.config = {
   // Server config:
   server: {
-    env: process.env.NODE_ENV || "development",
+    isProdEnv: process.env.PROD_ENV || false,
     port: process.env.SERVER_PORT || 5000
   },
   // Database config:
