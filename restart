@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+level=${1:-1}
+echo $level > .current_level
+echo "Resetting to save point:" $level
+
+rm -r ./backend/ ./frontend/
+mkdir -p ./backend/ ./frontend/
+
+cp -R ./save-points/$level/backend/ ./backend/
+cp -R ./save-points/$level/frontend/ ./frontend/

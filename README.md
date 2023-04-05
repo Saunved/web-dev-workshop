@@ -81,3 +81,19 @@ https://user-images.githubusercontent.com/22174051/230142040-0a41213e-f757-472a-
 And voila, you're setup is complete !!!
 
 
+## Levels
+You can start by running
+```
+./start
+```
+
+The project has different levels (chapters) each focusing on a particular area. You can switch to different levels by,
+```
+./level_up
+```
+
+You can start over again by running
+```
+./restart
+```
+

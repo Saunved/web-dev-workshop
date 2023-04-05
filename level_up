@@ -1,0 +1,18 @@
+#!/bin/bash
+total_chapters=10
+if [ -f .current_level ]
+then
+  current_level=$(<.current_level)
+else
+  current_level=1
+fi
+
+next_level=$[(current_level%total_chapters)+1]
+echo $next_level > .current_level
+echo "Moving to savepoint:" $next_level
+
+rm -r ./backend/ ./frontend/
+mkdir -p ./backend/ ./frontend/
+
+cp -R ./save-points/$next_level/backend/ ./backend/
+cp -R ./save-points/$next_level/frontend/ ./frontend/

@@ -3,11 +3,14 @@ import Input from "@/components/Form/Input";
 import { BASE_URL } from "@/constants/routes";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+import session from "@/utils/session";
+import { useRouter } from "next/router";
 
 export default function AccountDetailsPage() {
   const uiText = strings.EN.SETTINGS;
   const [bio, setBio] = useState("");
   const [website, setWebsite] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     const getUserFromServer = async () => {
@@ -47,6 +50,8 @@ export default function AccountDetailsPage() {
           response.json().then((body) => {
             toast.success("Profile updated successfully");
           });
+          const { handle } = session.getUser();
+          router.push(`/${handle}`);
         } else {
           // Login failed
           response.json().then((body) => {
