@@ -55,9 +55,13 @@ export default function AccountDetailsPage() {
         } else {
           // Login failed
           response.json().then((body) => {
-            toast.error(
-              "There was an error changing your details. Please try again"
-            );
+            if (body?.message) {
+              toast.error(body.message);
+            } else {
+              toast.error(
+                "There was an error changing your details. Please try again"
+              );
+            }
           });
         }
       })
