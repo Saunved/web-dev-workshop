@@ -1,0 +1,115 @@
+diff --git a/frontend/src/components/Tweet/TweetActions.jsx b/frontend/src/components/Tweet/TweetActions.jsx
+index 129382d..290609e 100644
+--- a/frontend/src/components/Tweet/TweetActions.jsx
++++ b/frontend/src/components/Tweet/TweetActions.jsx
+@@ -7,9 +7,15 @@ import toast from "react-hot-toast";
+ 
+ export default function TweetActions({ tweet }) {
+   const uiText = strings.EN.ERROR;
+-  const [isLiked, setIsLiked] = useState(tweet.isLikedByUser);
++  /**
++   * Checkpoint 10 Task 1:
++   * @TODO: Use the appropriate value & setter from the store for like state
++   */
+   const [isRetweeted, setIsRetweeted] = useState(tweet.isRetweetedByUser);
+-  const [likeCount, setLikeCount] = useState(tweet.likeCount);
++  /**
++   * Checkpoint 10 Task 1:
++   * @TODO: Use the appropriate value & setter from the store for like count
++   */
+   const [retweetCount, setRetweetCount] = useState(tweet.retweetCount);
+   const [disableLikeButton, setDisableLikeButton] = useState(false);
+   const [disableRetweetButton, setDisableRetweetButton] = useState(false);
+@@ -87,19 +93,30 @@ export default function TweetActions({ tweet }) {
+    * Likes or unlikes a tweet depending on the state
+    */
+   const likeTweet = async () => {
+-    setDisableLikeButton(true);
++    /**
++     * Checkpoint 10 Task 3:
++     * @TODO: Should button be disabled?
++     */
+     fetch(`${BASE_URL}/tweet/like/${tweet.id}`, {
+-      method: "POST",
++     /**
++      * Checkpoint 10 Task 3:
++      * @TODO: What is the correct HTTP method for storing?
++      */
+       credentials: "include",
+       headers: {
+-        "Content-Type": "application/json",
++        /**
++         * Checkpoint 10 Task 3:
++         * @TODO: Use the correct content type
++         */
++        "Content-Type": "@TODO: Use the correct content type",
+       },
+     })
+       .then((response) => {
+         if (response.ok) {
+-          // Reflect the like or toggled like
+-          setIsLiked(true);
+-          setLikeCount(likeCount + 1);
++          /**
++           * Checkpoint 10 Task 3:
++           * @TODO: Update the like count, state
++           */
+         } else {
+           response.json().then((body) => {
+             if (body?.data?.message) {
+@@ -109,7 +126,10 @@ export default function TweetActions({ tweet }) {
+             }
+           });
+         }
+-        setDisableLikeButton(false);
++        /**
++         * Checkpoint 10 Task 3:
++         * @TODO: Should button be enabled?
++         */
+       })
+       .catch((error) => {
+         console.error("Error liking tweet", error);
+@@ -163,18 +183,38 @@ export default function TweetActions({ tweet }) {
+         <span className="text-sm">{retweetCount || 0}</span>
+       </button>
+       <button
+-        disabled={disableLikeButton}
+-        onClick={isLiked ? unlikeTweet : likeTweet}
++        {/**
++          * Checkpoint 10 Task 2:
++          * @TODO: Set the disabled prop correctly based on
++          * already liked or not
++          */}
++        {/**
++          * Checkpoint 10 Task 2:
++          * @TODO: Handle onClick based on whether the
++          * tweet is already liked or not
++          */}
+         className="flex gap-2 items-center"
+       >
+         <Heart
+-          weight={isLiked ? "fill" : "regular"}
++          {/**
++            * Checkpoint 10 Task 2:
++            * @TODO: Set the weight based on value of like
++            */}
+           size={20}
+           className={`text-gray-700 hover:cursor-pointer ${
+-            isLiked ? "text-red-600" : ""
++            /**
++             * Checkpoint 10 Task 2:
++             * @TODO: Set the classes based on value of like
++             */
+           }`}
+         />
+-        <span className="text-sm">{likeCount || 0}</span>
++        <span className="text-sm">
++          {/**
++            * Checkpoint 10 Task 2:
++            * @TODO: Show the number of likes text based on value
++            * of like
++            */}
++        </span>
+       </button>
+     </div>
+   );
