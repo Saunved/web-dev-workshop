@@ -3,9 +3,11 @@ import strings from "@/constants/ui/strings";
 import { BASE_URL } from "@/constants/routes";
 import { useRouter } from "next/router";
 import session from "@/utils/session";
+import toast from "react-hot-toast";
 
 export default function LogoutPage() {
   const uiText = strings.EN.LOGOUT;
+  const uiTextError = strings.EN.ERROR;
   const router = useRouter();
 
   useEffect(() => {
@@ -23,7 +25,11 @@ export default function LogoutPage() {
             router.push("/");
           } else {
             response.json().then((data) => {
-              console.error(data.message);
+              if (data?.message) {
+                toast.error(data.message);
+              } else {
+                toast.error(uiTextError.somethingWentWrong);
+              }
             });
           }
         })
