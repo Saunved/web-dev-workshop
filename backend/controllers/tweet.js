@@ -1,36 +1,7 @@
 const Tweet = require("./../models/Tweet");
 const User = require("./../models/User");
 const Sequelize = require("sequelize");
-
-const formatTweet = (tweetObj) => {
-  const { User: user, LikedBy, retweets, ...tweet } = tweetObj.dataValues; // eslint-disable-line no-unused-vars
-  const retweeter = tweetObj.retweeter;
-
-  const formattedTweet = {
-    ...tweet,
-    name: user.name,
-    handle: user.handle
-  };
-
-  if ("isLikedByUser" in formattedTweet) {
-    formattedTweet.isLikedByUser = formattedTweet.isLikedByUser === 0 ? false : true;
-  }
-
-  if ("isRetweetedByUser" in formattedTweet) {
-    formattedTweet.isRetweetedByUser = formattedTweet.isRetweetedByUser === 0 ? false : true;
-  }
-
-  if (retweeter) {
-    formattedTweet.retweeter = retweeter;
-  }
-  return formattedTweet;
-};
-
-const getFormattedTweets = (tweetObjs) => {
-  return tweetObjs.map((tweetObj) => {
-    return formatTweet(tweetObj);
-  });
-};
+const { formatTweet, getFormattedTweets } = require("./../utils/format");
 
 const getUserRetweets = async (userIds, currentUserId) => {
   const retweetObjs = await User.findAll({

@@ -2,26 +2,7 @@ const User = require("./../models/User");
 const bcrypt = require("bcrypt");
 const passport = require("passport");
 const Sequelize = require("sequelize");
-
-const formatUser = (userObj) => {
-  const { ...user } = userObj.dataValues;
-
-  const formattedUser = {
-    ...user
-  };
-
-  if ("isFollowedByUser" in formattedUser) {
-    formattedUser.isFollowedByUser = formattedUser.isFollowedByUser === 0 ? false : true;
-  }
-
-  return formattedUser;
-};
-
-const getFormattedUsers = (userObjs) => {
-  return userObjs.map((userObj) => {
-    return formatUser(userObj);
-  });
-};
+const { formatUser, getFormattedUsers } = require("./../utils/format");
 
 module.exports.loginUser = async (req, res, next) => {
   passport.authenticate("local", (err, user) => {

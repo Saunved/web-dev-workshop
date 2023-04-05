@@ -1,12 +1,6 @@
 const User = require("./../models/User");
 const Sequelize = require("sequelize");
-
-const formatUsers = (users) => {
-  return users.map((user) => {
-    user.isFollowedByUser = user.isFollowedByUser === 1 ? true : false;
-    return user;
-  });
-};
+const { getFormattedMutuals } = require("./../utils/format");
 
 module.exports.addFollows = async (req, res) => {
   try {
@@ -71,7 +65,7 @@ module.exports.getFollowers = async (req, res) => {
 
     return res.status(200).json({
       data: {
-        followers: formatUsers(followers)
+        followers: getFormattedMutuals(followers)
       }
     });
   } catch (error) {
@@ -106,7 +100,7 @@ module.exports.getFollowing = async (req, res) => {
 
     return res.status(200).json({
       data: {
-        following: formatUsers(following)
+        following: getFormattedMutuals(following)
       }
     });
   } catch (error) {
