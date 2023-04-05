@@ -1,13 +1,19 @@
 const User = require("./../models/User");
 const Sequelize = require("sequelize");
+const throwException = require("./../utils/error");
 const { getFormattedMutuals } = require("./../utils/format");
 
-module.exports.addFollows = async (req, res) => {
+module.exports.addFollows = async (req, res, next) => {
   try {
     const followingUser = await User.findOne({
       where: { handle: req.params.handle },
       attributes: ["id"]
     });
+
+    if (!followingUser) {
+      throwException(`User ${req.params.handle} does not exist!`, 404);
+    }
+
     const user = req.user;
     await user.addFollowing(followingUser.id);
 
@@ -15,19 +21,21 @@ module.exports.addFollows = async (req, res) => {
       message: "Followed user."
     });
   } catch (err) {
-    console.log(err);
-    return res.status(500).json({
-      message: "Error while following."
-    });
+    next(err);
   }
 };
 
-module.exports.removeFollows = async (req, res) => {
+module.exports.removeFollows = async (req, res, next) => {
   try {
     const followingUser = await User.findOne({
       where: { handle: req.params.handle },
       attributes: ["id"]
     });
+
+    if (!followingUser) {
+      throwException(`User ${req.params.handle} does not exist!`, 404);
+    }
+
     const user = req.user;
     await user.removeFollowing(followingUser.id);
 
@@ -35,18 +43,20 @@ module.exports.removeFollows = async (req, res) => {
       message: "Unfollowed user"
     });
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      message: "Error while unfollowing."
-    });
+    next(err);
   }
 };
 
-module.exports.getFollowers = async (req, res) => {
+module.exports.getFollowers = async (req, res, next) => {
   try {
     const user = await User.findOne({
       where: { handle: req.params.handle }
     });
+
+    if (!user) {
+      throwException(`User ${req.params.handle} does not exist!`, 404);
+    }
+
     const followers = await user.getFollower({
       attributes: [
         "id",
@@ -68,19 +78,20 @@ module.exports.getFollowers = async (req, res) => {
         followers: getFormattedMutuals(followers)
       }
     });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      message: "Error while getting followers"
-    });
+  } catch (err) {
+    next(err);
   }
 };
 
-module.exports.getFollowing = async (req, res) => {
+module.exports.getFollowing = async (req, res, next) => {
   try {
     const user = await User.findOne({
       where: { handle: req.params.handle }
     });
+
+    if (!user) {
+      throwException(`User ${req.params.handle} does not exist!`, 404);
+    }
 
     let following = await user.getFollowing({
       attributes: [
@@ -103,10 +114,7 @@ module.exports.getFollowing = async (req, res) => {
         following: getFormattedMutuals(following)
       }
     });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      message: "Error while getting following users"
-    });
+  } catch (err) {
+    next(err);
   }
 };
