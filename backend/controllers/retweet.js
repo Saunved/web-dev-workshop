@@ -1,39 +1,40 @@
-module.exports.createRetweet = async (req, res) => {
+const Tweet = require("./../models/Tweet");
+const throwException = require("./../utils/error");
+
+module.exports.createRetweet = async (req, res, next) => {
   try {
     const tweetId = req.params.tweetId;
+    const tweet = await Tweet.findByPk(tweetId);
+    if (!tweet) {
+      throwException(`Tweet with id ${tweetId} does not exist!`, 404);
+    }
+
     const user = req.user;
-    const retweet = await user.addRetweets(tweetId);
+    await user.addRetweets(tweetId);
 
     return res.status(201).json({
-      data: {
-        retweet
-      },
       message: "Retweet published."
     });
   } catch (err) {
-    console.log(err);
-    return res.status(500).json({
-      message: "Error while creating retweet."
-    });
+    next(err);
   }
 };
 
-module.exports.removeRetweet = async (req, res) => {
+module.exports.removeRetweet = async (req, res, next) => {
   try {
     const tweetId = req.params.tweetId;
+    const tweet = await Tweet.findByPk(tweetId);
+    if (!tweet) {
+      throwException(`Tweet with id ${tweetId} does not exist!`, 404);
+    }
+
     const user = req.user;
-    const retweet = await user.removeRetweets(tweetId);
+    await user.removeRetweets(tweetId);
 
     return res.status(201).json({
-      data: {
-        retweet
-      },
       message: "Retweet removed."
     });
   } catch (err) {
-    console.log(err);
-    return res.status(500).json({
-      message: "Error while removing retweet."
-    });
+    next(err);
   }
 };
