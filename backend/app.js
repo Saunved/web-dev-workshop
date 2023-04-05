@@ -64,9 +64,10 @@ app.use(passport.session());
 const userRouter = require("./routes/user");
 const tweetRouter = require("./routes/tweet");
 const retweetRouter = require("./routes/retweet");
-const hashtagRouter = require("./routes/hashtag");
 const followsRouter = require("./routes/follows");
+const errorHandler = require("./middlewares/errorHandler");
 
-app.use("/", [userRouter, tweetRouter, retweetRouter, hashtagRouter, followsRouter]);
+app.use("/", [userRouter, tweetRouter, retweetRouter, followsRouter]);
+app.use(errorHandler);
 
 module.exports = app;

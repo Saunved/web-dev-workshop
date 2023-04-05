@@ -2,43 +2,19 @@ const User = require("./../models/User");
 const bcrypt = require("bcrypt");
 const passport = require("passport");
 const Sequelize = require("sequelize");
-
-const formatUser = (userObj) => {
-  const { ...user } = userObj.dataValues;
-
-  const formattedUser = {
-    ...user
-  };
-
-  if ("isFollowedByUser" in formattedUser) {
-    formattedUser.isFollowedByUser = formattedUser.isFollowedByUser === 0 ? false : true;
-  }
-
-  return formattedUser;
-};
-
-const getFormattedUsers = (userObjs) => {
-  return userObjs.map((userObj) => {
-    return formatUser(userObj);
-  });
-};
+const throwException = require("./../utils/error");
+const { formatUser, getFormattedUsers } = require("./../utils/format");
 
 module.exports.loginUser = async (req, res, next) => {
   passport.authenticate("local", (err, user) => {
     if (err) {
-      return res.status(500).json({
-        message: "Error while authenticating user."
-      });
+      next(err);
     } else if (!user) {
-      return res.status(401).json({
-        message: "Invalid Credentials"
-      });
+      throwException("Invalid Credentials", 401);
     } else {
       req.login(user, (err) => {
         if (err) {
-          return res.status(500).json({
-            message: "Error while authenticating user."
-          });
+          next(err);
         }
         return res.status(200).json({
           message: "Logged in.",
@@ -49,45 +25,50 @@ module.exports.loginUser = async (req, res, next) => {
   })(req, res, next);
 };
 
-module.exports.logoutUser = async (req, res) => {
+module.exports.logoutUser = async (req, res, next) => {
   req.logout((err) => {
     if (err) {
-      return res.status(500).json({
-        message: "Error while logging out."
-      });
+      next(err);
     }
     res.status(200).json({ message: "Logged out." });
   });
 };
 
-module.exports.createUser = async (req, res) => {
+module.exports.createUser = async (req, res, next) => {
   try {
-    // Create password hash
-    const hash = await bcrypt.hash(req.body.password, 10);
+    const { name, handle, email, password } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    if (!name || !handle || !email || !password) {
+      throwException("Invalid user params", 400);
+    }
 
-    req.body.password = hash;
     // Add user to User model
-    const user = await User.create(req.body);
+    const user = await User.create({ name, handle, email, password: hashedPassword });
 
     return res.status(201).json({
       data: { user: { id: user.id } },
       message: "User created."
     });
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      message: "Error while creating user."
-    });
+    next(err);
   }
 };
 
-module.exports.updateUser = async (req, res) => {
+module.exports.updateUser = async (req, res, next) => {
   try {
-    await User.update(req.body, {
-      where: {
-        id: req.user.id
+    const { bio, website } = req.body;
+    if (!bio && !website) {
+      throwException("Invalid user params", 400);
+    }
+
+    await User.update(
+      { bio, website },
+      {
+        where: {
+          id: req.user.id
+        }
       }
-    });
+    );
 
     const user = await User.findByPk(req.user.id, {
       attributes: {
@@ -100,14 +81,11 @@ module.exports.updateUser = async (req, res) => {
       data: { user: formatUser(user) }
     });
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      message: "Error while updating user."
-    });
+    next(err);
   }
 };
 
-module.exports.getUser = async (req, res) => {
+module.exports.getUser = async (req, res, next) => {
   try {
     const userId = req.params.id || req.user.id;
     const user = await User.findByPk(userId, {
@@ -132,18 +110,19 @@ module.exports.getUser = async (req, res) => {
       }
     });
 
+    if (!user) {
+      throwException(`User ${userId} does not exist!`, 404);
+    }
+
     return res.status(200).json({
       data: { user: formatUser(user) }
     });
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      message: "Error while fetching user."
-    });
+    next(err);
   }
 };
 
-module.exports.getUserByHandle = async (req, res) => {
+module.exports.getUserByHandle = async (req, res, next) => {
   try {
     const user = await User.findOne({
       where: { handle: req.params.handle },
@@ -168,18 +147,19 @@ module.exports.getUserByHandle = async (req, res) => {
       }
     });
 
+    if (!user) {
+      throwException(`User ${req.params.handle} does not exist!`, 404);
+    }
+
     return res.status(200).json({
       data: { user: formatUser(user) }
     });
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      message: "Error while fetching user by handle."
-    });
+    next(err);
   }
 };
 
-module.exports.getAllUsers = async (req, res) => {
+module.exports.getAllUsers = async (req, res, next) => {
   try {
     const users = await User.findAll({
       attributes: {
@@ -207,22 +187,13 @@ module.exports.getAllUsers = async (req, res) => {
       data: { users: getFormattedUsers(users) }
     });
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      message: "Error while fetching all users."
-    });
+    next(err);
   }
 };
 
-module.exports.changePassword = async (req, res) => {
+module.exports.changePassword = async (req, res, next) => {
   try {
     const user = await User.findByPk(req.user.id);
-
-    if (!user) {
-      return res.status(400).json({
-        message: "Invalid user id sent!"
-      });
-    }
 
     // Create password hash
     const oldPassword = req.body.oldPassword;
@@ -230,13 +201,13 @@ module.exports.changePassword = async (req, res) => {
     const confirmPassword = req.body.confirmPassword;
 
     if (newPassword !== confirmPassword) {
-      throw "New password and confirm password do not match!";
+      throwException("New password and confirm password do not match!", 400);
     }
     if (!bcrypt.compareSync(oldPassword, user.password)) {
-      throw "Old password is invalid!";
+      throwException("Old password is invalid!", 400);
     }
     if (bcrypt.compareSync(newPassword, user.password)) {
-      throw "New password is the same as old password!";
+      throwException("New password is the same as old password!", 409);
     }
 
     const newPassowordHash = await bcrypt.hash(newPassword, 10);
@@ -246,14 +217,11 @@ module.exports.changePassword = async (req, res) => {
       message: "Password successfully updated for the user."
     });
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      message: "Error while changing password."
-    });
+    next(err);
   }
 };
 
-module.exports.deleteUser = async (req, res) => {
+module.exports.deleteUser = async (req, res, next) => {
   try {
     await User.destroy({
       where: {
@@ -265,9 +233,6 @@ module.exports.deleteUser = async (req, res) => {
       data: { message: "Deleted user" }
     });
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      message: "Error while deleting user"
-    });
+    next(err);
   }
 };
