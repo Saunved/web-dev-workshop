@@ -1,0 +1,125 @@
+diff --git a/frontend/src/components/Tweet/TweetActions.jsx b/frontend/src/components/Tweet/TweetActions.jsx
+index b36e211..814619a 100644
+--- a/frontend/src/components/Tweet/TweetActions.jsx
++++ b/frontend/src/components/Tweet/TweetActions.jsx
+@@ -10,11 +10,18 @@ import { useState, useEffect } from "react";
+ import session from "@/utils/session";
+ 
+ export default function TweetActions({ tweet }) {
+-  const [isLiked, setIsLiked] = useState(tweet.isLikedByUser);
+   const [isRetweeted, setIsRetweeted] = useState(tweet.isRetweetedByUser);
+-  const [likeCount, setLikeCount] = useState(tweet.likeCount);
++  /**
++   * Checkpoint 10 Task 1:
++   * @TODO: Use the appropriate value & setter from the store for like count
++   */
++  const [] = useState(tweet.likeCount);
+   const [retweetCount, setRetweetCount] = useState(tweet.retweetCount);
+-  const [disableLikeButton, setDisableLikeButton] = useState(false);
++  /*
++   * Checkpoint 10 Task 1:
++   * @TODO: Use the appropriate value & setter from the store for like state
++   */
++  const [] = useState(false);
+   const [disableRetweetButton, setDisableRetweetButton] = useState(false);
+   const [user, setUser] = useState({});
+ 
+@@ -84,17 +91,26 @@ export default function TweetActions({ tweet }) {
+   const likeTweet = async () => {
+     setDisableLikeButton(true);
+     fetch(`${BASE_URL}/tweet/like/${tweet.id}`, {
+-      method: "POST",
++      /**
++       * Checkpoint 10 Task 3:
++       * @TODO: Use the correct HTTP method
++       */
+       credentials: "include",
+       headers: {
+-        "Content-Type": "application/json",
++        /**
++         * Checkpoint 10 Task 3:
++         * @TODO: Use the correct content type
++         */
++        "Content-Type": "@TODO: Use the correct content type",
+       },
+     })
+       .then((response) => {
+         if (response.ok) {
+           // Reflect the like or toggled like
+-          setIsLiked(true);
+-          setLikeCount(likeCount + 1);
++          /**
++           * Checkpoint 10 Task 3:
++           * @TODO: Update the like count, state
++           */
+         } else {
+           response.json().then((data) => {
+             console.error(data.message);
+@@ -111,7 +127,10 @@ export default function TweetActions({ tweet }) {
+    * Likes or unlikes a tweet depending on the state
+    */
+   const unlikeTweet = async () => {
+-    setDisableLikeButton(true);
++    /**
++     * Checkpoint 10 Task 4:
++     * @TODO: Enable/disable the button correctly
++     */
+     fetch(`${BASE_URL}/tweet/unlike/${tweet.id}`, {
+       method: "POST",
+       credentials: "include",
+@@ -129,7 +148,10 @@ export default function TweetActions({ tweet }) {
+             console.error(data.message);
+           });
+         }
+-        setDisableLikeButton(false);
++        /**
++         * Checkpoint 10 Task 4:
++         * @TODO: Enable/disable the button correctly
++         */
+       })
+       .catch((error) => {
+         console.error("Error liking tweet", error);
+@@ -150,18 +172,38 @@ export default function TweetActions({ tweet }) {
+         <span className="text-sm">{retweetCount || 0}</span>
+       </button>
+       <button
+-        disabled={disableLikeButton}
+-        onClick={isLiked ? unlikeTweet : likeTweet}
++        {/*
++          * Checkpoint 10 Task 4:
++          * @TODO: Set the disabled prop correctly based on
++          * already liked or not
++        */}
++        {/*
++          * Checkpoint 10 Task 3:
++          * @TODO: Handle onClick based on whether the
++          * tweet is already liked or not
++        */}
+         className="flex gap-2 items-center"
+       >
+         <Heart
+-          weight={isLiked ? "fill" : "regular"}
++          {/*
++            * Checkpoint 10 Task 2:
++            * @TODO: Set the weight based on value of like
++          */}
+           size={20}
+           className={`text-gray-700 hover:cursor-pointer ${
+-            isLiked ? "text-red-600" : ""
++            /*
++             * Checkpoint 10 Task 2:
++             * @TODO: Set the classes based on value of like
++            */
+           }`}
+         />
+-        <span className="text-sm">{likeCount || 0}</span>
++        <span className="text-sm">
++          {/*
++            * Checkpoint 10 Task 2:
++            * @TODO: Show the number of likes text based on value
++            * of like
++          */}
++        </span>
+       </button>
+     </div>
+   );
