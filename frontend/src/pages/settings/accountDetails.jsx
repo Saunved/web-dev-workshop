@@ -46,10 +46,10 @@ export default function AccountDetailsPage() {
     })
       .then((response) => {
         if (response.ok) {
+          // Profile updation succeeded
+          toast.success("Your profile has been updated successfully.");
+
           // Redirect the user to their profile page
-          response.json().then((body) => {
-            toast.success("Profile updated successfully");
-          });
           const { handle } = session.getUser();
           router.push(`/${handle}`);
         } else {
