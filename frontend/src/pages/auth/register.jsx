@@ -5,7 +5,7 @@ import Link from "next/link";
 import Input from "@/components/Form/Input";
 import PasswordLabel from "@/components/Form/PasswordLabel";
 import { registerRoute } from "@/constants/routes";
-import { toast } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { useRouter } from "next/router";
 import ErrorText from "@/components/Widget/ErrorText";
 import {
@@ -17,6 +17,7 @@ import {
 export default function RegisterFlow() {
   const { invalidEmail, invalidPassword, invalidHandle } =
     strings.EN.REGISTER_FLOW;
+  const uiTextError = strings.EN.ERROR;
   const [uiText, setUiText] = useState(strings.EN.REGISTER_FLOW);
   const router = useRouter();
 
@@ -78,8 +79,12 @@ export default function RegisterFlow() {
           router.push("/auth/login");
         } else {
           // Registration failed
-          response.json().then((data) => {
-            console.error(data.message);
+          response.json().then((body) => {
+            if (body?.message) {
+              toast.error(body.message);
+            } else {
+              toast.error(uiTextError.somethingWentWrong);
+            }
           });
         }
       })
