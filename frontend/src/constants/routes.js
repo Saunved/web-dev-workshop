@@ -1,4 +1,4 @@
-export const BASE_URL = "http://localhost:9800";
+export const BASE_URL = process.env.BASE_URL;
 
 export const loginRoute = `${BASE_URL}/login`;
 export const registerRoute = `${BASE_URL}/user`;
