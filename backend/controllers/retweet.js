@@ -31,7 +31,7 @@ module.exports.removeRetweet = async (req, res, next) => {
     const user = req.user;
     await user.removeRetweets(tweetId);
 
-    return res.status(201).json({
+    return res.status(200).json({
       message: "Retweet removed."
     });
   } catch (err) {
