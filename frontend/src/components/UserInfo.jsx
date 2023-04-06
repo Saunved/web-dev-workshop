@@ -1,10 +1,7 @@
 import ProfilePicture from "./Tweet/ProfilePicture";
-import strings from "@/constants/ui/strings";
 import Link from "next/link";
 
 export default function UserInfo({ user }) {
-  const uiText = strings.EN.FOLLOW;
-
   return (
     <Link href={`/${user.handle}`} className="flex w-full gap-4 px-4">
       <div className="w-12">

@@ -1,7 +1,5 @@
 import strings from "@/constants/ui/strings";
 import { useState } from "react";
-import Input from "@/components/Form/Input";
-import PasswordLabel from "@/components/Form/PasswordLabel";
 import { BASE_URL } from "@/constants/routes";
 import toast from "react-hot-toast";
 import session from "@/utils/session";
@@ -34,13 +32,11 @@ export default function ChangePassword() {
       .then((response) => {
         if (response.ok) {
           // Change password succeeded
-          response.json().then((body) => {
-            toast.success("Password changed successfully");
-          });
-          setTimeout(() => {
-            const { handle } = session.getUser();
-            router.push(`/${handle}`);
-          }, 1000);
+          toast.success("Password changed successfully");
+
+          // Redirect the user to their profile page
+          const { handle } = session.getUser();
+          router.push(`/${handle}`);
         } else {
           // Change password failed
           setChangePasswordHasFailed(true);
@@ -48,9 +44,13 @@ export default function ChangePassword() {
           setNewPassword("");
           setConfirmPassword("");
           response.json().then((body) => {
-            toast.error(
-              "There was an error changing your password. Check if your data is correct"
-            );
+            if (body?.message) {
+              toast.error(body.message);
+            } else {
+              toast.error(
+                "There was an error changing your password. Check if your data is correct"
+              );
+            }
           });
         }
       })

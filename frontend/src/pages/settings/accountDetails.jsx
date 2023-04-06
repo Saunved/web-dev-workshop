@@ -1,5 +1,4 @@
 import strings from "@/constants/ui/strings";
-import Input from "@/components/Form/Input";
 import { BASE_URL } from "@/constants/routes";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
@@ -46,18 +45,22 @@ export default function AccountDetailsPage() {
     })
       .then((response) => {
         if (response.ok) {
+          // Profile updation succeeded
+          toast.success("Your profile has been updated successfully.");
+
           // Redirect the user to their profile page
-          response.json().then((body) => {
-            toast.success("Profile updated successfully");
-          });
           const { handle } = session.getUser();
           router.push(`/${handle}`);
         } else {
           // Login failed
           response.json().then((body) => {
-            toast.error(
-              "There was an error changing your details. Please try again"
-            );
+            if (body?.message) {
+              toast.error(body.message);
+            } else {
+              toast.error(
+                "There was an error changing your details. Please try again"
+              );
+            }
           });
         }
       })

@@ -1,15 +1,12 @@
 import { BASE_URL } from "@/constants/routes";
-import {
-  Heart,
-  ChatCircle,
-  Export,
-  ArrowsCounterClockwise,
-  ChartLine,
-} from "phosphor-react";
+import { Heart, ArrowsCounterClockwise } from "phosphor-react";
 import { useState, useEffect } from "react";
 import session from "@/utils/session";
+import strings from "@/constants/ui/strings";
+import toast from "react-hot-toast";
 
 export default function TweetActions({ tweet }) {
+  const uiText = strings.EN.ERROR;
   const [isLiked, setIsLiked] = useState(tweet.isLikedByUser);
   const [isRetweeted, setIsRetweeted] = useState(tweet.isRetweetedByUser);
   const [likeCount, setLikeCount] = useState(tweet.likeCount);
@@ -41,8 +38,12 @@ export default function TweetActions({ tweet }) {
           setIsRetweeted(true);
           setRetweetCount(retweetCount + 1);
         } else {
-          response.json().then((data) => {
-            console.error(data.message);
+          response.json().then((body) => {
+            if (body?.message) {
+              toast.error(body.message);
+            } else {
+              toast.error(uiText.somethingWentWrong);
+            }
           });
         }
         setDisableRetweetButton(false);
@@ -67,8 +68,12 @@ export default function TweetActions({ tweet }) {
           setIsRetweeted(false);
           setRetweetCount(retweetCount - 1);
         } else {
-          response.json().then((data) => {
-            console.error(data.message);
+          response.json().then((body) => {
+            if (body?.message) {
+              toast.error(body.message);
+            } else {
+              toast.error(uiText.somethingWentWrong);
+            }
           });
         }
         setDisableRetweetButton(false);
@@ -96,8 +101,12 @@ export default function TweetActions({ tweet }) {
           setIsLiked(true);
           setLikeCount(likeCount + 1);
         } else {
-          response.json().then((data) => {
-            console.error(data.message);
+          response.json().then((body) => {
+            if (body?.data?.message) {
+              toast.error(body.data.message);
+            } else {
+              toast.error(uiText.somethingWentWrong);
+            }
           });
         }
         setDisableLikeButton(false);
@@ -125,8 +134,12 @@ export default function TweetActions({ tweet }) {
           setIsLiked(false);
           setLikeCount(likeCount - 1);
         } else {
-          response.json().then((data) => {
-            console.error(data.message);
+          response.json().then((body) => {
+            if (body?.data?.message) {
+              toast.error(body.data.message);
+            } else {
+              toast.error(uiText.somethingWentWrong);
+            }
           });
         }
         setDisableLikeButton(false);

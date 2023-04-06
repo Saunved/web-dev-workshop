@@ -2,8 +2,6 @@ import strings from "@/constants/ui/strings";
 import { Dog } from "phosphor-react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import PasswordLabel from "@/components/Form/PasswordLabel";
-import Input from "@/components/Form/Input";
 import { loginRoute } from "@/constants/routes";
 import { useRouter } from "next/router";
 import session from "@/utils/session";

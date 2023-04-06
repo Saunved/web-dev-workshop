@@ -1,5 +1,4 @@
 import UserList from "@/components/UserList";
-import users from "@/mock/users";
 import strings from "@/constants/ui/strings";
 import { BASE_URL } from "@/constants/routes";
 import { attachAuthCookie } from "@/utils/xhr";

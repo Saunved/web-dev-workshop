@@ -5,8 +5,11 @@ import { tweetRoute } from "@/constants/routes";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import session from "@/utils/session";
+import strings from "@/constants/ui/strings";
+import toast from "react-hot-toast";
 
 export default function ComposeTweet({ handle }) {
+  const uiText = strings.EN.ERROR;
   const TEXT_CHAR_LIMIT = 280;
   const [textArea, setTextArea] = useState("");
   const [user, setUser] = useState({});
@@ -58,8 +61,12 @@ export default function ComposeTweet({ handle }) {
           });
         } else {
           // If create tweet fails
-          response.json().then((data) => {
-            console.error(data.message);
+          response.json().then((body) => {
+            if (body?.message) {
+              toast.error(body.message);
+            } else {
+              toast.error(uiText.somethingWentWrong);
+            }
           });
         }
       })

@@ -21,19 +21,29 @@ export default function App({ Component, pageProps }) {
 
   const getLayout = (page) => {
     if (pageIsForAuth || pageIsIndex) {
-      return <BlankLayout children={page} />;
+      return (
+        <>
+          <BlankLayout children={page} />
+          <Toaster position="top-center" reverseOrder={false} />
+        </>
+      );
     }
 
     if (pageIsForSettings) {
       return (
-        <Layout>
+        <Layout children={page}>
           <SettingsLayout children={page} />
-          <Toaster position="bottom-center" reverseOrder={false} />
+          <Toaster position="top-center" reverseOrder={false} />
         </Layout>
       );
     }
 
-    return <Layout children={page} />;
+    return (
+      <>
+        <Layout children={page} />
+        <Toaster position="top-center" reverseOrder={false} />
+      </>
+    );
   };
 
   return <>{getLayout(<Component {...pageProps} />, pageProps)}</>;

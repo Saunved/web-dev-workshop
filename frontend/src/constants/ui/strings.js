@@ -71,6 +71,8 @@ export default {
     },
     ERROR: {
       userNotFound: "User not found",
+      somethingWentWrong:
+        "Sorry, we were unable to process your request. You can try again later or report this issue to bugs@hs-woofer.com",
     },
     TWEET: {
       tweetNotFound: "Tweet not found",
