@@ -5,6 +5,8 @@ The monorepo for the Helpshift web dev workshop
 ## Getting Started with github codespaces
 
 ### Setting up a codespace
+> **Note**
+> This step is to be performed only once
 
 - Step 1 - Click on code
 - Step 2 - Click on create codespace on main and wait for setup
@@ -12,6 +14,9 @@ The monorepo for the Helpshift web dev workshop
 <img width="1430" alt="Screenshot 2023-04-05 at 7 34 49 PM" src="https://user-images.githubusercontent.com/22174051/230105403-457f6947-e9cd-4944-85be-5a2108a2845d.png">
 
 ### Setup frontend on your codespace
+
+> **Note**
+> You would need to perform this setup again whenever you restart your codespace
 
 - Step 1 - Setup and start frontend by executing `make serve-frontend` on the terminal
 <img width="1658" alt="Screenshot 2023-04-05 at 7 37 38 PM" src="https://user-images.githubusercontent.com/22174051/230106220-158857b8-cbc9-4326-a089-0bc5049e19ee.png">
@@ -39,6 +44,9 @@ https://user-images.githubusercontent.com/22174051/230132148-1385d724-269f-4728-
 
 ### Setup backend on your codespace
 
+> **Note**
+> You would need to perform this setup again whenever you restart your codespace
+
 - Step 1 - Setup and start the backend server by executing `make serve-backend` in a new terminal
 
 
@@ -57,6 +65,15 @@ https://user-images.githubusercontent.com/22174051/230135885-cedf906e-cf83-4770-
 
 
 https://user-images.githubusercontent.com/22174051/230136280-e93fb4a2-25c2-4298-a3a0-46733b96c995.mov
+
+<br />
+
+### Setup dummy data
+> **Note**
+> Ensure that your backend server is running.
+
+- Step 1 - open a new terminal in your codespace
+- Step 2 - run `node backend/scripts/seed.js` 
 
 <br />
 
