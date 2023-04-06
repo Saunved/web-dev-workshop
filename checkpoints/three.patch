@@ -1,8 +1,8 @@
 diff --git a/backend/controllers/user.js b/backend/controllers/user.js
-index c94b4ab..bcc0ee2 100644
+index bed3da2..14f8499 100644
 --- a/backend/controllers/user.js
 +++ b/backend/controllers/user.js
-@@ -46,17 +46,14 @@ module.exports.createUser = async (req, res) => {
+@@ -67,17 +67,14 @@ module.exports.createUser = async (req, res) => {
  
      req.body.password = hash;
      // Add user to User model
@@ -26,15 +26,23 @@ index c94b4ab..bcc0ee2 100644
  };
  
 diff --git a/backend/routes/user.js b/backend/routes/user.js
-index cc9fc89..38f56be 100644
+index be467d3..27b6b37 100644
 --- a/backend/routes/user.js
 +++ b/backend/routes/user.js
-@@ -17,7 +17,7 @@ router.get("/user/:id", getUser);
- router.get("/user", getUser);
- router.get("/user/handle/:handle", getUserByHandle);
- router.get("/users", getAllUsers);
+@@ -14,11 +14,12 @@ const {
+ const { auth } = require("./../middlewares/auth");
+ 
+ router.post("/login", loginUser);
 -router.post("/user", createUser);
+-router.get("/users", auth, getAllUsers);
+-router.get("/user", auth, getUser);
+-router.get("/user/:id", auth, getUser);
++router.get("/user/:id", getUser);
++router.get("/user", getUser);
+ router.get("/user/handle/:handle", getUserByHandle);
++router.get("/users", getAllUsers);
 +// Task 1: Create a POST route that would invoke createUser
++
  router.put("/user", auth, updateUser);
  router.put("/user/change-password", auth, changePassword);
  router.post("/logout", auth, logoutUser);
