@@ -41,7 +41,7 @@ app.use((req, res, next) => {
 // Session
 const { secret, timeout } = config.session;
 const cookie = { maxAge: timeout, httpOnly: false };
-if (config?.server?.isCodeSpaceEnv || false) {
+if (config?.server?.isCodeSpaceEnv) {
   cookie.httpOnly = true;
   cookie.domain = ".preview.app.github.dev";
 }
