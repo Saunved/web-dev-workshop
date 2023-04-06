@@ -1,13 +1,6 @@
 import { useEffect } from "react";
 import Link from "next/link";
 
-const tweet = {
-  name: "John Doe",
-  body: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus, quod molestias iste explicabo nobis id veniam excepturi quo corporis distinctio!",
-  handle: "@johndoe",
-  created_at: "4m",
-};
-
 export default function Home() {
   useEffect(() => {
     // If the user is logged in

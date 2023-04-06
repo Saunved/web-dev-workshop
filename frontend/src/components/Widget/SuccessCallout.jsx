@@ -1,5 +1,5 @@
 /**
- * Show error message based on title and message
+ * Show success message based on title and message
  */
 const SuccessCallout = ({ title, message }) => {
   return (

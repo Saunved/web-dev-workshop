@@ -1,7 +1,5 @@
 import strings from "@/constants/ui/strings";
 import { useState } from "react";
-import Input from "@/components/Form/Input";
-import PasswordLabel from "@/components/Form/PasswordLabel";
 import { BASE_URL } from "@/constants/routes";
 import toast from "react-hot-toast";
 import session from "@/utils/session";

@@ -6,7 +6,6 @@ import strings from "@/constants/ui/strings";
 import { useState, useEffect } from "react";
 import { BASE_URL } from "@/constants/routes";
 import session from "@/utils/session";
-import { attachAuthCookie } from "@/utils/xhr";
 import preferences from "@/utils/preferences";
 
 export default function HomeFeed() {

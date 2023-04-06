@@ -1,5 +1,4 @@
 import strings from "@/constants/ui/strings";
-import { useState } from "react";
 
 export default function HomeFeedSwitcher({
   feed,

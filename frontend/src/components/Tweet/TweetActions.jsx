@@ -1,11 +1,5 @@
 import { BASE_URL } from "@/constants/routes";
-import {
-  Heart,
-  ChatCircle,
-  Export,
-  ArrowsCounterClockwise,
-  ChartLine,
-} from "phosphor-react";
+import { Heart, ArrowsCounterClockwise } from "phosphor-react";
 import { useState, useEffect } from "react";
 import session from "@/utils/session";
 import strings from "@/constants/ui/strings";

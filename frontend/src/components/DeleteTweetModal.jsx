@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 export default function DeleteTweetModal({ showModal, onDelete, onClose }) {
   return (
     <div

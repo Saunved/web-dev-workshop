@@ -6,7 +6,6 @@ import TweetFeed from "@/components/TweetFeed";
 import Link from "next/link";
 import strings from "@/constants/ui/strings";
 import { useRouter } from "next/router";
-import UserNotFound from "@/components/Error/UserNotFound";
 import { BASE_URL } from "@/constants/routes";
 import { useState, useEffect } from "react";
 import { getHumanReadableDate } from "@/utils/date";

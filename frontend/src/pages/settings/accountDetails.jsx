@@ -1,5 +1,4 @@
 import strings from "@/constants/ui/strings";
-import Input from "@/components/Form/Input";
 import { BASE_URL } from "@/constants/routes";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
