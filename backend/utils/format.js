@@ -7,7 +7,7 @@ const formatUser = (userObj) => {
   };
 
   if ("isFollowedByUser" in formattedUser) {
-    formattedUser.isFollowedByUser = !formattedUser.isFollowedByUser === 0;
+    formattedUser.isFollowedByUser = formattedUser.isFollowedByUser === 1;
   }
 
   return formattedUser;
@@ -37,11 +37,11 @@ const formatTweet = (tweetObj) => {
   };
 
   if ("isLikedByUser" in formattedTweet) {
-    formattedTweet.isLikedByUser = !formattedTweet.isLikedByUser === 0;
+    formattedTweet.isLikedByUser = formattedTweet.isLikedByUser === 1;
   }
 
   if ("isRetweetedByUser" in formattedTweet) {
-    formattedTweet.isRetweetedByUser = !formattedTweet.isRetweetedByUser;
+    formattedTweet.isRetweetedByUser = formattedTweet.isRetweetedByUser === 1;
   }
 
   if (retweeter) {
