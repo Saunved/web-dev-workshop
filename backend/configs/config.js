@@ -1,7 +1,7 @@
 module.exports.config = {
   // Server config:
   server: {
-    isProdEnv: process.env.PROD_ENV || false,
+    isCodeSpaceEnv: process.env.CODESPACE_ENV || false,
     port: process.env.SERVER_PORT || 5000
   },
   // Database config:
