@@ -1,0 +1,61 @@
+diff --git a/backend/controllers/follows.js b/backend/controllers/follows.js
+index 89020f8..4fbfce7 100644
+--- a/backend/controllers/follows.js
++++ b/backend/controllers/follows.js
+@@ -90,7 +90,7 @@ module.exports.getFollowing = async (req, res, next) => {
+     });
+
+     if (!user) {
+-      throwException(`User ${req.params.handle} does not exist!`, 404);
++      // Task 2: Error Handling: if user does not exist
+     }
+
+     let following = await user.getFollowing({
+@@ -100,19 +100,14 @@ module.exports.getFollowing = async (req, res, next) => {
+         "handle",
+         "bio",
+         [
+-          Sequelize.literal(
+-            `EXISTS(SELECT * FROM follows WHERE followerId = ${user.id} AND followingId = User.id)`
+-          ),
+-          "isFollowedByUser"
++          // Task 3: Write query to fetch the users and check if current user is being followed or not
+         ]
+       ],
+       order: [["handle", "ASC"]]
+     });
+
+     return res.status(200).json({
+-      data: {
+-        following: getFormattedMutuals(following)
+-      }
++      // Return response wrapped in 'data'
+     });
+   } catch (err) {
+     next(err);
+diff --git a/backend/routes/follows.js b/backend/routes/follows.js
+index e106f5b..2941f29 100644
+--- a/backend/routes/follows.js
++++ b/backend/routes/follows.js
+@@ -1,18 +1,14 @@
+ const express = require("express");
+ const router = express.Router();
+
+-const {
+-  addFollows,
+-  removeFollows,
+-  getFollowers,
+-  getFollowing
+-} = require("./../controllers/follows");
++const { addFollows, removeFollows, getFollowers } = require("./../controllers/follows");
+
+ const { auth } = require("./../middlewares/auth");
+
+ router.post("/follow/:handle", auth, addFollows);
+ router.delete("/unfollow/:handle", auth, removeFollows);
+ router.get("/followers/:handle", auth, getFollowers);
+-router.get("/following/:handle", auth, getFollowing);
++// Task 1: Create a route for fetching the list of 'following'
++// It is similar to fetch followers.
+
+ module.exports = router;
