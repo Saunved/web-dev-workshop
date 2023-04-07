@@ -1,0 +1,79 @@
+diff --git a/backend/controllers/tweet.js b/backend/controllers/tweet.js
+index 13cea9b..fe81399 100644
+--- a/backend/controllers/tweet.js
++++ b/backend/controllers/tweet.js
+@@ -335,17 +335,16 @@ module.exports.getLikedTweets = async (req, res, next) => {
+ module.exports.likeTweet = async (req, res, next) => {
+   try {
+     const tweetId = req.params.id;
+-    const tweet = await Tweet.findByPk(tweetId);
+-    if (!tweet) {
+-      throwException(`Tweet with id ${tweetId} does not exist!`);
+-    }
++    // Task 4
++    // Add error handling to check if tweet is present or not.
+ 
+     const user = req.user;
+-    await user.addLikes(tweetId);
++    // Task 2
++    // Add controller code to handle 'liking' any tweet.
++    // For this, the user table needs to be updated.
+ 
+-    return res.status(200).json({
+-      data: { message: "Liked tweet" }
+-    });
++    // Task 3
++    // Send a 'successful' response and corresponding status code.
+   } catch (err) {
+     next(err);
+   }
+@@ -354,17 +353,16 @@ module.exports.likeTweet = async (req, res, next) => {
+ module.exports.unlikeTweet = async (req, res, next) => {
+   try {
+     const tweetId = req.params.id;
+-    const tweet = await Tweet.findByPk(tweetId);
+-    if (!tweet) {
+-      throwException(`Tweet with id ${tweetId} does not exist!`);
+-    }
++    // Task 4
++    // Add error handling to check if tweet is present or not.
+ 
+     const user = req.user;
+-    await user.removeLikes(tweetId);
++    // Task 2
++    // Add controller code to handle 'un-liking' any tweet.
++    // For this, the user table needs to be updated.
+ 
+-    return res.status(200).json({
+-      data: { message: "Unliked tweet" }
+-    });
++    // Task 3
++    // Send a 'successful' response and corresponding status code.
+   } catch (err) {
+     next(err);
+   }
+diff --git a/backend/routes/tweet.js b/backend/routes/tweet.js
+index 192e7f1..efe6bc0 100644
+--- a/backend/routes/tweet.js
++++ b/backend/routes/tweet.js
+@@ -8,14 +8,16 @@ const {
+   getUserTweets,
+   getLikedTweets,
+   getFollowingTweets,
+-  likeTweet,
+-  unlikeTweet,
++  // Task 1
++  // Check which controller is defined, and import it here.
+   deleteTweet
+ } = require("./../controllers/tweet");
+ 
+ router.post("/tweet", auth, createTweet);
+-router.post("/tweet/like/:id", auth, likeTweet);
+-router.post("/tweet/unlike/:id", auth, unlikeTweet);
++
++// Task 1
++// Add routes for 'liking' and 'un-liking' any tweet.
++
+ // Get latest tweets:
+ router.get("/tweets", auth, getTweets);
+ // Get single tweet:
