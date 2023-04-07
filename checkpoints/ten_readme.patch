@@ -1,0 +1,28 @@
+diff --git a/README.md b/README.md
+index 92d3ff6..7363843 100644
+--- a/README.md
++++ b/README.md
+@@ -173,4 +173,21 @@ If some invalid data is provided to XHR request, then server side validation sho
+ 
+ ### Task 3: Write query to fetch the users
+ 
+-Write a query which will fetch all the users whom the logged in user is following.
+\ No newline at end of file
++Write a query which will fetch all the users whom the logged in user is following.
++
++
++## Checkpoint 10: Adding feature to like/un-like a tweet
++
++### Task 1A: Add routes for 'liking' and 'un-liking' any tweet
++
++Add appropriate routes for both actions, liking and un-liking a tweet.
++
++### Task 1B: Add controllers for 'like' and 'un-like' actions
++
++Add controllers for the handling actions 'like' and 'un-like'.
++The correct tables in the database must be updated, for each action.
++Associate the controllers for liking and un-liking a tweet with the appropriate routes.
++
++### Task 2: Add appropriate error handling for the controllers
++
++Return the correct response status codes for the controllers, and add error handling.
