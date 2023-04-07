@@ -1,0 +1,87 @@
+diff --git a/frontend/src/pages/auth/register.jsx b/frontend/src/pages/auth/register.jsx
+index 1d9f223..6b58178 100644
+--- a/frontend/src/pages/auth/register.jsx
++++ b/frontend/src/pages/auth/register.jsx
+@@ -21,8 +21,6 @@ export default function RegisterFlow() {
+ 
+   const [name, setName] = useState("");
+   const [email, setEmail] = useState("");
+-  const [password, setPassword] = useState("");
+-  const [handle, setHandle] = useState("");
+ 
+   // @TODO: Show validation errors for these fields
+   const [emailError, setEmailError] = useState("");
+@@ -65,9 +63,7 @@ export default function RegisterFlow() {
+       },
+       body: JSON.stringify({
+         name,
+-        handle,
+         email,
+-        password,
+       }),
+     })
+       .then((response) => {
+@@ -93,13 +89,7 @@ export default function RegisterFlow() {
+ 
+   return (
+     <div className="max-w-3xl py-8 bg-white rounded-md w-full my-12 mx-auto border shadow">
+-      <div className="flex justify-center mb-4">
+-        <Dog
+-          weight="fill"
+-          className="text-purple-700 hover:rotate-180 hover:transform duration-100"
+-          size={80}
+-        ></Dog>
+-      </div>
++      {/* Task 3: Use the imported "Dog" icon from Phosphor Icons to ensure that our branding is on-point */}
+       <h1 className="text-center text-3xl font-semibold">
+         {uiText.registerCta}
+       </h1>
+@@ -130,38 +120,18 @@ export default function RegisterFlow() {
+               />
+             </div>
+             {emailError ? <ErrorText message={emailError} /> : null}
+-            <div>
+-              <label htmlFor="password">{uiText.password}</label>
+-              <input
+-                className={`${passwordError ? "border-2 border-rose-600" : ""}`}
+-                type="password"
+-                id="password"
+-                name="password"
+-                value={password}
+-                onChange={(event) => setPassword(event.target.value)}
+-                required
+-              />
+-            </div>
+-            {passwordError ? <ErrorText message={passwordError} /> : null}
+-            <div>
+-              <label htmlFor="handle">{uiText.handle}</label>
+-              <input
+-                className={`${handleError ? "border-2 border-rose-600" : ""}`}
+-                type="text"
+-                id="handle"
+-                name="handle"
+-                value={handle}
+-                onChange={(event) => setHandle(event.target.value)}
+-                required
+-              />
+-            </div>
++
++            {/* Task 1: We need to accept and store the password and handle fields in the appropriate variables.
++            Check how name and email are currently being done.
++            Bonus: The registration button should be disabled if password and handle are not present
++            */}
++
+             {handleError ? <ErrorText message={handleError} /> : null}
+             <div className="mt-6">
+-              <button
+-                type="submit"
+-                disabled={!email || !name || !password || !handle}
+-                className="px-4 w-full border rounded-full py-2 bg-blue-600 text-white disabled:opacity-60"
+-              >
++
++              {/* Task 2: This button looks horrible. Let's style it with Tailwind classes! */}
++
++              <button type="submit" disabled={!email || !name} className="">
+                 {uiText.register}
+               </button>
+             </div>
