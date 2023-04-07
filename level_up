@@ -11,12 +11,13 @@ next_level=$[(current_level%total_chapters)+1]
 echo $next_level > .current_level
 echo "Moving to savepoint:" $next_level
 
-rm -r ./backend/ ./frontend/
-mkdir -p ./backend/ ./frontend/
+# rm -r ./backend/ ./frontend/
+# mkdir -p ./backend/ ./frontend/
 
 exclude_files_backend=(save-points/$next_level/backend/node_modules
                        save-points/$next_level/backend/package.json
-                       save-points/$next_level/backend/package-lock.json)
+                       save-points/$next_level/backend/package-lock.json
+                       save-points/$next_level/backend/woofer.sqlite)
 
 rsync -av -q --exclude="${exclude_files_backend[@]}" save-points/$next_level/backend/ backend/
 
