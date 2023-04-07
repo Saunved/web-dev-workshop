@@ -4,18 +4,6 @@ level=${1:-1}
 echo $level > .current_level
 echo "Resetting to save point:" $level
 
-# rm -r ./backend/ ./frontend/
-# mkdir -p ./backend/ ./frontend/
+rsync -av -q save-points/$level/backend/ backend/
 
-exclude_files_backend=(save-points/$level/backend/node_modules
-                       save-points/$level/backend/package.json
-                       save-points/$level/backend/package-lock.json
-                       save-points/$level/backend/woofer.sqlite)
-
-rsync -av -q --exclude="${exclude_files_backend[@]}" save-points/$level/backend/ ./backend/
-
-exclude_files_frontend=(save-points/$level/frontend/node_modules
-                       save-points/$level/frontend/package.json
-                       save-points/$level/frontend/package-lock.json)
-
-rsync -av -q --exclude="${exclude_files_frontend[@]}" save-points/$level/frontend/ ./frontend/
+rsync -av -q save-points/$level/frontend/ frontend/
