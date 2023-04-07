@@ -1,0 +1,45 @@
+diff --git a/backend/controllers/user.js b/backend/controllers/user.js
+index 8558b8f..b460c21 100644
+--- a/backend/controllers/user.js
++++ b/backend/controllers/user.js
+@@ -38,19 +38,14 @@ module.exports.createUser = async (req, res, next) => {
+   try {
+     const { name, handle, email, password } = req.body;
+     const hashedPassword = await bcrypt.hash(password, 10);
+-    if (!name || !handle || !email || !password) {
+-      throwException("Invalid user params", 400);
+-    }
++    // Task 1: Can few params in request be missing? Hmmm... Let's try it out.
+ 
+-    // Add user to User model
+-    const user = await User.create({ name, handle, email, password: hashedPassword });
++    // Task 2: We need to store the user in the database. Use sequelize to do this!
++
++    // Task 3A: What should we send back? Remember to wrap your data in a "data" key for consistency
+ 
+-    return res.status(201).json({
+-      data: { user: { id: user.id } },
+-      message: "User created."
+-    });
+   } catch (err) {
+-    next(err);
++    // Task 3B: If something goes wrong, we "catch" it here. What should we send back to the frontend?
+   }
+ };
+ 
+diff --git a/backend/routes/user.js b/backend/routes/user.js
+index be467d3..d34fe40 100644
+--- a/backend/routes/user.js
++++ b/backend/routes/user.js
+@@ -14,7 +14,10 @@ const {
+ const { auth } = require("./../middlewares/auth");
+ 
+ router.post("/login", loginUser);
+-router.post("/user", createUser);
++
++// Task 1: FE has fired a request. How do we link the FE req to the backend code?
++// router.post("/user", ??);
++
+ router.get("/users", auth, getAllUsers);
+ router.get("/user", auth, getUser);
+ router.get("/user/:id", auth, getUser);
