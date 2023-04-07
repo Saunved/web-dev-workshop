@@ -56,7 +56,6 @@ export default function ComposeTweet({ handle }) {
       .then((response) => {
         if (response.ok) {
           response.json().then((body) => {
-            // @TODO: Redirect the user to the single tweet view
             router.push(`/${user.handle}/status/${body.data.tweet.id}`);
           });
         } else {

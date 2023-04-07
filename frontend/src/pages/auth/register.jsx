@@ -24,7 +24,6 @@ export default function RegisterFlow() {
   const [password, setPassword] = useState("");
   const [handle, setHandle] = useState("");
 
-  // @TODO: Show validation errors for these fields
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [handleError, setHandleError] = useState("");
