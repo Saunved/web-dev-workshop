@@ -1,0 +1,76 @@
+diff --git a/backend/controllers/tweet.js b/backend/controllers/tweet.js
+index 7636e9a..1c99ce5 100644
+--- a/backend/controllers/tweet.js
++++ b/backend/controllers/tweet.js
+@@ -310,32 +310,30 @@ module.exports.getFollowingTweets = async (req, res) => {
+ module.exports.likeTweet = async (req, res) => {
+   try {
+     const user = req.user;
+-    await user.addLikes(req.params.id);
++    // Task 1B
++    // Add controller code to handle 'liking' any tweet.
++    // For this, the user table needs to be updated.
+ 
+-    return res.status(200).json({
+-      data: { message: "Liked tweet" }
+-    });
++    // Task 2
++    // Send a 'successful' response
+   } catch (err) {
+-    console.error(err);
+-    return res.status(500).json({
+-      message: "Error while liking tweet"
+-    });
++    // Task 2
++    // Send appropriate response status code and message, when the request is not successful.
+   }
+ };
+ 
+ module.exports.unlikeTweet = async (req, res) => {
+   try {
+     const user = req.user;
+-    await user.removeLikes(req.params.id);
++    // Task 1B
++    // Add controller code to handle 'un-liking' any tweet.
++    // For this, the user table needs to be updated.
+ 
+-    return res.status(200).json({
+-      data: { message: "Unliked tweet" }
+-    });
++    // Task 2
++    // Send a 'successful' response
+   } catch (err) {
+-    console.error(err);
+-    return res.status(500).json({
+-      message: "Error while unliking tweet"
+-    });
++    // Task 2
++    // Send appropriate response status code and message, when the request is not successful.
+   }
+ };
+ 
+diff --git a/backend/routes/tweet.js b/backend/routes/tweet.js
+index d79edff..5025e85 100644
+--- a/backend/routes/tweet.js
++++ b/backend/routes/tweet.js
+@@ -8,14 +8,16 @@ const {
+   getUserTweets,
+   getLikedTweets,
+   getFollowingTweets,
+-  likeTweet,
+-  unlikeTweet,
++  // Task 1B
++  // Check which controller is defined, and import it here.
+   deleteTweet
+ } = require("./../controllers/tweet");
+ 
+ router.post("/tweet", auth, createTweet);
+-router.post("/tweet/like/:id", auth, likeTweet);
+-router.post("/tweet/unlike/:id", auth, unlikeTweet);
++
++// Task 1A
++// Add routes for 'liking' and 'un-liking' any tweet.
++
+ // Get latest tweets:
+ router.get("/tweets", getTweets);
+ // Get single tweet:
