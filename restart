@@ -14,8 +14,8 @@ exclude_files_backend=(save-points/$level/backend/node_modules
 
 rsync -av -q --exclude="${exclude_files_backend[@]}" save-points/$level/backend/ ./backend/
 
-exclude_files_frontend=(save-points/$level/backend/node_modules
-                       save-points/$level/backend/package.json
-                       save-points/$level/backend/package-lock.json)
+exclude_files_frontend=(save-points/$level/frontend/node_modules
+                       save-points/$level/frontend/package.json
+                       save-points/$level/frontend/package-lock.json)
 
 rsync -av -q --exclude="${exclude_files_frontend[@]}" save-points/$level/frontend/ ./frontend/
