@@ -1,0 +1,38 @@
+diff --git a/backend/controllers/follows.js b/backend/controllers/follows.js
+index 89020f8..9a8ea49 100644
+--- a/backend/controllers/follows.js
++++ b/backend/controllers/follows.js
+@@ -90,7 +90,7 @@ module.exports.getFollowing = async (req, res, next) => {
+     });
+ 
+     if (!user) {
+-      throwException(`User ${req.params.handle} does not exist!`, 404);
++      // Task 2: Error Handling: if user does not exist
+     }
+ 
+     let following = await user.getFollowing({
+@@ -100,9 +100,8 @@ module.exports.getFollowing = async (req, res, next) => {
+         "handle",
+         "bio",
+         [
+-          Sequelize.literal(
+-            `EXISTS(SELECT * FROM follows WHERE followerId = ${user.id} AND followingId = User.id)`
+-          ),
++          // Task 3: Write a query to fetch the list of users who follow the current user and following of current user
++          Sequelize.literal(),
+           "isFollowedByUser"
+         ]
+       ],
+diff --git a/backend/routes/follows.js b/backend/routes/follows.js
+index e106f5b..b43fda7 100644
+--- a/backend/routes/follows.js
++++ b/backend/routes/follows.js
+@@ -13,6 +13,7 @@ const { auth } = require("./../middlewares/auth");
+ router.post("/follow/:handle", auth, addFollows);
+ router.delete("/unfollow/:handle", auth, removeFollows);
+ router.get("/followers/:handle", auth, getFollowers);
+-router.get("/following/:handle", auth, getFollowing);
++// Task 1: Create a route for fetching the list of 'following'
++// It is similar as fetching followers.
+ 
+ module.exports = router;
