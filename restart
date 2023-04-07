@@ -7,16 +7,15 @@ echo "Resetting to save point:" $level
 rm -r ./backend/ ./frontend/
 mkdir -p ./backend/ ./frontend/
 
-exclude_files_backend=(./save-points/$level/backend/node_modules,
-                       ./save-points/$level/backend/*.env,
-                       ./save-points/$level/backend/package.json,
-                       ./save-points/$level/backend/package-lock.json,
-                       ./save-points/$level/backend/woofer.sqlite)
+exclude_files_backend=(save-points/$level/backend/node_modules
+                       save-points/$level/backend/package.json
+                       save-points/$level/backend/package-lock.json
+                       save-points/$level/backend/woofer.sqlite)
 
-rsync -av --exclude="${exclude_files_backend[@]}" save-points/$level/backend/ ./backend/
+rsync -av -q --exclude="${exclude_files_backend[@]}" save-points/$level/backend/ ./backend/
 
-exclude_files_frontend=(./save-points/$level/backend/node_modules,
-                       ./save-points/$level/backend/package.json,
-                       ./save-points/$level/backend/package-lock.json)
+exclude_files_frontend=(save-points/$level/backend/node_modules
+                       save-points/$level/backend/package.json
+                       save-points/$level/backend/package-lock.json)
 
-rsync -av --exclude="${exclude_files_frontend[@]}" ./save-points/$level/frontend/ ./frontend/
+rsync -av -q --exclude="${exclude_files_frontend[@]}" save-points/$level/frontend/ ./frontend/
