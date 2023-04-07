@@ -1,0 +1,59 @@
+diff --git a/frontend/src/pages/auth/register.jsx b/frontend/src/pages/auth/register.jsx
+index 1d9f223..50efe96 100644
+--- a/frontend/src/pages/auth/register.jsx
++++ b/frontend/src/pages/auth/register.jsx
+@@ -58,32 +58,29 @@ export default function RegisterFlow() {
+       return;
+     }
+ 
++    // Task 2: Implementing the registration endpoint on the frontend
+     fetch(registerRoute, {
+-      method: "POST",
++      method: "", // Which HTTP method should we use here?
+       headers: {
+         "Content-Type": "application/json",
+       },
+       body: JSON.stringify({
+-        name,
+-        handle,
+-        email,
+-        password,
++        // Task 2A: What data should we send to the server? Hint: we should pass key:value pairs
+       }),
+     })
+       .then((response) => {
+         if (response.ok) {
+-          // Registration successful
+-          localStorage.setItem("registrationSuccess", true);
+-          router.push("/auth/login");
++         // Task 2B: What to do if the registration is successful? Hint: It would be weird to stay on the same page and do nothing :P
+         } else {
+           // Registration failed
+-          response.json().then((body) => {
+-            if (body?.message) {
+-              toast.error(body.message);
+-            } else {
+-              toast.error(uiTextError.somethingWentWrong);
+-            }
+-          });
++          // Task 2C: What to do if the registration fails? Hint: It would be weird to not give the user any feedback
++          // response.json().then((body) => {
++          //   if (_FILL THE CONDITION_) {
++          //     toast.error(_IF STATEMENT_);
++          //   } else {
++          //     toast.error(_ELSE STATEMENT_);
++          //   }
++          // });
+         }
+       })
+       .catch((error) => {
+@@ -105,7 +102,8 @@ export default function RegisterFlow() {
+       </h1>
+       <div className="mt-8 flex justify-center">
+         <div className="w-6/12">
+-          <form onSubmit={onSubmitForm}>
++          {/* Task 1: This form should call the onSubmitForm function when the "Register" button is clicked */}
++          <form>
+             <div>
+               <label htmlFor="name">{uiText.name}</label>
+               <input
