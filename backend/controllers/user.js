@@ -38,14 +38,19 @@ module.exports.createUser = async (req, res, next) => {
   try {
     const { name, handle, email, password } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
-    // Task 1: Can few params in request be missing? Hmmm... Let's try it out.
+    if (!name || !handle || !email || !password) {
+      throwException("Invalid user params", 400);
+    }
 
-    // Task 2: We need to store the user in the database. Use sequelize to do this!
+    // Add user to User model
+    const user = await User.create({ name, handle, email, password: hashedPassword });
 
-    // Task 3A: What should we send back? Remember to wrap your data in a "data" key for consistency
-
+    return res.status(201).json({
+      data: { user: { id: user.id } },
+      message: "User created."
+    });
   } catch (err) {
-    // Task 3B: If something goes wrong, we "catch" it here. What should we send back to the frontend?
+    next(err);
   }
 };
 

@@ -14,10 +14,7 @@ const {
 const { auth } = require("./../middlewares/auth");
 
 router.post("/login", loginUser);
-
-// Task 1: FE has fired a request. How do we link the FE req to the backend code?
-// router.post("/user", ??);
-
+router.post("/user", createUser);
 router.get("/users", auth, getAllUsers);
 router.get("/user", auth, getUser);
 router.get("/user/:id", auth, getUser);
