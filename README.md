@@ -214,26 +214,3 @@ Look around in the codebase to see how we can do this!
 
 Key learning:
 Each route can either be successful or unsuccessful. We must account for both cases when creating a controller.
-## Checkpoint 5: Storing tweet to database
-
-### Task 1: Create a route which accept tweet's metadata
-
-Frontend will trigger a POST request, so we should define the relevant route on the backend in routes/tweet.js.
-
-### Task 2: Make changes in controller for storing the tweet
-
-We have added a route, now its time to make changes in controller tweet.js. Controller accepts the request and stores data and generates a response for Frontend.
-
-## Checkpoint 9: Query to fetch followers/following
-
-### Task 1: Create a route for fetching the list of 'following'
-
-Get a list of users whom the logged in user is following along with some metadata such as count.
-
-### Task 2: Error Handling: if user does not exist
-
-If some invalid data is provided to XHR request, then server side validation should save the system, hence throw exception if invalid user is triggering the XHR.
-
-### Task 3: Write query to fetch the users
-
-Write a query which will fetch all the users whom the logged in user is following.
