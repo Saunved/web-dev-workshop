@@ -1,0 +1,40 @@
+diff --git a/frontend/src/pages/[profile]/followers.jsx b/frontend/src/pages/[profile]/followers.jsx
+index c75883c..f3aeb0e 100644
+--- a/frontend/src/pages/[profile]/followers.jsx
++++ b/frontend/src/pages/[profile]/followers.jsx
+@@ -16,6 +16,7 @@ export default function FollowersPage({ users = [] }) {
+         </section>
+       ) : (
+         <section className="mt-6">
++          {/* Task 4: Use the UserList component here to render a list of "users" on the UI. Don't forget to pass the correct props! */}
+           <UserList users={users} />
+         </section>
+       )}
+@@ -27,14 +28,16 @@ export async function getServerSideProps({ req, res, params }) {
+   try {
+     if (params.profile) {
+       const followingRes = await fetch(
+-        `${BASE_URL}/followers/${params.profile}`,
++        // Task 1: Call the correct URL. We are calling this path: /followers/:handle
++        // The user's handle will be available from the URL in "params.profile"
++        /* Create the URL here */,
+         attachAuthCookie(req)
+       );
+       const followingResBody = await followingRes.json();
+ 
+       return {
+         props: {
+-          users: followingResBody.data.followers,
++          users: /* Task 2: We will get the followers data in "data.followers". Let's assign it to "users" */,
+         },
+       };
+     }
+@@ -42,7 +45,7 @@ export async function getServerSideProps({ req, res, params }) {
+     console.log(error);
+     return {
+       props: {
+-        users: [],
++        users: /* Task 3: We didn't get the users data. What should we return here? */,
+       },
+     };
+   }
