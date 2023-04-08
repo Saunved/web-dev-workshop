@@ -26,8 +26,8 @@ export default function TweetFeed({ tweets, loading }) {
     <>
       {tweets.map((tweet, idx) => {
         return (
-          <div key={idx}>
-            <Tweet tweet={tweet} /> <hr />{" "}
+          <div key={tweet.id}>
+            <Tweet tweet={tweet} /> <hr />
           </div>
         );
       })}
