@@ -214,3 +214,65 @@ Look around in the codebase to see how we can do this!
 
 Key learning:
 Each route can either be successful or unsuccessful. We must account for both cases when creating a controller.
+
+## Checkpoint 4: Let's write a tweet
+
+For this checkpoint, we'll be looking at the following file: `/src/components/Tweet/ComposeTweet.jsx`.́
+
+After going through the above 3 checkpoints, now you have a basic understanding of how to create a form, apply styling to it, and how fire API, write a query to get and store the data inside the database
+
+Now we going to learn how users would write a tweet on the UI?, excited 😄?
+
+### Task 1: Writing a Tweet
+
+
+We want users to write a tweet and submit the tweet on the UI. so how could we achieve that? 
+
+- What do you think what kinds of HTML input elements should we use here for both? 
+
+You have might have noticed this on Twitter when you write a tweet your text area content increases as per your content length. Now, according to what we had plan to implement will not work here, right? 
+
+- So can you find the react library which will auto-resize our textarea?
+
+- We want the user to submit their tweet so can you construct a button for the same?
+
+- We also want to indicate the character count while the user writes their tweet along with the character limit we have set.
+
+### Task 2: UI handling
+
+
+Should the tweet submit button be visible when there is no tweet content present? Is that good user experience (UX)?
+
+- Could you think? How could we disable the button when tweet content is empty?
+
+Twitter has this constraint where it restricts the number of characters in a tweet.
+
+- So can you think of how could we restrict the end-user when it reaches the limit
+
+It would be good UX if you indicate something on the UI so that they know that tweet content length is about to reach the limit
+
+- So can you make the character limit indicator red when a user reaches the limit? It is the good cherry on top of the cake functionality
+
+
+### Task 3: Calling the API
+
+We have constructed the basic UI to compose the tweet. Now we want to send the tweet content to our server, which will then stored it inside a database
+
+So what is the first step to achieving the above result? Fire a request to some endpoint right?
+
+- Which HTTP request method do you think is most appropriate to use here? 
+
+What should be the behavior if the request succeeded and what if get failed? any thoughts?
+
+How are we going to store the tweet content in the database, we can be going to learn in the next checkpoint
+
+
+## Checkpoint 5: Storing tweet to database
+
+### Task 1: Create a route which accepts tweet's metadata
+
+Frontend will trigger a POST request, so we should define the relevant route which is parsed through the middlewares on the backend in routes/tweet.js.
+
+### Task 2: Make changes in controller for storing the tweet
+
+We have added a route, now it's time to make changes in controller tweet.js. Controller accepts the request and stores data and generates a response for Frontend.
