@@ -17,7 +17,6 @@ export default function FollowersPage({ users = [] }) {
       ) : (
         <section className="mt-6">
           {/* Task 4: Use the UserList component here to render a list of "users" on the UI. Don't forget to pass the correct props! */}
-          <UserList users={users} />
         </section>
       )}
     </div>
