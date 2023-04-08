@@ -277,6 +277,31 @@ Frontend will trigger a POST request, so we should define the relevant route whi
 
 We have added a route, now it's time to make changes in controller tweet.js. Controller accepts the request and stores data and generates a response for Frontend.
 
+## Checkpoint 8: Creating the home feed on the UI
+
+### Task 1: Fetch tweets from the backend
+We need to make a request to the backend to get tweets. We have to make sure that we send cookies to the backend in our request. Without our cookie, the backend will not know who is requesting for this information and can reject our request.
+
+### Task 2: Add the tweet data to the page!
+After Task 1, we can insert the tweet data into our state. This will allow for tweets to show up.
+
+### Task 3: Pass tweets to the TweetFeed component
+Just like we can pass arguments to functions, we can pass props to components. Pass the tweets that we set in the state into this component as a prop.
+
+## Checkpoint 9: Fetch the followers data on the server-side
+
+### Task 1: Call the correct URL
+The URL that we call is going to be at the route `/followers/:handle`. The user's handle is available in the `params` object that `getServerSideProps` is called with. And finally, the base URL is available as a constant in `BASE_URL`. Can you call the correct URL?
+
+### Task 2: Send the followers data in props
+We can pass this data as props to the component. Can you assign the followers data to the `users` key? It is available in `data.followers`.
+
+### Task 3: What happens if we don't get the user data?
+It's possible that the backend doesn't give us any followers data and crashes (for some reason). How would we handle this? Remember, we have handled the case where zero users are present.
+
+### Task 4: Consume the `<UserList>` component
+Can you use the `UserList` component to render the followers data now? The followers are available to us in the `users` prop.
+
 ## Checkpoint 10: Adding feature to like/un-like a tweet
 
 ### Backend
