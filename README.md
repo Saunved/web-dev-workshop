@@ -276,3 +276,47 @@ Frontend will trigger a POST request, so we should define the relevant route whi
 ### Task 2: Make changes in controller for storing the tweet
 
 We have added a route, now it's time to make changes in controller tweet.js. Controller accepts the request and stores data and generates a response for Frontend.
+
+## Checkpoint 10: Adding feature to like/un-like a tweet
+
+### Backend
+
+#### Task 1A: Add routes for 'liking' and 'un-liking' any tweet
+
+Add appropriate routes for both actions, liking and un-liking a tweet.
+
+#### Task 1B: Add controllers for 'like' and 'un-like' actions
+
+Add controllers for the handling actions 'like' and 'un-like'.
+The correct tables in the database must be updated, for each action.
+Associate the controllers for liking and un-liking a tweet with the appropriate routes.
+
+#### Task 2: Add appropriate error handling for the controllers
+
+Return the correct response status codes for the controllers, and add error handling.
+
+### Frontend
+We will be using the like count and state of like, and use that for rendering and handling the UI
+
+#### Task 1: Read the value of like count and state of like
+* Use the appropriate value & setter from the store for like count
+* Use the appropriate value & setter from the store for like state
+
+#### Task 2: Use the values from above task to customize the UI
+* Set the weight for Heart component based on value of like
+* Customize the classes for Heart component based on value of like
+* Show the number of likes text based on value of like
+
+#### Task 3: Handle the click on like/unlike button, setup the request currently
+* Handle onClick based on whether the tweet is already liked or not
+* Use the correct HTTP method for the `/tweet/like/` route
+* Use the correct Content-Type of the `tweet/like` route
+* Update the like count and state of like onSuccess
+
+#### Task 4: Find the correct position for handling button state. This is common scenario in FE where based on the state of the request, we update the UI
+* For unlike tweet, enable/disable the button correctly before firing the request
+* For unlike tweet, enable/disable the button correct after the request completes
+* Set the disabled prop correctly based on already liked or not
+
+
+
