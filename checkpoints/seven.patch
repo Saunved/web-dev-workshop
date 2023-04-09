@@ -1,0 +1,77 @@
+diff --git a/README.md b/README.md
+index 51199a1..61cf56c 100644
+--- a/README.md
++++ b/README.md
+@@ -276,3 +276,14 @@ Frontend will trigger a POST request, so we should define the relevant route whi
+ ### Task 2: Make changes in controller for storing the tweet
+ 
+ We have added a route, now it's time to make changes in controller tweet.js. Controller accepts the request and stores data and generates a response for Frontend.
++
++
++## Checkpoint 7: Exploring datamodels using home feed
++
++### Task 1: We are building the database model for a woof but we don't know how should we be storing the woof body. Help us complete the data model.
++
++### Task 2: To fetch the data for showing the home feed, we are making a couple of calls to the database. But we are not sure how to make all the database queries. Help us complete the whole process.
++
++### Task 3: All of our beta testing customers have said they would prefer see the latest woofs as the most recent one on their feed. Let's make sure the customers are happy :)
++
++### Task 4: Frontend and backend have decide a contract for every API call. But it is not necessary that the data being stored in the database is in the same format. We need to make sure the data being returned to the frontend follows the contract decided.
+diff --git a/backend/controllers/tweet.js b/backend/controllers/tweet.js
+index 13cea9b..eaddd71 100644
+--- a/backend/controllers/tweet.js
++++ b/backend/controllers/tweet.js
+@@ -170,8 +170,11 @@ module.exports.getUserTweets = async (req, res, next) => {
+   try {
+     const handle = req.params.handle;
+     const requestedUser = await User.findOne({
+-      where: { handle: handle },
+-      attributes: ["id", "handle"]
++        where: { // Task 2A: FILL THE WHERE CLAUSE
++        },
++      // Task 2B: Some database rows can be too large. So, in general
++      // we try to get only the data fields that are necessary. Which
++      // fields do you think we should return?
+     });
+ 
+     if (!requestedUser) {
+@@ -209,7 +212,8 @@ module.exports.getUserTweets = async (req, res, next) => {
+         }
+       ],
+       group: ["Tweet.id", "User.id"],
+-      order: [["createdAt", "DESC"]]
++      // Task 3: Return the data in an order such that latest tweet is
++      // seen first.
+     });
+ 
+     const retweets = await getUserRetweets([requestedUser.id], currentUserId);
+diff --git a/backend/models/Tweet.js b/backend/models/Tweet.js
+index f9c5099..d8f8353 100644
+--- a/backend/models/Tweet.js
++++ b/backend/models/Tweet.js
+@@ -22,8 +22,7 @@ const tweetModel = sequelize.define(
+       }
+     },
+     body: {
+-      type: DataTypes.STRING(280),
+-      allowNull: false
++      // Task 1: How should `body` field be stored in database?
+     }
+   },
+   {
+diff --git a/backend/utils/format.js b/backend/utils/format.js
+index b388687..11ec1a3 100644
+--- a/backend/utils/format.js
++++ b/backend/utils/format.js
+@@ -36,8 +36,10 @@ const formatTweet = (tweetObj) => {
+     handle: user.handle
+   };
+ 
++  // Task 4: Some fields can have different datatype saved in database
++  // vs the datatype being returned to frontend. isLikedByUser is
++  // returned as 0 or 1 to us but frontend expects a boolean.
+   if ("isLikedByUser" in formattedTweet) {
+-    formattedTweet.isLikedByUser = formattedTweet.isLikedByUser === 1;
+   }
+ 
+   if ("isRetweetedByUser" in formattedTweet) {

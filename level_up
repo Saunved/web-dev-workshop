@@ -11,8 +11,6 @@ next_level=$[(current_level%total_chapters)+1]
 echo $next_level > .current_level
 echo "Moving to savepoint:" $next_level
 
-rm -r ./backend/ ./frontend/
-mkdir -p ./backend/ ./frontend/
+rsync -av -q save-points/$next_level/backend/ backend/
 
-cp -R ./save-points/$next_level/backend/ ./backend/
-cp -R ./save-points/$next_level/frontend/ ./frontend/
+rsync -av -q save-points/$next_level/frontend/ frontend/
