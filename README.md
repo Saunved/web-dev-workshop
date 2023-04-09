@@ -288,6 +288,17 @@ Using errorHandler middleware for formatting all responses.
 Response middlewares generally helps to maintain the shape of response, it can make sure that the JSON is in same format each time. Fix the code in createUser endpoint and use middleware.
 
 
+## Checkpoint 7: Exploring datamodels using home feed
+
+### Task 1: We are building the database model for a woof but we don't know how should we be storing the woof body. Help us complete the data model.
+
+### Task 2: To fetch the data for showing the home feed, we are making a couple of calls to the database. But we are not sure how to make all the database queries. Help us complete the whole process.
+
+### Task 3: All of our beta testing customers have said they would prefer see the latest woofs as the most recent one on their feed. Let's make sure the customers are happy :)
+
+### Task 4: Frontend and backend have decide a contract for every API call. But it is not necessary that the data being stored in the database is in the same format. We need to make sure the data being returned to the frontend follows the contract decided.
+
+
 ## Checkpoint 8: Creating the home feed on the UI
 
 ### Task 1: Fetch tweets from the backend
