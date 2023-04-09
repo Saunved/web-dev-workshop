@@ -277,6 +277,7 @@ Frontend will trigger a POST request, so we should define the relevant route whi
 
 We have added a route, now it's time to make changes in controller tweet.js. Controller accepts the request and stores data and generates a response for Frontend.
 
+
 ## Checkpoint 6: Middlewares
 ### Task 1: There is a bug in 'getUserByHandle', find and try to fix it.
 
@@ -285,3 +286,71 @@ Using errorHandler middleware for formatting all responses.
 
 ### Task 3: Replace code and use response middleware
 Response middlewares generally helps to maintain the shape of response, it can make sure that the JSON is in same format each time. Fix the code in createUser endpoint and use middleware.
+
+
+## Checkpoint 8: Creating the home feed on the UI
+
+### Task 1: Fetch tweets from the backend
+We need to make a request to the backend to get tweets. We have to make sure that we send cookies to the backend in our request. Without our cookie, the backend will not know who is requesting for this information and can reject our request.
+
+### Task 2: Add the tweet data to the page!
+After Task 1, we can insert the tweet data into our state. This will allow for tweets to show up.
+
+### Task 3: Pass tweets to the TweetFeed component
+Just like we can pass arguments to functions, we can pass props to components. Pass the tweets that we set in the state into this component as a prop.
+
+## Checkpoint 9: Fetch the followers data on the server-side
+
+### Task 1: Call the correct URL
+The URL that we call is going to be at the route `/followers/:handle`. The user's handle is available in the `params` object that `getServerSideProps` is called with. And finally, the base URL is available as a constant in `BASE_URL`. Can you call the correct URL?
+
+### Task 2: Send the followers data in props
+We can pass this data as props to the component. Can you assign the followers data to the `users` key? It is available in `data.followers`.
+
+### Task 3: What happens if we don't get the user data?
+It's possible that the backend doesn't give us any followers data and crashes (for some reason). How would we handle this? Remember, we have handled the case where zero users are present.
+
+### Task 4: Consume the `<UserList>` component
+Can you use the `UserList` component to render the followers data now? The followers are available to us in the `users` prop.
+
+## Checkpoint 10: Adding feature to like/un-like a tweet
+
+### Backend
+
+#### Task 1A: Add routes for 'liking' and 'un-liking' any tweet
+
+Add appropriate routes for both actions, liking and un-liking a tweet.
+
+#### Task 1B: Add controllers for 'like' and 'un-like' actions
+
+Add controllers for the handling actions 'like' and 'un-like'.
+The correct tables in the database must be updated, for each action.
+Associate the controllers for liking and un-liking a tweet with the appropriate routes.
+
+#### Task 2: Add appropriate error handling for the controllers
+
+Return the correct response status codes for the controllers, and add error handling.
+
+### Frontend
+We will be using the like count and state of like, and use that for rendering and handling the UI
+
+#### Task 1: Read the value of like count and state of like
+* Use the appropriate value & setter from the store for like count
+* Use the appropriate value & setter from the store for like state
+
+#### Task 2: Use the values from above task to customize the UI
+* Set the weight for Heart component based on value of like
+* Customize the classes for Heart component based on value of like
+* Show the number of likes text based on value of like
+
+#### Task 3: Handle the click on like/unlike button, setup the request currently
+* Handle onClick based on whether the tweet is already liked or not
+* Use the correct HTTP method for the `/tweet/like/` route
+* Use the correct Content-Type of the `tweet/like` route
+* Update the like count and state of like onSuccess
+
+#### Task 4: Find the correct position for handling button state. This is common scenario in FE where based on the state of the request, we update the UI
+* For unlike tweet, enable/disable the button correctly before firing the request
+* For unlike tweet, enable/disable the button correct after the request completes
+* Set the disabled prop correctly based on already liked or not
+
