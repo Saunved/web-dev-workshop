@@ -343,7 +343,7 @@ We will be using the like count and state of like, and use that for rendering an
 * Customize the classes for Heart component based on value of like
 * Show the number of likes text based on value of like
 
-#### Task 3: Handle the click on like/unlike button, setup the request currently
+#### Task 3: Handle the click on like/unlike button, setup the request correctly
 * Handle onClick based on whether the tweet is already liked or not
 * Use the correct HTTP method for the `/tweet/like/` route
 * Use the correct Content-Type of the `tweet/like` route
