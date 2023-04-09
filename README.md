@@ -226,11 +226,11 @@ Now we going to learn how users would write a tweet on the UI?, excited 😄?
 ### Task 1: Writing a Tweet
 
 
-We want users to write a tweet and submit the tweet on the UI. so how could we achieve that? 
+We want users to write a tweet and submit the tweet on the UI. so how could we achieve that?
 
-- What do you think what kinds of HTML input elements should we use here for both? 
+- What do you think what kinds of HTML input elements should we use here for both?
 
-You have might have noticed this on Twitter when you write a tweet your text area content increases as per your content length. Now, according to what we had plan to implement will not work here, right? 
+You have might have noticed this on Twitter when you write a tweet your text area content increases as per your content length. Now, according to what we had plan to implement will not work here, right?
 
 - So can you find the react library which will auto-resize our textarea?
 
@@ -260,7 +260,7 @@ We have constructed the basic UI to compose the tweet. Now we want to send the t
 
 So what is the first step to achieving the above result? Fire a request to some endpoint right?
 
-- Which HTTP request method do you think is most appropriate to use here? 
+- Which HTTP request method do you think is most appropriate to use here?
 
 What should be the behavior if the request succeeded and what if get failed? any thoughts?
 
@@ -276,6 +276,17 @@ Frontend will trigger a POST request, so we should define the relevant route whi
 ### Task 2: Make changes in controller for storing the tweet
 
 We have added a route, now it's time to make changes in controller tweet.js. Controller accepts the request and stores data and generates a response for Frontend.
+
+
+## Checkpoint 6: Middlewares
+### Task 1: There is a bug in 'getUserByHandle', find and try to fix it.
+
+### Task 2: Using error handler for all the app routes
+Using errorHandler middleware for formatting all responses.
+
+### Task 3: Replace code and use response middleware
+Response middlewares generally helps to maintain the shape of response, it can make sure that the JSON is in same format each time. Fix the code in createUser endpoint and use middleware.
+
 
 ## Checkpoint 8: Creating the home feed on the UI
 
@@ -342,6 +353,4 @@ We will be using the like count and state of like, and use that for rendering an
 * For unlike tweet, enable/disable the button correctly before firing the request
 * For unlike tweet, enable/disable the button correct after the request completes
 * Set the disabled prop correctly based on already liked or not
-
-
 

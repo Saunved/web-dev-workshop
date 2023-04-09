@@ -1,0 +1,67 @@
+diff --git a/frontend/src/components/TweetFeed.jsx b/frontend/src/components/TweetFeed.jsx
+index c1b8d6d..93fc78f 100644
+--- a/frontend/src/components/TweetFeed.jsx
++++ b/frontend/src/components/TweetFeed.jsx
+@@ -2,7 +2,7 @@ import Tweet from "@/components/Tweet/SingleTweet";
+ import { Bars } from "react-loader-spinner";
+ 
+ export default function TweetFeed({ tweets, loading }) {
+-  if (!tweets.length) {
++  if (/* Task 4: Write a JavaScript expression here to check if tweets are empty */) {
+     return <div className="text-center my-8">No tweets to show right now!</div>;
+   }
+ 
+@@ -24,11 +24,12 @@ export default function TweetFeed({ tweets, loading }) {
+ 
+   return (
+     <>
+-      {tweets.map((tweet, idx) => {
++      {tweets.map((tweet) => {
+         return (
+-          <div key={tweet.id}>
+-            <Tweet tweet={tweet} /> <hr />
+-          </div>
++          // Task 5:
++          // We want to "map" each tweet to the Tweet UI component here.
++          // The mapping function is already written (see "tweets.map"). You have to write a one-liner 
++          // to map the Tweet UI component to it
+         );
+       })}
+     </>
+diff --git a/frontend/src/pages/home.jsx b/frontend/src/pages/home.jsx
+index bac3fd1..0b4cc19 100644
+--- a/frontend/src/pages/home.jsx
++++ b/frontend/src/pages/home.jsx
+@@ -41,11 +41,20 @@ export default function HomeFeed() {
+     try {
+       preferences.setFeed("global");
+       setIsLoading(true);
+-      const res = await fetch(`${BASE_URL}/tweets`, { credentials: "include" });
+-      const body = await res.json();
++
++      // Task 1:
++      // Fetch the tweets from the "${BASE_URL}/tweets" endpoint
++      // This is an authenticated endpoint, so we need to include "credentials"
++      // Remember to use "await"!
+ 
+       if (res.ok) {
+-        setTweetFeed(body.data.tweets);
++        const body = await res.json();
++        // Task 2: Set the array by using the "setTweetsFeed" setter.
++        // We get the tweets data in body.data.tweets
++
++        // Call the setter below this:
++
++
+       } else {
+         setTweetFeed([]);
+       }
+@@ -93,7 +102,7 @@ export default function HomeFeed() {
+         </div>
+         <hr className="mt-4" />
+ 
+-        <TweetFeed tweets={tweetFeed} loading={isLoading} />
++        <TweetFeed tweets={ /* Task 3: Pass the tweets here! */ } loading={isLoading} />
+       </div>
+     </>
+   );
