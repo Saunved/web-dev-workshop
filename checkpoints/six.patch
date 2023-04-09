@@ -1,0 +1,43 @@
+diff --git a/backend/app.js b/backend/app.js
+index 7343345..931dc01 100644
+--- a/backend/app.js
++++ b/backend/app.js
+@@ -68,6 +68,6 @@ const followsRouter = require("./routes/follows");
+ const errorHandler = require("./middlewares/errorHandler");
+ 
+ app.use("/", [userRouter, tweetRouter, retweetRouter, followsRouter]);
+-app.use(errorHandler);
++// Task 2: Use errorHandler for app routes:
+ 
+ module.exports = app;
+diff --git a/backend/controllers/user.js b/backend/controllers/user.js
+index 8558b8f..97e18da 100644
+--- a/backend/controllers/user.js
++++ b/backend/controllers/user.js
+@@ -50,7 +50,12 @@ module.exports.createUser = async (req, res, next) => {
+       message: "User created."
+     });
+   } catch (err) {
+-    next(err);
++    // Task 3: Instead of this, use middleware to maintain uniform response.
++    // Response middlewares generally helps to maintain the shape of response,
++    // it can make sure that the JSON is in same format each time.
++    res.status(500).json({
++      message: "Something went wrong"
++    });
+   }
+ };
+ 
+diff --git a/backend/routes/user.js b/backend/routes/user.js
+index be467d3..141d50f 100644
+--- a/backend/routes/user.js
++++ b/backend/routes/user.js
+@@ -18,7 +18,7 @@ router.post("/user", createUser);
+ router.get("/users", auth, getAllUsers);
+ router.get("/user", auth, getUser);
+ router.get("/user/:id", auth, getUser);
+-router.get("/user/handle/:handle", getUserByHandle);
++// router.get("/user/handle/:handle", getUserByHandle); // Task 1: FIX ME!!
+ router.put("/user", auth, updateUser);
+ router.put("/user/change-password", auth, changePassword);
+ router.post("/logout", auth, logoutUser);

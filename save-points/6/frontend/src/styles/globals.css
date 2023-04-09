@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#compose-tweet:empty:before {
+  content: attr(placeholder);
+  @apply text-gray-600;
+}
+
+html,
+body {
+  @apply overscroll-y-none;
+}
+
+label {
+  @apply font-semibold block mt-3;
+}
+
+input {
+  @apply px-2 py-2 rounded border block mt-1 border-gray-400 w-full;
+}

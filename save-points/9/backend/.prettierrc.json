@@ -1,0 +1,7 @@
+{
+  "printWidth": 100,
+  "bracketSameLine": true,
+  "arrowParens": "always",
+  "quoteProps": "consistent",
+  "trailingComma": "none"
+}
