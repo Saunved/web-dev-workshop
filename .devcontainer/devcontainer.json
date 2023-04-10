@@ -1,4 +1,7 @@
 {
     "image": "mcr.microsoft.com/devcontainers/universal:2",
-    "forwardPorts": [4400,5000]
+    "forwardPorts": [4400,5000],
+     "features": {
+         "ghcr.io/warrenbuckley/codespace-features/sqlite:1": {}
+     }
 }
