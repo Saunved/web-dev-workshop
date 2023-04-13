@@ -92,7 +92,7 @@ export default function RegisterFlow() {
   };
 
   return (
-    <div className="max-w-3xl py-8 bg-white rounded-md w-full my-12 mx-auto border shadow">
+    <div className="max-w-3xl py-8 bg-white rounded-md w-full my-12 mx-auto md:border md:shadow">
       <div className="flex justify-center mb-4">
         <Dog
           weight="fill"
@@ -104,7 +104,7 @@ export default function RegisterFlow() {
         {uiText.registerCta}
       </h1>
       <div className="mt-8 flex justify-center">
-        <div className="w-6/12">
+        <div>
           <form onSubmit={onSubmitForm}>
             <div>
               <label htmlFor="name">{uiText.name}</label>
