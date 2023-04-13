@@ -25,7 +25,7 @@ export default function Home() {
         <Link href="/settings/accountDetails">Account details</Link>
         <Link href="/followers">Followers</Link>
         <Link href="/following">Following</Link>
-        <Link href="/@johndoe1/status/123">Single tweet view</Link>
+        <Link href="/@johndoe1/status/123">Single woof view</Link>
       </div>
     </div>
   );

@@ -34,7 +34,7 @@ export default function LogoutPage() {
           }
         })
         .catch((error) => {
-          console.error("Error liking tweet", error);
+          console.error("Error liking woof", error);
         });
     }, 500);
   }, []);

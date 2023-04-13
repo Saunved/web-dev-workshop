@@ -49,7 +49,7 @@ export default function TweetActions({ tweet }) {
         setDisableRetweetButton(false);
       })
       .catch((error) => {
-        console.error("Error liking tweet", error);
+        console.error("Error liking woof", error);
       });
   };
 
@@ -84,7 +84,7 @@ export default function TweetActions({ tweet }) {
   };
 
   /**
-   * Likes or unlikes a tweet depending on the state
+   * Likes a woof
    */
   const likeTweet = async () => {
     setDisableLikeButton(true);
@@ -117,7 +117,7 @@ export default function TweetActions({ tweet }) {
   };
 
   /**
-   * Likes or unlikes a tweet depending on the state
+   * Unlikes a woof
    */
   const unlikeTweet = async () => {
     setDisableLikeButton(true);

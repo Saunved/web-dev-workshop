@@ -65,7 +65,7 @@ export default function LoginFlow() {
   };
 
   return (
-    <div className="max-w-3xl py-16 bg-white rounded-md w-full mx-auto border mt-20 shadow">
+    <div className="max-w-3xl py-16 bg-white rounded-md w-full mx-auto md:border mt-20 md:shadow">
       <div className="flex justify-center mb-4">
         <Dog weight="fill" className="text-purple-700" size={80}></Dog>
       </div>

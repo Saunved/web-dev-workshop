@@ -3,7 +3,7 @@ import { Bars } from "react-loader-spinner";
 
 export default function TweetFeed({ tweets, loading }) {
   if (!tweets.length) {
-    return <div className="text-center my-8">No tweets to show right now!</div>;
+    return <div className="text-center my-8">No woofs to show right now!</div>;
   }
 
   if (loading) {
@@ -23,7 +23,7 @@ export default function TweetFeed({ tweets, loading }) {
   }
 
   return (
-    <>
+    <div className="mb-12">
       {tweets.map((tweet, idx) => {
         return (
           <div key={idx}>
@@ -31,6 +31,6 @@ export default function TweetFeed({ tweets, loading }) {
           </div>
         );
       })}
-    </>
+    </div>
   );
 }
