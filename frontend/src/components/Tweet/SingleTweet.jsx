@@ -53,7 +53,7 @@ export default function Tweet({ tweet }) {
 
   if (isDeleted) {
     return (
-      <p className="text-center py-4 bg-gray-100">This tweet was deleted</p>
+      <p className="text-center py-4 bg-gray-100">This woof was deleted</p>
     );
   }
 

@@ -8,7 +8,7 @@ export default function DeleteTweetModal({ showModal, onDelete, onClose }) {
       <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
       <div className="bg-white rounded-lg z-50">
         <div className="px-8 py-6">
-          Are you sure you want to delete this tweet?
+          Are you sure you want to delete this woof?
         </div>
         <div className="px-4 pb-4 flex justify-end gap-2">
           <button
