@@ -23,7 +23,7 @@ export default function TweetFeed({ tweets, loading }) {
   }
 
   return (
-    <>
+    <div className="mb-12">
       {tweets.map((tweet, idx) => {
         return (
           <div key={idx}>
@@ -31,6 +31,6 @@ export default function TweetFeed({ tweets, loading }) {
           </div>
         );
       })}
-    </>
+    </div>
   );
 }
